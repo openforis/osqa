@@ -232,6 +232,11 @@ and footer.
 Site settings came across with the database (they are stored in it). Review
 these, because the old values may not fit the new version:
 
+- **Folders:** the upload folder (Admin > File upload settings) and the
+  exporter's backup folder still hold the old server's paths (e.g.
+  `/opt/OSQA/forum/upfiles`), and uploads fail until they point at the new
+  site's folders, e.g. `/srv/osqa/app/forum/upfiles`. Find others with
+  ``SELECT `key` FROM forum_keyvalue WHERE value LIKE '%/opt/%'``.
 - **Email settings:** SMTP server, sender; send a test.
 - **External keys:**
   - Create new OAuth apps for Google/GitHub/Facebook sign-in with the new
