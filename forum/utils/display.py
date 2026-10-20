@@ -4,8 +4,9 @@ keyboard shortcuts switch.
 Members keep them in user.prop.preferences (the dict the preferences page
 saves, keys 'theme' and 'keyboard_shortcuts'); the theme is also kept in the
 `osqa_theme` cookie, for anonymous visitors, after signing out and on the
-pages a service worker saved. The theme only applies while Admin > View
-settings > "Dark mode" is on; without it every page is light.
+pages a service worker saved; visitors who chose nothing get "Theme for new
+visitors" (Admin > Look and feel). The theme only applies while "Dark mode"
+(same page) is on; without it every page is light.
 
 How a theme reaches the page: {% display_attrs %} writes data-theme (the
 resolved theme, "light" or "dark") and data-theme-choice on <html>, and
@@ -33,11 +34,17 @@ def theme(request):
     if not settings.DARK_MODE:
         return 'light'
     if request is None:
-        return 'auto'
+        return default_theme()
     preferences = _member_preferences(request)
     if preferences and preferences.get('theme') in THEMES:
         return preferences['theme']
     value = request.COOKIES.get(THEME_COOKIE)
+    return value if value in THEMES else default_theme()
+
+
+def default_theme():
+    """What visitors get before they choose (Admin > Look and feel)."""
+    value = str(settings.DEFAULT_THEME)
     return value if value in THEMES else 'auto'
 
 

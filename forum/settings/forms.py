@@ -1,6 +1,7 @@
 import os
 from django import forms
 from forum.settings.base import Setting
+from forum.settings.guides import FIELD_EXTRAS
 from django.utils.translation import gettext as _
 from django.utils.html import format_html, format_html_join
 from django.utils.safestring import mark_safe
@@ -27,48 +28,57 @@ class SettingsSetForm(forms.Form):
         for setting in set:
             widget = setting.field_context.get('widget', None)
 
+            if isinstance(setting, Setting.emulators.get(str, DummySetting)) and not widget:
+                setting.field_context['widget'] = forms.TextInput(attrs={'class': 'longstring'})
+            # Guidance (example, keywords: forum/settings/guides.py) is not a field argument.
+            context = dict((k, v) for k, v in setting.field_context.items() if k not in FIELD_EXTRAS)
+
             if widget is forms.CheckboxSelectMultiple or widget is forms.SelectMultiple or isinstance(widget, forms.SelectMultiple):
-                field = forms.MultipleChoiceField(**setting.field_context)
+                field = forms.MultipleChoiceField(**context)
             elif widget is forms.RadioSelect or isinstance(widget, forms.RadioSelect):
-                field = forms.ChoiceField(**setting.field_context)
+                field = forms.ChoiceField(**context)
             elif isinstance(setting, Setting.emulators.get(str, DummySetting)):
-                if not setting.field_context.get('widget', None):
-                    setting.field_context['widget'] = forms.TextInput(attrs={'class': 'longstring'})
-                field = forms.CharField(**setting.field_context)
+                field = forms.CharField(**context)
             elif isinstance(setting, Setting.emulators.get(float, DummySetting)):
-                field = forms.FloatField(**setting.field_context)
+                field = forms.FloatField(**context)
             elif isinstance(setting, Setting.emulators.get(int, DummySetting)):
-                field = forms.IntegerField(**setting.field_context)
+                field = forms.IntegerField(**context)
             elif isinstance(setting, Setting.emulators.get(bool, DummySetting)):
-                field = forms.BooleanField(**setting.field_context)
+                field = forms.BooleanField(**context)
             else:
-                field = UnfilteredField(**setting.field_context)
+                field = UnfilteredField(**context)
 
             self.fields[setting.name] = field
 
         self.set = set
+        self.settings = dict((setting.name, setting) for setting in set)
 
-    def as_table(self):
-        # Same markup the old BaseForm._html_output() call produced (removed in
-        # Django 5.0): one row per setting with "context" and "default" tools.
+    def as_table(self, names=None):
+        """One row per setting (id "setting-<NAME>", the admin search's
+        anchor) with "context" and "default" tools; only `names` when given
+        (the sections of a guided page, forum/settings/guides.py)."""
         tools = ('<br /><a class="fieldtool context" href="#">%s</a><span class="sep">|</span>'
                  '<a class="fieldtool default" href="#">%s</a>') % (_('context'), _('default'))
         rows = []
         hidden = []
 
         top_errors = self.non_field_errors()
-        if top_errors:
+        if top_errors and names is None:
             rows.append('<tr><td colspan="2">%s</td></tr>' % top_errors)
 
-        for name in self.fields:
+        for name in self.fields if names is None else [n for n in names if n in self.fields]:
             bf = self[name]
             if bf.is_hidden:
                 hidden.append(str(bf))
                 continue
 
             help_text = bf.help_text and '<br />%s' % bf.help_text or ''
-            rows.append('<tr><th>%s%s</th><td>%s%s%s</td></tr>' % (
-                bf.label and bf.label_tag() or '', tools, bf.errors, bf, help_text))
+            example = self.settings[name].field_context.get('example') if name in self.settings else None
+            if example:
+                help_text += format_html('<span class="setting-example">{} <code>{}</code></span>',
+                                         _('Example:'), example)
+            rows.append('<tr id="setting-%s" class="setting-row"><th>%s%s</th><td>%s%s%s</td></tr>' % (
+                name, bf.label and bf.label_tag() or '', tools, bf.errors, bf, help_text))
 
         if hidden:
             if rows:
@@ -117,6 +127,14 @@ class ImageFormWidget(forms.Widget):
                 return data["%s_old" % name]
             elif name in data:
                 return data[name]
+
+class SecretInput(forms.PasswordInput):
+    """A key or password setting: shown as dots, with a "Show" button
+    (osqa.admin.js), and kept in the field when the page is saved again."""
+    def __init__(self, attrs=None):
+        super().__init__(attrs=dict({'class': 'longstring secret-input', 'autocomplete': 'off',
+                                     'spellcheck': 'false'}, **(attrs or {})), render_value=True)
+
 
 class StringListWidget(forms.Widget):
     def render(self, name, value, attrs=None, renderer=None):

@@ -20,9 +20,8 @@ from django.views.decorators.cache import cache_control
 
 from forum import settings
 from forum.templatetags.extra_tags import media
-from forum.utils import static_files
+from forum.utils import appearance, static_files
 
-THEME_COLOR = '#2c5aa0'        # osqa.css --brand
 THEME_COLOR_DARK = '#161b22'   # osqa.css --surface in dark mode (the header)
 BACKGROUND_COLOR = '#f5f7fa'   # osqa.css --background
 PAGE_CACHE_SIZE = 50
@@ -105,7 +104,7 @@ def manifest(request):
         'start_url': root,
         'scope': root,
         'display': 'standalone',
-        'theme_color': THEME_COLOR,
+        'theme_color': appearance.theme_color(),
         'background_color': BACKGROUND_COLOR,
         'icons': icons(),
     }

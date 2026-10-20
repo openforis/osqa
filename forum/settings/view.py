@@ -9,11 +9,6 @@ label = _("Embed YouTube Videos"),
 help_text = _("If you check this YouTube videos will be embedded"),
 required=False))
 
-DARK_MODE = Setting('DARK_MODE', True, VIEW_SET, dict(
-label = _("Dark mode"),
-help_text = _("Use a dark colour scheme for visitors whose device is set to dark mode. Turn it off if your custom CSS assumes a light background."),
-required=False))
-
 SHOW_LATEST_COMMENTS_FIRST = Setting('SHOW_LATEST_COMMENTS_FIRST', False, VIEW_SET, dict(
 label = _("Show latest comments first"),
 help_text = _("Choose this if you want the latest comments to appear first."),

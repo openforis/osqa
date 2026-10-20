@@ -1,0 +1,22 @@
+{% load i18n admin_tags %}{% comment %}
+Admin > Header and Footer (forum/settings/static.py): what goes where, and
+examples.
+{% endcomment %}
+<section class="admin-guide" aria-labelledby="headandfoot-guide-title">
+    <div class="admin-guide-header"><h2 id="headandfoot-guide-title">{% trans "Header, announcement and footer" %}</h2></div>
+    <p class="admin-guide-summary">{% blocktrans %}The custom header goes above the site's own header, the announcement bar under the search bar on every page, and the custom footer replaces the site's footer or goes above or below it. Each can be written in Markdown, HTML or plain text (Escaped). Scripts are not run here: put them under &lt;head&gt;.{% endblocktrans %}</p>
+    <details class="admin-guide-steps">
+        <summary>{% trans "Examples" %}</summary>
+        {% example "hf-example-announcement" _("Announcement bar (Markdown)") %}
+            **Maintenance on Saturday 10:00–12:00 UTC.** The site will be read-only. [Details](/questions/123/)
+        {% endexample %}
+        {% example "hf-example-header" _("A link back to your main web site (HTML header)") %}
+            <div class="site-topbar"><a href="https://www.example.org">&larr; Back to example.org</a></div>
+        {% endexample %}
+        {% example "hf-example-footer" _("Footer links (HTML, above the default footer)") %}
+            <p>Example Support &middot; <a href="https://www.example.org/terms">Terms of service</a> &middot;
+              <a href="mailto:support@example.org">Contact us</a></p>
+        {% endexample %}
+        <p class="admin-visually-hidden" role="status"></p>
+    </details>
+</section>

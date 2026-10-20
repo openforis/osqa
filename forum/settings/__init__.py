@@ -30,6 +30,7 @@ ONLINE_USERS = Setting('ONLINE_USERS', {})
 
 
 from .basic import *
+from .appearance import *
 from .sidebar import *
 from .email import *
 from .extkeys import *

@@ -1,0 +1,34 @@
+{% extends "osqaadmin/base.html" %}
+
+{% load i18n %}{% comment %}
+Results of the admin search (admin.search, forum/utils/admin_search.py):
+settings link to their row (#setting-<NAME>) on their page.
+{% endcomment %}
+
+{% block subtitle %}{% if query %}{% blocktrans %}Search: {{ query }}{% endblocktrans %}{% else %}{% trans "Search the administration" %}{% endif %}{% endblock %}
+{% block pagename %}{% trans "Search" %}{% endblock %}
+{% block description %}{% trans "Find a setting or an admin page by its name, by what it does or by a word from its help, e.g. logo, colour, captcha, Google, reputation or email." %}{% endblock %}
+
+{% block admincontent %}
+    <form class="admin-search-page" action="{% url "admin_search" %}" method="get" role="search">
+        <label for="admin-search-page-q" class="admin-visually-hidden">{% trans "Search settings and pages" %}</label>
+        <input type="search" id="admin-search-page-q" name="q" value="{{ query }}" autocomplete="off" />
+        <button type="submit">{% trans "Search" %}</button>
+    </form>
+    {% if query %}
+    <p class="admin-search-count" role="status">{% blocktrans count counter=results|length %}{{ counter }} result{% plural %}{{ counter }} results{% endblocktrans %}</p>
+    {% if results %}
+    <ol class="admin-search-results">
+        {% for result in results %}
+        <li class="admin-search-result admin-search-{{ result.kind }}">
+            <a href="{{ result.url }}" class="admin-search-title">{{ result.label_html }}</a>
+            <span class="admin-search-where">{% if result.kind == "page" %}{% trans "Admin page" %}{% if result.page %} · {{ result.page }}{% endif %}{% else %}{{ result.page }}{% if result.section %} · {{ result.section }}{% endif %} · <code>{{ result.name }}</code>{% endif %}</span>
+            {% if result.help_html %}<p class="admin-search-help">{{ result.help_html }}</p>{% endif %}
+        </li>
+        {% endfor %}
+    </ol>
+    {% else %}
+    <p>{% trans "Nothing matches every word. Try fewer or other words, such as the name of the service or what the setting changes." %}</p>
+    {% endif %}
+    {% endif %}
+{% endblock %}

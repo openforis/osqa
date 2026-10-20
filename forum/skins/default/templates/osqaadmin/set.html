@@ -1,17 +1,87 @@
 {% extends "osqaadmin/base.html" %}
 
-{% load i18n extra_tags extra_filters %}
+{% load i18n extra_tags extra_filters %}{% comment %}
+A settings page (admin.settings_set). Pages with sections
+(forum/settings/guides.py) show each one as a card: its status, how to set it
+up (steps, values to copy, links) and its settings; the settings no section
+lists come last. osqaadmin/guides/<set name>.html, when it exists, is shown
+above the form (guide_template). Every row has the id setting-<NAME>, which
+the admin search links to; the filter box (osqa.admin.js) hides the rows
+and sections that don't match.
+{% endcomment %}
 
 {% block subtitle %}{{ form.set.title }}{% endblock %}
 {% block pagename %}{{ form.set.title }}{% endblock %}
 {% block description %}{{ form.set.description }}{% endblock %}
+{% block adminjs %}<script defer src="{% media "/media/js/osqa.copy.js" %}"></script>{% endblock %}
 
 {% block admincontent %}
-    <form action="" method="POST" enctype="multipart/form-data" accept-charset="utf-8">
+    {% if guide_template %}{% include guide_template %}{% endif %}
+    {% if form.fields|length > 5 %}
+    <div class="admin-filter" role="search">
+        <label for="settings-filter">{% trans "Find a setting on this page" %}</label>
+        <input type="search" id="settings-filter" class="admin-filter-input" autocomplete="off"
+               data-none-text="{% trans "No setting on this page matches. Try the admin search in the menu." %}"
+               data-count-text="{% trans "Settings shown: %(count)s" %}" />
+        <p class="admin-filter-status" role="status" aria-live="polite"></p>
+    </div>
+    {% endif %}
+    <form action="" method="POST" enctype="multipart/form-data" accept-charset="utf-8" class="admin-settings-form"
+          data-show-text="{% trans "Show" %}" data-hide-text="{% trans "Hide" %}" data-new-tab-text="{% trans "opens in a new tab" %}">
         {% csrf_token %}
-        <table id="admin_form" class="admin-form-table" style="width: 100%">
+        {% if sections and form.non_field_errors %}<div class="errornote">{{ form.non_field_errors }}</div>{% endif %}
+        {% for section in sections %}
+        <section class="admin-guide{% if section.state %} admin-guide-{{ section.state }}{% endif %}" id="section-{{ section.key }}" aria-labelledby="section-{{ section.key }}-title">
+            <div class="admin-guide-header">
+                <h2 id="section-{{ section.key }}-title">{{ section.title }}</h2>
+                {% if section.state %}<span class="admin-status admin-status-{{ section.state }}">{{ section.state_label }}</span>{% endif %}
+            </div>
+            {% if section.summary %}<p class="admin-guide-summary">{{ section.summary }}</p>{% endif %}
+            {% if section.message %}<p class="admin-guide-message">{{ section.message }}</p>{% endif %}
+            {% if section.steps or section.copy or section.links %}
+            <details class="admin-guide-steps"{% if section.state != "on" %} open{% endif %}>
+                <summary>{% if section.state == "on" %}{% trans "How it was set up" %}{% else %}{% trans "How to set it up" %}{% endif %}</summary>
+                {% if section.steps %}
+                <ol>
+                    {% for step in section.steps %}<li>{{ step }}</li>{% endfor %}
+                </ol>
+                {% endif %}
+                {% for label, value in section.copy %}
+                <div class="admin-copy">
+                    <label for="copy-{{ section.key }}-{{ forloop.counter }}">{{ label }}</label>
+                    <div class="admin-copy-row">
+                        <input type="text" id="copy-{{ section.key }}-{{ forloop.counter }}" value="{{ value }}" readonly spellcheck="false" />
+                        <button type="button" class="button" data-copy-target="#copy-{{ section.key }}-{{ forloop.counter }}" data-copied-text="{% trans "Copied" %}">{% trans "Copy" %}</button>
+                    </div>
+                </div>
+                {% endfor %}
+                {% if section.links %}
+                <ul class="admin-guide-links">
+                    {% for url, label in section.links %}<li><a href="{{ url }}">{{ label }}</a></li>{% endfor %}
+                </ul>
+                {% endif %}
+                <p class="admin-visually-hidden" role="status"></p>
+            </details>
+            {% endif %}
+            <table class="admin-form-table admin-settings-table">
+                {{ section.rows }}
+            </table>
+        </section>
+        {% endfor %}
+        {% if sections %}
+            {% if other_rows %}
+            <section class="admin-guide admin-guide-others" aria-labelledby="section-others-title">
+                <div class="admin-guide-header"><h2 id="section-others-title">{% trans "Other settings" %}</h2></div>
+                <table class="admin-form-table admin-settings-table">
+                    {{ other_rows }}
+                </table>
+            </section>
+            {% endif %}
+        {% else %}
+        <table id="admin_form" class="admin-form-table admin-settings-table">
             {{ form.as_table }}
         </table>
+        {% endif %}
         <div class="submit-row">
                     <input id="submit" name="submit" type="submit" value="{% trans "Save" %}" data-form-target="" />
                     {% if form.set.can_preview %}
@@ -21,5 +91,6 @@
                         {% endif %}
                     {% endif %}
         </div>
+        {% if form.set.can_preview %}<p class="admin-preview-note">{% trans "Preview opens the site in a new tab with these values, for you only, until you save or reset them." %}</p>{% endif %}
     </form>
 {% endblock %}
