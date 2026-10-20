@@ -324,16 +324,84 @@ nav.breadcrumbs a:link, nav.breadcrumbs a:visited {
     box-shadow: none;
 }
 
-#content-related .admin-menu .module h2 {
-    margin: 12px 0 4px;
-    padding: 0 10px;
-    border: 0;
-    background: transparent;
+/* A group: a disclosure with an icon, the group's name, a count (the
+   moderation inbox's) when there is one, and a chevron. */
+#content-related .admin-menu .admin-menu-group {
+    margin: 2px 0 0;
+}
+
+.admin-menu-group > summary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 36px;
+    padding: 4px 8px 4px 10px;
+    border-radius: 6px;
+    color: var(--body-loud-color);
+    font-weight: 600;
+    line-height: 1.25;
+    list-style: none;
+    cursor: pointer;
+}
+
+.admin-menu-group > summary::-webkit-details-marker {
+    display: none;
+}
+
+.admin-menu-group > summary::after {
+    content: "";
+    flex: 0 0 auto;
+    width: 7px;
+    height: 7px;
+    margin: 0 4px 3px auto;
+    border-right: 2px solid var(--body-quiet-color);
+    border-bottom: 2px solid var(--body-quiet-color);
+    transform: rotate(45deg);
+    transition: transform .15s;
+}
+
+.admin-menu-group[open] > summary::after {
+    margin-bottom: -3px;
+    transform: rotate(-135deg);
+}
+
+.admin-menu-group > summary:hover {
+    background: var(--body-bg);
+}
+
+/* The group holding the page being shown. */
+.admin-menu-group.has-current > summary {
+    color: var(--osqa-menu-current-fg);
+}
+
+.admin-menu-group-title {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.admin-menu-group .admin-group-count {
+    flex: 0 0 auto;
+}
+
+/* Shown on the group while it is folded; then on the inbox link. */
+.admin-menu-group[open] .admin-group-count {
+    display: none;
+}
+
+.admin-menu-icon {
+    flex: 0 0 auto;
     color: var(--body-quiet-color);
-    font-size: 0.6875rem;
-    font-weight: 700;
-    letter-spacing: .06em;
-    text-transform: uppercase;
+}
+
+.admin-menu-group.has-current > summary .admin-menu-icon, .admin-menu-home a[aria-current="page"] .admin-menu-icon {
+    color: currentColor;
+}
+
+/* The pages of a group, indented under its name. */
+.admin-menu-group > ul {
+    margin: 2px 0 6px 19px !important;
+    padding-left: 8px !important;
+    border-left: 1px solid var(--hairline-color);
 }
 
 .admin-menu li a {
@@ -367,7 +435,14 @@ nav.breadcrumbs a:link, nav.breadcrumbs a:visited {
 }
 
 .admin-menu-home li a {
+    gap: 8px;
     font-weight: 600;
+}
+
+.admin-menu-home {
+    margin-bottom: 4px !important;
+    padding-bottom: 4px !important;
+    border-bottom: 1px solid var(--hairline-color);
 }
 
 /* Page heading and description. */

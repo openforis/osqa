@@ -57,15 +57,18 @@ def staff_user_required(fn):
 
     return wrapper
 
-# The admin menu's fixed groups of settings pages (SettingSet names); every
-# other set is listed under "Other settings", so a module's new set shows up
-# without changes here.
+# The admin menu's groups of settings pages, by task: (id, title, icon,
+# SettingSet names). Sets no group names (a module's new one) are listed
+# under "Other settings", so they show up without changes here. Icons are
+# drawn by osqaadmin/menu_icon.html.
 MENU_SETTINGS = (
-    ('basic-sets-menu', _lazy("Basic settings"), ('basic', 'users', 'email', 'paths', 'urls', 'extkeys')),
-    ('workflow-sets-menu', _lazy("Workflow settings"), ('repgain', 'minrep', 'voting', 'accept', 'badges')),
-    ('forum-sets-menu', _lazy("Forum settings"), ('form', 'view', 'moderation')),
-    ('look-sets-menu', _lazy("Look and feel"), ('appearance', 'css', 'headandfoot', 'head')),
-    ('pages-sets-menu', _lazy("Static content"), ('about', 'faq', 'sidebar')),
+    ('site-menu', _lazy("Site"), 'site', ('basic', 'email', 'urls', 'paths', 'sitemap', 'robots')),
+    ('members-menu', _lazy("Members and permissions"), 'members',
+     ('users', 'security', 'minrep', 'repgain', 'voting', 'accept', 'badges', 'ldap')),
+    ('content-menu', _lazy("Questions and answers"), 'content', ('form', 'view', 'moderation', 'routing', 'support', 'ai')),
+    ('look-menu', _lazy("Look and feel"), 'look', ('appearance', 'css', 'headandfoot', 'head', 'sidebar')),
+    ('pages-menu', _lazy("Pages"), 'pages', ('about', 'faq')),
+    ('integrations-menu', _lazy("Integrations"), 'integrations', ('extkeys', 'api', 'exporter')),
 )
 
 
@@ -74,17 +77,24 @@ def _menu_item(request, url, label, **extra):
     return dict(extra, url=url, label=label, current=current)
 
 
+def _menu_group(group_id, title, icon, items):
+    """A group of the menu: open while it holds the page being shown; its
+    count adds up its items' (the moderation inbox's), shown when folded."""
+    return {'id': group_id, 'title': title, 'icon': icon, 'items': items,
+            'open': any(i['current'] for i in items), 'count': sum(i.get('count') or 0 for i in items)}
+
+
 def admin_menu(request, unsaved, counts=None):
-    """The admin menu as data: [{'id', 'title', 'items': [{'url', 'label',
-    'current', 'unsaved', 'count'}]}]. Moderators (staff) get the moderation
-    pages only; superusers every settings page and tool, including the tools
-    modules register (admin_tools_page, TOOL_LINKS)."""
+    """The admin menu as data: [{'id', 'title', 'icon', 'open', 'count',
+    'items': [{'url', 'label', 'current', 'unsaved', 'count'}]}]. Moderators
+    (staff) get the moderation pages only; superusers every settings page and
+    tool, including the tools modules register (admin_tools_page, TOOL_LINKS)."""
     item = lambda url, label, **extra: _menu_item(request, url, label, **extra)
-    groups = [{'id': 'moderation-menu', 'title': _("Moderation"), 'items': [
+    groups = [_menu_group('moderation-menu', _("Moderation"), 'moderation', [
         item(reverse('admin_moderation'), _("Moderation inbox"), count=(counts or {}).get('total')),
         item(reverse('admin_support'), _("Support dashboard")),
         item(reverse('admin_email_previews'), _("Email previews")),
-    ]}]
+    ])]
     if not request.user.is_superuser:
         return groups
 
@@ -92,19 +102,22 @@ def admin_menu(request, unsaved, counts=None):
         return item(reverse('admin_set', args=[s.name]), s.title, unsaved=s.name in unsaved)
 
     fixed = set()
-    for group_id, title, names in MENU_SETTINGS:
+    for group_id, title, icon, names in MENU_SETTINGS:
         fixed.update(names)
         items = [set_item(Setting.sets[name]) for name in names if name in Setting.sets]
-        if group_id == 'pages-sets-menu':
-            items.insert(0, item(reverse('admin_static_pages'), _("Custom Pages")))
-        groups.append({'id': group_id, 'title': title, 'items': items})
+        if group_id == 'pages-menu':
+            items.insert(0, item(reverse('admin_static_pages'), _("Custom pages")))
+        groups.append(_menu_group(group_id, title, icon, items))
     others = sorted([s for s in Setting.sets.values() if s.name not in fixed], key=lambda s: s.weight)
-    groups.append({'id': 'other-sets-menu', 'title': _("Other settings"), 'items': [set_item(s) for s in others]})
-    groups.append({'id': 'tools-menu', 'title': _("Tools"), 'items': [
+    groups.append(_menu_group('other-sets-menu', _("Other settings"), 'other', [set_item(s) for s in others]))
+    groups.append(_menu_group('tools-menu', _("Tools"), 'tools', [
         item(reverse('admin_maintenance'), _("Maintenance mode")),
         item(reverse('admin_statistics'), _("Statistics")),
-    ] + [item(url, label) for url, label in admin_tools()]})
-    return [g for g in groups if g['items']]
+    ] + [item(url, label) for url, label in admin_tools()]))
+    groups = [g for g in groups if g['items']]
+    if not any(g['open'] for g in groups):  # the dashboard: the moderation pages
+        groups[0]['open'] = True
+    return groups
 
 
 def admin_tools():
@@ -124,7 +137,7 @@ def admin_page_wrapper(fn, request, *args, **kwargs):
     context['allsets'] = Setting.sets
     context['othersets'] = sorted(
             [s for s in Setting.sets.values() if s.name not in
-             {name for _id, _title, names in MENU_SETTINGS for name in names}],
+             {name for _id, _title, _icon, names in MENU_SETTINGS for name in names}],
             key=lambda s: s.weight)
     context['tools'] = admin_tools()
 

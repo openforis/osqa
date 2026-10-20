@@ -111,6 +111,13 @@ manifests are in `docs/k8s/`. See [docs/deployment.md](docs/deployment.md).
 
 ## Administration
 
+The admin menu groups the pages by task: Moderation, Site, Members and
+permissions, Questions and answers, Look and feel, Pages, Integrations and
+Tools (settings pages of modules that no group names go under "Other
+settings"). Each group folds away; the group of the page being shown is
+open and the others stay as they were last left in this browser, and the
+moderation inbox's count shows on its group while it is folded.
+
 Administrators find every setting with the search box at the top of the
 admin menu (`/admin/search/`): it matches the setting's label, help text,
 name and keywords, the page and section titles, and a few synonyms (colour
@@ -611,7 +618,7 @@ for a new one.
 ### Accounts
 
 What members can do with their account, and the settings for it (Admin >
-Users settings and Admin > Security). The code is in `forum/utils/accounts.py`.
+Members and Admin > Security). The code is in `forum/utils/accounts.py`.
 
 - **Signing up (double opt-in):** after signing up with an email address and
   password, the member gets a welcome email with a button that confirms the
@@ -835,7 +842,7 @@ All modules below except the (switched-off) full-text search ones are covered by
 
 Bots that register and never post (often only to put links in their profile)
 are handled without any external service; the thresholds are under Admin >
-Users settings:
+Members:
 
 - The sign-up forms have a hidden honeypot field and a signed time stamp:
   forms filled in faster than "Minimum time to fill in the sign-up form"

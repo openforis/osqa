@@ -1,7 +1,33 @@
 /* The admin menu is a <details> disclosure: open on wide screens, folded on
-   phones (called right after the element, so it never flashes open). */
+   phones. Each group of pages is a <details> too: the group of the page
+   being shown is open, the others as the administrator last left them
+   (remembered in this browser). Called right after the menu, before it is
+   painted, so nothing flashes open or shut. */
+var OSQA_MENU_KEY = 'osqa-admin-menu-groups';
+
 function osqaAdminMenu(details) {
-    if (!details || !window.matchMedia) {
+    if (!details) {
+        return;
+    }
+    var saved = {};
+    try {
+        saved = JSON.parse(window.localStorage.getItem(OSQA_MENU_KEY) || '{}') || {};
+    } catch (e) { /* storage blocked: the server's choice */ }
+    var groups = details.querySelectorAll('details.admin-menu-group');
+    Array.prototype.forEach.call(groups, function (group) {
+        var id = group.getAttribute('data-group');
+        if (!group.classList.contains('has-current') && typeof saved[id] === 'boolean') {
+            group.open = saved[id];
+        }
+        group.addEventListener('toggle', function () {
+            saved[id] = group.open;
+            try {
+                window.localStorage.setItem(OSQA_MENU_KEY, JSON.stringify(saved));
+            } catch (e) { /* not remembered */ }
+        });
+    });
+
+    if (!window.matchMedia) {
         return;
     }
     var wide = window.matchMedia('(min-width: 768px)');

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OSQA (Open Foris edition)\n"
 "Report-Msgid-Bugs-To: https://github.com/openforis/osqa/issues\n"
-"POT-Creation-Date: 2026-10-20 16:42-0400\n"
+"POT-Creation-Date: 2026-10-20 16:57-0400\n"
 "PO-Revision-Date: 2026-10-14 12:00+0000\n"
 "Last-Translator: Open Foris <https://github.com/openforis/osqa>\n"
 "Language-Team: Spanish <https://github.com/openforis/osqa>\n"
@@ -1032,11 +1032,11 @@ msgstr "quitar el estado de superusuario"
 msgid "grant super user status"
 msgstr "otorgar el estado de superusuario"
 
-msgid "Badges config"
-msgstr "Configuración de insignias"
+msgid "Badges"
+msgstr "Insignias"
 
-msgid "Configure badges on your OSQA site."
-msgstr "Configure las insignias de su sitio OSQA."
+msgid "When members earn each badge."
+msgstr "Cuándo ganan los miembros cada insignia."
 
 msgid "Accepting answers"
 msgstr "Aceptación de respuestas"
@@ -1521,11 +1521,11 @@ msgstr "Texto de la página de preguntas frecuentes"
 msgid "The faq page."
 msgstr "La página de preguntas frecuentes."
 
-msgid "Form settings"
-msgstr "Configuración de formularios"
+msgid "Asking and answering"
+msgstr "Preguntar y responder"
 
-msgid "General settings for the OSQA forms."
-msgstr "Configuración general de los formularios de OSQA."
+msgid "Lengths, tags and other rules of the ask, answer and comment forms."
+msgstr "Longitudes, etiquetas y otras reglas de los formularios de preguntas, respuestas y comentarios."
 
 msgid "Enable community wiki"
 msgstr "Activar la wiki de la comunidad"
@@ -1648,11 +1648,11 @@ msgstr "Probar"
 msgid "Testing your current e-mail settings. Please, wait."
 msgstr "Probando la configuración de correo actual. Espere, por favor."
 
-msgid "Minimum reputation config"
-msgstr "Configuración de reputación mínima"
+msgid "Privileges"
+msgstr "Privilegios"
 
-msgid "Configure the minimum reputation required to perform certain actions on your site."
-msgstr "Configure la reputación mínima necesaria para realizar ciertas acciones en su sitio."
+msgid "The reputation members need before they may vote, comment, edit, close and so on."
+msgstr "La reputación que necesitan los miembros para votar, comentar, editar, cerrar, etc."
 
 msgid "Show captcha if user with less reputation than"
 msgstr "Mostrar captcha si el usuario tiene menos reputación que"
@@ -1869,11 +1869,11 @@ msgstr "Ediciones sugeridas por miembro y día"
 msgid "How many edits a member may suggest in 24 hours. 0 for no limit."
 msgstr "Cuántas ediciones puede sugerir un miembro en 24 horas. 0 para no limitar."
 
-msgid "Reputation gains and losses config"
-msgstr "Configuración de ganancias y pérdidas de reputación"
+msgid "Reputation points"
+msgstr "Puntos de reputación"
 
-msgid "Configure the reputation points a user may gain or lose upon certain actions."
-msgstr "Configure los puntos de reputación que un usuario puede ganar o perder al realizar ciertas acciones."
+msgid "How many reputation points members gain or lose for votes, accepted answers and other actions."
+msgstr "Cuántos puntos de reputación ganan o pierden los miembros por votos, respuestas aceptadas y otras acciones."
 
 msgid "Initial reputation"
 msgstr "Reputación inicial"
@@ -2055,6 +2055,12 @@ msgstr "Confirmar la identidad después de (minutos)"
 msgid "Changing the email address, adding a passkey, setting up two-step verification, creating an API token or removing the last way to sign in asks members to confirm it's them (password, code, passkey or an emailed link) when they signed in or confirmed longer ago than this."
 msgstr "Cambiar la dirección de correo, añadir una llave de acceso, configurar la verificación en dos pasos, crear un token de API o quitar el último método de inicio de sesión pide a los miembros que confirmen su identidad (contraseña, código, llave de acceso o un enlace por correo) si iniciaron sesión o la confirmaron hace más de este tiempo."
 
+msgid "Sidebar"
+msgstr "Barra lateral"
+
+msgid "Content shown in the sidebar of the public pages. You can use Markdown and some basic HTML tags."
+msgstr "Contenido que se muestra en la barra lateral de las páginas públicas. Puede usar Markdown y algunas etiquetas HTML básicas."
+
 msgid "Show the Welcome box"
 msgstr "Mostrar el cuadro de bienvenida"
 
@@ -2085,11 +2091,8 @@ msgstr "Modo de representación del bloque inferior"
 msgid "How to render your lower block code."
 msgstr "Cómo representar el código de su bloque inferior."
 
-msgid "Sitemap settings"
-msgstr "Configuración del mapa del sitio"
-
-msgid "Some settings connected with the Sitemaps."
-msgstr "Algunos ajustes relacionados con los mapas del sitio."
+msgid "The sitemap search engines read to find the questions."
+msgstr "El mapa del sitio que leen los buscadores para encontrar las preguntas."
 
 msgid "Questions Sitemap Limit"
 msgstr "Límite del mapa del sitio de preguntas"
@@ -2232,11 +2235,11 @@ msgstr "Recordar a los autores que acepten una respuesta tras (días)"
 msgid "manage.py remind_unaccepted (run daily) reminds the asker once, by notification and email, when their question has had an answer for this many days but none is accepted. Only questions asked in the last 60 days are considered. 0 turns reminders off."
 msgstr "manage.py remind_unaccepted (ejecutado a diario) recuerda una vez al autor, mediante notificación y correo electrónico, cuando su pregunta lleva este número de días con una respuesta pero ninguna aceptada. Solo se tienen en cuenta las preguntas formuladas en los últimos 60 días. 0 desactiva los recordatorios."
 
-msgid "File upload settings"
-msgstr "Configuración de subida de archivos"
+msgid "File uploads"
+msgstr "Archivos subidos"
 
-msgid "File uploads related settings."
-msgstr "Ajustes relacionados con la subida de archivos."
+msgid "Where uploaded files are kept, and their size limits."
+msgstr "Dónde se guardan los archivos subidos y sus límites de tamaño."
 
 msgid "Uploaded files folder"
 msgstr "Carpeta de archivos subidos"
@@ -2289,11 +2292,11 @@ msgstr "Forzar URL única"
 msgid "Redirect the request in case there is a mismatch between the slug in the url and the actual slug"
 msgstr "Redirigir la solicitud si no coinciden el slug de la URL y el slug real"
 
-msgid "Users settings"
-msgstr "Configuración de usuarios"
+msgid "Members"
+msgstr "Miembros"
 
-msgid "General settings for the OSQA users."
-msgstr "Configuración general de los usuarios de OSQA."
+msgid "Sign-up, accounts, profiles and what members may change about themselves."
+msgstr "Registro, cuentas, perfiles y lo que los miembros pueden cambiar de sí mismos."
 
 msgid "Allow negative reputation"
 msgstr "Permitir reputación negativa"
@@ -2526,11 +2529,11 @@ msgstr "Eliminar las cuentas inactivas tras (días)"
 msgid "The cleanup_inactive_users command (run daily from cron) deletes accounts older than this that never confirmed their email, never posted, voted or did anything else, and haven't logged in during that time. Staff accounts are never deleted. 0 turns it off."
 msgstr "El comando cleanup_inactive_users (ejecutado a diario desde cron) elimina las cuentas más antiguas que esto que nunca confirmaron su correo electrónico, nunca publicaron, votaron ni hicieron nada más, y que no han iniciado sesión durante ese tiempo. Las cuentas del personal nunca se eliminan. 0 lo desactiva."
 
-msgid "View settings"
-msgstr "Configuración de visualización"
+msgid "Display"
+msgstr "Visualización"
 
-msgid "Set up how certain parts of the site are displayed."
-msgstr "Configure cómo se muestran ciertas partes del sitio."
+msgid "How lists, summaries, tags and other parts of the public pages are shown."
+msgstr "Cómo se muestran las listas, los resúmenes, las etiquetas y otras partes de las páginas públicas."
 
 msgid "Embed YouTube Videos"
 msgstr "Insertar vídeos de YouTube"
@@ -3787,9 +3790,6 @@ msgid_plural "Your username is %(name)s. The link works once, for %(hours)s hour
 msgstr[0] "Su nombre de usuario es %(name)s. El enlace funciona una vez, durante %(hours)s hora."
 msgstr[1] "Su nombre de usuario es %(name)s. El enlace funciona una vez, durante %(hours)s horas."
 msgstr[2] "Su nombre de usuario es %(name)s. El enlace funciona una vez, durante %(hours)s horas."
-
-msgid "Badges"
-msgstr "Insignias"
 
 msgid "gold"
 msgstr "oro"
@@ -5833,9 +5833,6 @@ msgstr "Preguntas pendientes sin respuesta"
 
 msgid "Open questions (not closed) of any age without an answer from someone else; the previous figure is the backlog when the period began."
 msgstr "Preguntas abiertas (no cerradas) de cualquier antigüedad sin respuesta de otra persona; la cifra anterior es la acumulada al empezar el periodo."
-
-msgid "Members"
-msgstr "Miembros"
 
 msgid "Accounts that joined in the period and are not suspended. “Confirmed their email” is as of now; “posted within 7 days” counts a question, answer or comment within a week of joining and only looks at members who joined at least 7 days ago."
 msgstr "Cuentas que se unieron en el periodo y no están suspendidas. «Confirmaron su correo» se refiere al momento actual; «publicaron en 7 días» cuenta una pregunta, respuesta o comentario en la semana siguiente a unirse y solo tiene en cuenta a los miembros que se unieron hace al menos 7 días."
@@ -9239,16 +9236,19 @@ msgstr "Su cuenta y sus publicaciones se han eliminado. Le hemos enviado un últ
 msgid "Your account has been deleted. Your posts remain, without your name. We sent a last email to confirm it."
 msgstr "Su cuenta se ha eliminado. Sus publicaciones se conservan, sin su nombre. Le hemos enviado un último correo para confirmarlo."
 
-msgid "Workflow settings"
-msgstr "Configuración del flujo de trabajo"
+msgid "Site"
+msgstr "Sitio"
 
-msgid "Forum settings"
-msgstr "Configuración del foro"
+msgid "Members and permissions"
+msgstr "Miembros y permisos"
 
-msgid "Static content"
-msgstr "Contenido estático"
+msgid "Questions and answers"
+msgstr "Preguntas y respuestas"
 
-msgid "Custom Pages"
+msgid "Integrations"
+msgstr "Integraciones"
+
+msgid "Custom pages"
 msgstr "Páginas personalizadas"
 
 msgid "Tools"
@@ -11379,6 +11379,12 @@ msgstr "Google: casilla de reCAPTCHA v2"
 
 msgid "captcha robot spam bot"
 msgstr "captcha robot spam bot"
+
+msgid "robots.txt"
+msgstr "robots.txt"
+
+msgid "What the robots.txt file tells search engines and other crawlers."
+msgstr "Lo que el archivo robots.txt indica a los buscadores y otros rastreadores."
 
 #, python-format
 msgid "The dump has no %s.xml file."
