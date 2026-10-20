@@ -12,12 +12,13 @@ migrations) differ in column types, removed tables (OpenID, old modules) and
 migration history. Django can't migrate that schema directly. Instead:
 
 1. Freeze the old site and dump its MySQL database.
-2. Import the dump into a staging SQLite database with the import scripts.
-   These handle the old column layout, Python 2 pickled values and MySQL
-   escaping.
-3. Check the import.
-4. Copy the data into the production database (MySQL/MariaDB) with Django's
-   `dumpdata` / `loaddata`.
+2. Load the dump into a scratch database on the new site's MySQL/MariaDB
+   server, next to the new site's freshly migrated, empty database.
+3. Copy the data with `manage.py import_original_osqa`. It copies every table
+   by column name, so the server converts the character set and the old
+   column layout doesn't matter; Python 2 pickled values are copied as they
+   are and read by the new code.
+4. Check the import.
 5. Copy uploaded files, review settings, test, and switch the domain.
 
 The old site stays untouched throughout, so going back is just switching the
@@ -25,9 +26,9 @@ domain back. **Rehearse the whole procedure on a copy first**, without
 freezing the live site, and time each step: that tells you how long the real
 freeze will take.
 
-The `loaddata` transfer into MariaDB 11.4 was tested in development: every
-table's row count matched, and pages and search worked. The import scripts
-were developed against an Open Foris dump.
+The import was run on the Open Foris forum (about 4,200 posts, 1,300 users,
+17,000 actions) into MySQL 8.4: every table's row count matched, and the
+dump, import and search index took under a minute.
 
 ---
 
@@ -88,52 +89,74 @@ Use the old site's `TIME_ZONE` and `LANGUAGE_CODE` in the new `settings_local.py
 
 1. In the old admin, turn on **maintenance mode**, allowing your own IP
    address, so nobody posts while you copy. (For the rehearsal, skip this.)
-2. Dump the database. The import scripts read the `INSERT` statements of a
-   standard `mysqldump`:
+2. Dump the database:
 
 ```bash
-mysqldump --single-transaction --default-character-set=utf8 osqa > osqa-$(date +%F).sql
+mysqldump --single-transaction --default-character-set=utf8mb4 \
+    --ignore-table=osqa.django_session --ignore-table=osqa.forum_mysqlftsindex \
+    osqa > osqa-$(date +%F).sql
 ```
 
-   Use the character set the tables actually have (`table_collation` from
-   step 0). If the tables are `latin1` but people wrote accented text, the
-   data is often UTF-8 stored in latin1 columns. Then dump with
-   `--default-character-set=latin1`, which writes the bytes unchanged, so they
-   read back as UTF-8. Check accented text in the dump file (`grep` for a
-   word you know) before going on: the import reads the dump as UTF-8 and
-   drops bytes that aren't valid UTF-8.
+   Sessions and the old search index aren't imported, and the sessions table
+   is often the biggest one.
 
-3. Copy the dump to the machine where you run the import. It contains
-   personal data (emails, password hashes, IP addresses): keep it in
-   `importData/`, which git ignores, and delete it when you are done.
+   Old OSQA tables are usually `latin1` (`table_collation` from step 0).
+   MySQL converts them to UTF-8 in the dump. Check accented text in the dump
+   (`grep` for a word you know, e.g. `grep -o 'Configuraci.n' osqa-*.sql`):
 
-## 3. Import into a staging SQLite database
-
-On any machine with this repository and its requirements installed (your
-laptop is fine):
+   - `Configuración`: fine, go on.
+   - `ConfiguraciÃ³n`: the old site stored UTF-8 bytes in `latin1` columns.
+     Dump again with `--default-character-set=latin1`, which writes the bytes
+     unchanged, and declare them UTF-8 before loading:
 
 ```bash
-mkdir -p importData && mv osqa-YYYY-MM-DD.sql importData/
-cp settings_local.py.dist settings_local.py     # staging copy
-# In settings_local.py:
-#   DATABASES = {'default': {'ENGINE': 'django.db.backends.sqlite3', 'NAME': 'osqa.db'}}
-#   SECRET_KEY = '<anything>'; APP_URL = 'http://localhost:8000'; TIME_ZONE = '<the old value>'
-python manage.py migrate                                      # creates osqa.db
-python scripts/data_import/split_insert_statements.py importData/osqa-YYYY-MM-DD.sql
-python scripts/data_import/import_original_data.py
+sed -i -e 's/CHARSET=latin1/CHARSET=utf8mb4/g' -e 's/SET NAMES latin1/SET NAMES utf8mb4/' \
+    -e 's/COLLATE=latin1_swedish_ci//g' osqa-YYYY-MM-DD.sql
 ```
 
-The scripts must run from the repository root; they read
-`importData/osqa-split.sql` and write `osqa.db`. Read the summary the import
-prints: it reports how many rows it imported and how many failed. A handful of
-duplicates is normal; many errors in one table means a problem with the dump's
-format or character set.
+3. Copy the dump to the new database server. It contains personal data
+   (emails, password hashes, IP addresses): keep it out of the repository and
+   web folders, and delete it when you are done.
 
-## 4. Check the staging import
+## 3. Import into the new database
+
+The new site's database must be freshly migrated and empty: nobody
+registered and nothing posted (settings it stored are replaced by the old
+site's). If in doubt, drop and recreate it and run `migrate` again. The import needs a
+MySQL/MariaDB database for the new site; to end up on PostgreSQL, import into
+MySQL first and move the data with `dumpdata --all` / `loaddata`.
 
 ```bash
-python manage.py runserver
+sudo systemctl stop osqa       # nobody may open the new site during the import
+
+# The old forum, in its own database on the same server
+mysql -e "CREATE DATABASE osqa_old"
+mysql --default-character-set=utf8mb4 osqa_old < osqa-YYYY-MM-DD.sql
+mysql -e "GRANT SELECT ON osqa_old.* TO 'osqa'@'localhost'"   # the new site's database user
+
+python manage.py migrate                       # empty, freshly migrated database
+python manage.py import_original_osqa --from osqa_old
+python manage.py rebuild_search_index
+sudo systemctl start osqa
 ```
+
+`import_original_osqa` prints every table with its row count. It refuses to
+run on a database that already has data, and when any table's count differs
+from the old one it stops and imports nothing. Columns that only exist in the
+new version get their defaults. What's left out: content types and
+permissions are recreated by `migrate` (OSQA doesn't use Django permissions),
+OpenID tables and the South history are gone, and old sessions are dropped,
+so everyone signs in again once.
+
+The search index has to be built after importing (imported posts don't go
+through the code that keeps it up to date; until it is built, search falls
+back to simple keyword matching). Drop `osqa_old` and the dump when the move
+is done.
+
+To repeat the import (a rehearsal, then the real move), drop and recreate both
+databases and run the whole block again.
+
+## 4. Check the import
 
 - Compare counts with the numbers from step 0:
 
@@ -158,61 +181,17 @@ for m in (User, Question, Answer, Comment, Tag, Vote, Action, Award, NodeRevisio
 - Sign in with a test account's password. If you know a password from the old
   site, try it; old password formats keep working (step 7).
 - If something is wrong, fix the cause (usually the dump's character set) and
-  repeat steps 2–3. The staging database is disposable.
+  repeat steps 2–3.
 
-## 5. Copy the data into the production database
+## 5. Scores and reputation
 
-Production should run on MySQL/MariaDB (or PostgreSQL), not SQLite. Move the
-checked data with Django's serializer. This runs on the staging machine with
-two settings files, or anywhere that can reach both databases.
-
-```bash
-# 1. Export from staging (osqa.db). --all is required: without it, rows hidden
-#    by default managers (e.g. unused tags) are silently left out.
-python manage.py dumpdata --all \
-    -e contenttypes -e auth.Permission -e sessions -e admin.LogEntry \
-    -o forum-data.json
-
-# 2. Point settings_local.py at the production database. It must be freshly
-#    migrated and empty: no account registered yet (loading fails on
-#    conflicting rows). If someone registered, drop and recreate the database
-#    and run migrate again.
-python manage.py migrate
-python manage.py loaddata forum-data.json
-```
-
-Notes:
-
-- **What's left out:** content types and permissions are recreated by
-  `migrate`, and OSQA doesn't use Django permissions. Old sessions are
-  dropped, so everyone signs in again once.
-- **Memory:** `loaddata` reads the whole file into memory and loads it in one
-  transaction. For a large forum, allow a few GB of RAM. If memory is short,
-  export the biggest table on its own:
-  - `dumpdata --all forum.action -o actions.json`;
-  - export the rest with `-e forum.action` added;
-  - load the rest first, then `actions.json`.
-- **Check the counts again**, on production, with the same `shell` snippet as in step 4.
-- `forum-data.json` contains the same personal data as the dump: delete it
-  afterwards.
-
-Then, on the production site:
-
-```bash
-python manage.py shell -c "from django.core.cache import cache; cache.clear()"
-```
-
-Then fill the search index (imported posts don't go through the code that
-keeps it up to date; until it is built, search falls back to simple keyword
-matching):
-
-```bash
-python manage.py rebuild_search_index
-```
-
-Then **Admin > Recalculate scores and reputation**. The old version had bugs
-in stored scores, and recalculating fixes them from the votes and reputation
-history.
+The import keeps the stored post scores and user reputation. **Admin >
+Recalculate scores and reputation** sets every score to the sum of its votes
+and every reputation to the sum of the member's reputation history. The two
+differ where the old site lost history rows, e.g. users deleted directly in
+the database: on the Open Foris forum all scores matched and 9 reputations
+differed by a few points. Recalculate if you prefer values that match the
+history members see on their profiles; otherwise skip it.
 
 ## 6. Uploaded files
 

@@ -714,22 +714,19 @@ The whole procedure (freeze, dump, import, checks, transfer to MySQL, files,
 go-live) is in [docs/upgrading-from-original-osqa.md](docs/upgrading-from-original-osqa.md).
 In short:
 
-The scripts in `scripts/data_import/` load a MySQL dump of the old site into a
-fresh SQLite database (`osqa.db`). Run them from the repository root:
+Load the old site's mysqldump into its own database on the new site's
+MySQL/MariaDB server, then copy it into the freshly migrated, empty database:
 
 ```bash
-mkdir importData        # place the dump here (git-ignored, never commit it)
-python scripts/data_import/split_insert_statements.py importData/<dump>.sql   # -> importData/osqa-split.sql
-python manage.py migrate                                 # with DATABASES pointing at osqa.db
-python scripts/data_import/import_original_data.py
+mysql -e "CREATE DATABASE osqa_old" && mysql --default-character-set=utf8mb4 osqa_old < <dump>.sql
+python manage.py migrate
+python manage.py import_original_osqa --from osqa_old   # copies every table by column name
+python manage.py rebuild_search_index
 ```
 
 The import clears the cache when it finishes; clear it yourself (`rm -rf cache/*`
 for the default file cache) whenever you replace or edit the database outside
-the site, since posts and users are served from the cache. After importing,
-run Admin > Recalculate scores and reputation. To move the result into
-MySQL/MariaDB or PostgreSQL, use `dumpdata --all` / `loaddata` as described
-in the guide. `docs/data-migration-guide.md` describes other approaches (MySQL to
+the site, since posts and users are served from the cache. `docs/data-migration-guide.md` describes other approaches (MySQL to
 MySQL/PostgreSQL) and how to verify the result; `docs/database-tables.md` lists
 the tables.
 
@@ -1047,7 +1044,7 @@ changes them; HTTPS (or localhost) is required.
 - `forum/` - the application: models, views, actions, templates (`skins/`),
   settings stored in the database (`forum/settings/`), tests (`forum/tests/`)
 - `forum_modules/` - optional modules
-- `scripts/` - data import (`data_import/`) and development helpers (`dev/`)
+- `scripts/` - development helpers (`dev/`)
 - `docs/` - database reference and migration guide; `docs/upgrade-history/`
   holds the notes from the Django 1.6 to 4.2 port
 

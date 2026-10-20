@@ -24,8 +24,8 @@ Tick each box; write down anything odd with the page address and the time
 - [ ] A copy of the live data is imported:
   - **From the original OSQA:** steps 0–6 of
     [upgrading-from-original-osqa.md](upgrading-from-original-osqa.md)
-    (import into SQLite, check, `dumpdata --all`/`loaddata` into MySQL,
-    copy `forum/upfiles/`).
+    (load the dump next to the new database, `import_original_osqa`,
+    check, copy `forum/upfiles/`).
   - **From an earlier install of this version:** `manage.py backup_site` on
     production and `manage.py restore_site` on staging
     ([deployment.md, Backups and restore](deployment.md#backups-and-restore)).
