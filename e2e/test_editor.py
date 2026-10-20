@@ -565,6 +565,22 @@ class EditorTest(E2ETestCase):
         self.assertIn('is-met', hint.get_attribute('class'))
         self.assertNotIn('is-short', hint.get_attribute('class'))
 
+    def test_title_count_and_minimum_length(self):
+        self.set_setting(settings.FORM_MIN_QUESTION_TITLE, 15)
+        page = self.ask_page()
+        hint = page.locator('#title-min-hint')
+        self.assertEqual(hint.text_content(), 'At least 15 characters')
+        self.assertIn('title-min-hint', page.get_attribute('#id_title', 'aria-describedby'))
+        self.assertEqual(page.text_content('#title-metrics'), '0 characters')
+        page.locator('#id_title').press_sequentially('Too short', delay=5)
+        self.assertEqual(page.text_content('#title-metrics'), '9 characters')
+        self.assertIn('is-short', hint.get_attribute('class'))
+        page.locator('#id_title').press_sequentially(' but now long', delay=5)
+        self.assertEqual(page.text_content('#title-metrics'), '22 characters')
+        self.assertIn('is-met', hint.get_attribute('class'))
+        self.assertNotIn('is-short', hint.get_attribute('class'))
+        self.check_page(page)
+
     # -- other editor pages ------------------------------------------------------------
 
     def test_answer_form_and_edit_page(self):

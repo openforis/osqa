@@ -45,6 +45,7 @@
                 <p class="compose-help" id="id_title-help">{% trans "Be specific and imagine you're asking another person." %}</p>
                 {% include "compose/field_error.html" with field=form.title %}
                 {{ form.title }}
+                {% include "compose/title_length.html" %}
             </div>
 
             
