@@ -58,7 +58,7 @@ admincontent. The menu comes from admin_menu() in forum/views/admin.py.
             {% if request.user.is_superuser %}
             <form class="admin-menu-search" action="{% url "admin_search" %}" method="get" role="search">
                 <label for="admin-search-q" class="admin-visually-hidden">{% trans "Search settings and pages" %}</label>
-                <input type="search" id="admin-search-q" name="q" placeholder="{% trans "Search settings…" %}" autocomplete="off"{% if request.resolver_match.url_name == "admin_search" %} value="{{ request.GET.q }}"{% endif %} />
+                <input type="search" id="admin-search-q" name="q" placeholder="{% trans "Search settings…" %}" aria-keyshortcuts="/" autocomplete="off"{% if request.resolver_match.url_name == "admin_search" %} value="{{ request.GET.q }}"{% endif %} />
                 <button type="submit" title="{% trans "Search" %}"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><span class="admin-visually-hidden">{% trans "Search" %}</span></button>
             </form>
             {% endif %}

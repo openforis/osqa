@@ -118,6 +118,17 @@ and color, login and sign-in...), and links to the setting's row on its page,
 highlighted. Settings pages with many settings also have a "Find a setting on
 this page" filter.
 
+Every setting shows its name (as used in templates, `{{ settings.NAME }}`), a
+"Changed" mark when its saved value isn't the default, and the default with a
+"Use default" button, which only fills the field in: nothing is saved before
+Save. Fields edited since the page was opened are highlighted and counted in
+a save bar that stays at the bottom of the window ("Undo my changes" puts the
+page back), and leaving the page with unsaved changes asks first. `/` goes to
+the admin search. The dashboard starts with a "Getting started" list for new
+sites (name, email, logo, colours, About page, spam protection, and
+optionally sign-in with Google, GitHub or Facebook), which can be hidden and
+goes away once everything is done.
+
 Pages that need outside accounts explain how to get them. External Keys has
 one card per service (sign-in with Google, GitHub and Facebook, reCAPTCHA,
 Akismet, Gemini, Google Analytics, Google Search Console) saying whether it is
@@ -964,7 +975,17 @@ in one file, `forum/skins/default/media/style/osqa.css`, drawn with colour
 variables (`--brand`, `--accent`, ... at the start of its section 2).
 
 Admin > Look and feel changes the common things without writing CSS:
-- **Colours:** pick one of the presets or a brand colour (links, buttons,
+- **Ready-made styles:** ten complete looks, each shown as a card with a
+  small drawing: Classic (the skin as it comes), Open Foris (the palette of
+  the Open Foris Support site: muted red-brown links with a teal accent),
+  Forest, Ocean, Editorial (serif, narrow, square corners), Plum (rounded,
+  pill-shaped buttons), Midnight (new visitors get the dark theme), Minimal
+  (greys, no shadows), Crimson and Earth. "Use this style" (or the Style
+  list) fills in the fields below, which can still be changed; while a
+  style is chosen its own touches (corners, a stripe on the header, the
+  headings' font) are added too. Styles are data, `STYLES` in
+  `forum/utils/appearance.py`.
+- **Colours:** a brand colour (links, buttons,
   the current tab) and an accent colour (the Ask button). A sample of a
   page in the light and dark themes follows the fields as they change.
   Text stays readable whatever is picked: a colour too light for white

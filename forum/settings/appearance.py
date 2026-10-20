@@ -5,14 +5,27 @@ from django.utils.translation import gettext_lazy as _
 from .base import Setting, SettingSet
 
 # Applied by forum/utils/appearance.py ({% appearance_style %} on every public
-# page); the admin page adds presets and a live preview
+# page); the admin page adds the ready-made styles (STYLES) and a live preview
 # (osqaadmin/guides/appearance.html).
 APPEARANCE_SET = SettingSet('appearance', _('Look and feel'), _(
-    "Colours, font and page width of the public pages, and the colour theme visitors get. Pick a preset or your "
-    "own colours, check them in the sample, then press Preview to see the whole site with them before you save. "
+    "Colours, font and page width of the public pages, and the colour theme visitors get. Pick a ready-made "
+    "style or your own colours, check them in the sample, then press Preview to see the whole site with them before you save. "
     "For anything else, use Custom CSS."), 2, can_preview=True)
 
 COLOR = RegexValidator(r'^#[0-9a-fA-F]{6}$', _("Enter a colour as # and six hexadecimal digits, e.g. #2c5aa0."))
+
+def _style_choices():
+    from forum.utils.appearance import STYLES
+    return [('none', _("None: only the values below"))] + [(style.key, style.label) for style in STYLES]
+
+
+THEME_STYLE = Setting('THEME_STYLE', 'none', APPEARANCE_SET, dict(
+label = _("Style"),
+help_text = _("A ready-made style also changes a few shapes: corners, a stripe on the header, the headings' font. "
+              "Picking one above fills in the values below as well; change any of them afterwards."),
+widget=forms.Select(choices=_style_choices()),
+keywords = _("theme style preset template skin design"),
+required=False))
 
 THEME_BRAND_COLOR = Setting('THEME_BRAND_COLOR', '#2c5aa0', APPEARANCE_SET, dict(
 label = _("Brand colour"),

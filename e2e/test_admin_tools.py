@@ -167,22 +167,34 @@ class AdminToolsTest(AdminTestCase):
         self.set_setting(settings.APP_TITLE, 'Open Foris Q&A')
         page = self.open(self.admin)
         self.visit(page, '/admin/settings/basic/')
+        row = page.locator('#setting-APP_TITLE')
         self.assertEqual(page.input_value('#id_APP_TITLE'), 'Open Foris Q&A')
-        # A text field is reset in place (AJAX)...
-        page.locator('tr', has=page.locator('#id_APP_TITLE')).locator('a.fieldtool.default').click()
-        self.wait_for_ajax(page)
-        self.check_page(page)
+        self.assertEqual(row.locator('.setting-changed').inner_text(), 'Changed')
+        self.assertIn(settings.APP_TITLE.default, row.locator('.setting-default').inner_text())
+        # Settings at their default offer no reset.
+        self.assertFalse(page.locator('#setting-APP_SHORT_NAME .setting-default').is_visible())
+
+        # "Use default" fills the field in; nothing is saved before Save.
+        row.locator('.setting-reset').click()
         self.assertEqual(page.input_value('#id_APP_TITLE'), settings.APP_TITLE.default)
+        self.assertIn('is-dirty', row.get_attribute('class'))
+        self.assertEqual(page.locator('.admin-unsaved-status').inner_text(), '1 unsaved change')
+        self.assertFalse(row.locator('.setting-default').is_visible())
+        settings.APP_TITLE._temp = None
+        self.assertEqual(settings.APP_TITLE.value, 'Open Foris Q&A')
+        self.submit(page, '#submit')
+        self.assertIn('Basic settings saved: Application title changed.', page.content())
         settings.APP_TITLE._temp = None
         self.assertEqual(settings.APP_TITLE.value, settings.APP_TITLE.default)
+        self.assertEqual(page.locator('#setting-APP_TITLE .setting-changed').count(), 0)
 
-        # ...a checkbox by following the link.
+        # A check box too.
         self.set_setting(settings.EMAIL_USE_TLS, True)
         self.visit(page, '/admin/settings/email/')
         self.assertTrue(page.is_checked('#id_EMAIL_USE_TLS'))
-        self.submit(page, 'tr:has(#id_EMAIL_USE_TLS) a.fieldtool.default')
-        self.assertEqual(page.url, self.url('/admin/settings/email/'))
+        page.locator('#setting-EMAIL_USE_TLS .setting-reset').click()
         self.assertFalse(page.is_checked('#id_EMAIL_USE_TLS'))
+        self.submit(page, '#submit')
         settings.EMAIL_USE_TLS._temp = None
         self.assertFalse(settings.EMAIL_USE_TLS.value)
 

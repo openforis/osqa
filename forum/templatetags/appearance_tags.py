@@ -6,7 +6,7 @@
 {% appearance_style %} writes the <style> that overrides the skin's CSS
 variables (nothing while the settings are the defaults); right after
 osqa.css and before Custom CSS. {% appearance_info as info %} gives the
-admin page (osqaadmin/guides/appearance.html) the presets, the colours in
+admin page (osqaadmin/guides/appearance.html) the ready-made styles, the colours in
 use and the contrast adjustments.
 """
 import json
@@ -35,7 +35,12 @@ def appearance_info(context):
     values = appearance.current(context.get('request'))
     colours = appearance.palette(values)
     return {
-        'presets': appearance.PRESETS,
+        'styles': [{
+            'key': style.key, 'label': style.label, 'description': style.description, 'brand': style.brand,
+            'accent': style.accent, 'background': style.background, 'font': style.font, 'width': style.width,
+            'theme': style.theme, 'font_stack': appearance.FONTS.get(style.font) or '',
+            'page': appearance.page_background(style.brand, style.background),
+        } for style in appearance.STYLES],
         'values': values,
         'brand': colours['light'].get('--brand', appearance.DEFAULT_BRAND),
         'accent': colours['light'].get('--accent', appearance.DEFAULT_ACCENT),

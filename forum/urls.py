@@ -216,7 +216,6 @@ core_urls = [
     re_path(r'^%s%s$' % ('admin/', 'denormalize/'), app.admin.recalculate_denormalized, name='admin_denormalize'),
     re_path(r'^%s%s$' % ('admin/', 'go_bootstrap/'), app.admin.go_bootstrap, name='admin_go_bootstrap'),
     re_path(r'^%s%s$' % ('admin/', 'go_defaults/'), app.admin.go_defaults, name='admin_go_defaults'),
-    re_path(r'^%s%s(?P<set_name>\w+)/(?P<var_name>\w+)/$' % ('admin/', 'settings/'), app.admin.get_default, name='admin_default'),
     re_path(r'^%s%s$' % ('admin/', 'maintenance/'), app.admin.maintenance, name='admin_maintenance'),
     # The old Flagged posts page shows the moderation inbox (links in old emails keep working).
     re_path(r'^%s%s$' % ('admin/', 'flagged_posts/'), app.moderation.inbox, name='admin_flagged_posts'),

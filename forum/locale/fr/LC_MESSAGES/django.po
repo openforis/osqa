@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OSQA (Open Foris edition)\n"
 "Report-Msgid-Bugs-To: https://github.com/openforis/osqa/issues\n"
-"POT-Creation-Date: 2026-10-20 08:35-0400\n"
+"POT-Creation-Date: 2026-10-20 16:42-0400\n"
 "PO-Revision-Date: 2026-10-14 12:00+0000\n"
 "Last-Translator: Open Foris <https://github.com/openforis/osqa>\n"
 "Language-Team: French <https://github.com/openforis/osqa>\n"
@@ -1110,11 +1110,23 @@ msgstr "Origines autorisées à lire l'API en JavaScript (CORS), séparées par 
 msgid "Look and feel"
 msgstr "Apparence"
 
-msgid "Colours, font and page width of the public pages, and the colour theme visitors get. Pick a preset or your own colours, check them in the sample, then press Preview to see the whole site with them before you save. For anything else, use Custom CSS."
-msgstr "Couleurs, police et largeur des pages publiques, et thème de couleurs proposé aux visiteurs. Choisissez une palette prédéfinie ou vos propres couleurs, vérifiez-les dans l'exemple, puis appuyez sur Aperçu pour voir tout le site avec elles avant d'enregistrer. Pour tout le reste, utilisez le CSS personnalisé."
+msgid "Colours, font and page width of the public pages, and the colour theme visitors get. Pick a ready-made style or your own colours, check them in the sample, then press Preview to see the whole site with them before you save. For anything else, use Custom CSS."
+msgstr "Couleurs, police et largeur des pages publiques, et thème de couleurs proposé aux visiteurs. Choisissez un style prêt à l'emploi ou vos propres couleurs, vérifiez-les dans l'exemple, puis appuyez sur Aperçu pour voir tout le site avec elles avant d'enregistrer. Pour tout le reste, utilisez le CSS personnalisé."
 
 msgid "Enter a colour as # and six hexadecimal digits, e.g. #2c5aa0."
 msgstr "Saisissez une couleur sous la forme # suivi de six chiffres hexadécimaux, par ex. #2c5aa0."
+
+msgid "None: only the values below"
+msgstr "Aucun : seulement les valeurs ci-dessous"
+
+msgid "Style"
+msgstr "Style"
+
+msgid "A ready-made style also changes a few shapes: corners, a stripe on the header, the headings' font. Picking one above fills in the values below as well; change any of them afterwards."
+msgstr "Un style prêt à l'emploi change aussi quelques formes : les coins, une bande dans l'en-tête, la police des titres. En choisir un ci-dessus remplit aussi les valeurs ci-dessous ; vous pouvez ensuite modifier n'importe laquelle."
+
+msgid "theme style preset template skin design"
+msgstr "thème style préréglage modèle habillage design"
 
 msgid "Brand colour"
 msgstr "Couleur principale"
@@ -1590,14 +1602,30 @@ msgstr "Afficher le Gravatar de l'auteur dans les commentaires"
 msgid "Show the gravatar image of a comment author."
 msgstr "Afficher l'image Gravatar de l'auteur d'un commentaire."
 
-msgid "context"
-msgstr "contexte"
-
-msgid "default"
-msgstr "par défaut"
-
 msgid "Example:"
 msgstr "Exemple :"
+
+#, python-format
+msgid "Name of the setting, e.g. for templates: {{ settings.%s }}"
+msgstr "Nom du paramètre, p. ex. pour les modèles : {{ settings.%s }}"
+
+msgid "Changed"
+msgstr "Modifié"
+
+msgid "Default:"
+msgstr "Par défaut :"
+
+msgid "Use default"
+msgstr "Utiliser la valeur par défaut"
+
+msgid "On"
+msgstr "Activée"
+
+msgid "Off"
+msgstr "Désactivée"
+
+msgid "(empty)"
+msgstr "(vide)"
 
 msgid "Current image"
 msgstr "Image actuelle"
@@ -5381,6 +5409,22 @@ msgstr "Enregistrer"
 msgid "How the community is doing: activity, answers, members and moderation, compared with the period before."
 msgstr "L'état de la communauté : activité, réponses, membres et modération, comparés à la période précédente."
 
+msgid "Getting started"
+msgstr "Premiers pas"
+
+#, python-format
+msgid "%(done)s of %(total)s done"
+msgstr "%(done)s sur %(total)s terminés"
+
+msgid "done"
+msgstr "terminé"
+
+msgid "to do"
+msgstr "à faire"
+
+msgid "Hide this list"
+msgstr "Masquer cette liste"
+
 msgid "Quick statistics"
 msgstr "Statistiques rapides"
 
@@ -5408,14 +5452,14 @@ msgstr "Votre site fonctionne avec certains paramètres personnalisés, cliquez 
 msgid "Are you sure you want to revert to the defaults?"
 msgstr "Voulez-vous vraiment revenir aux valeurs par défaut ?"
 
-msgid "revert to defaults"
-msgstr "revenir aux valeurs par défaut"
+msgid "Revert to defaults"
+msgstr "Revenir aux valeurs par défaut"
 
 msgid "Are you sure you want to run bootstrap mode?"
 msgstr "Voulez-vous vraiment passer en mode démarrage ?"
 
-msgid "go bootstrap"
-msgstr "passer en mode démarrage"
+msgid "Go bootstrap"
+msgstr "Passer en mode démarrage"
 
 msgid "\"Bootstrap mode\" relaxes the minimum required reputation to perform actions like voting and commenting. This is useful to help new communities get started."
 msgstr "Le « mode démarrage » abaisse la réputation minimale requise pour des actions comme voter ou commenter. C'est utile pour aider les nouvelles communautés à démarrer."
@@ -5428,6 +5472,9 @@ msgstr "Cette opération est lourde, voulez-vous vraiment continuer ?"
 
 msgid "Recalculate"
 msgstr "Recalculer"
+
+msgid "Show the Getting started list"
+msgstr "Afficher la liste des premiers pas"
 
 msgid "Recent activity"
 msgstr "Activité récente"
@@ -5507,12 +5554,6 @@ msgstr "Copier"
 msgid "Using the API"
 msgstr "Utiliser l'API"
 
-msgid "On"
-msgstr "Activée"
-
-msgid "Off"
-msgstr "Désactivée"
-
 msgid "Programs read public questions, answers, tags and members as JSON without signing in. To post, or to see what only a member may see, a member creates a <strong>personal access token</strong> on their account and sends it in the <code>Authorization</code> header. A token can only do what its member may do on the site, with the same reputation rules and limits."
 msgstr "Les programmes lisent les questions, réponses, étiquettes et membres publics en JSON sans se connecter. Pour publier, ou pour voir ce que seul un membre peut voir, un membre crée un <strong>jeton d'accès personnel</strong> sur son compte et l'envoie dans l'en-tête <code>Authorization</code>. Un jeton ne peut faire que ce que son membre peut faire sur le site, avec les mêmes règles de réputation et les mêmes limites."
 
@@ -5543,11 +5584,14 @@ msgstr "Lecture depuis une page web d'un site autorisé (CORS)"
 msgid "Lists come as <code>{\"data\": [...], \"next\": \"...\"}</code>: request the <code>next</code> address for the following page. Errors are JSON problem documents with a <code>type</code>, a <code>title</code> and, for invalid fields, <code>errors</code>. Going over a rate limit answers 429 with a <code>Retry-After</code> header."
 msgstr "Les listes ont la forme <code>{\"data\": [...], \"next\": \"...\"}</code> : demandez l'adresse <code>next</code> pour la page suivante. Les erreurs sont des documents de problème JSON avec un <code>type</code>, un <code>title</code> et, pour les champs non valides, <code>errors</code>. Un dépassement de limite de débit répond 429 avec un en-tête <code>Retry-After</code>."
 
-msgid "Colour presets"
-msgstr "Palettes prédéfinies"
+msgid "Ready-made styles"
+msgstr "Styles prêts à l'emploi"
 
-msgid "Pick a starting point; it fills in the brand and accent colours below, which you can still change. Nothing changes for visitors until you save."
-msgstr "Choisissez un point de départ ; il remplit les couleurs principale et d'accent ci-dessous, que vous pouvez encore modifier. Rien ne change pour les visiteurs tant que vous n'avez pas enregistré."
+msgid "Each style sets the colours, background, font and page width below, and adds a few touches of its own (corners, a header stripe, heading font). Choose one, adjust anything below, then press Preview or Save. Nothing changes for visitors until you save."
+msgstr "Chaque style définit les couleurs, le fond, la police et la largeur de page ci-dessous, et ajoute quelques touches qui lui sont propres (coins, bande dans l'en-tête, police des titres). Choisissez-en un, ajustez ce que vous voulez ci-dessous, puis cliquez sur Aperçu ou Enregistrer. Rien ne change pour les visiteurs avant l'enregistrement."
+
+msgid "Use this style"
+msgstr "Utiliser ce style"
 
 msgid "Sample"
 msgstr "Exemple"
@@ -6146,6 +6190,13 @@ msgstr "Masquer"
 msgid "opens in a new tab"
 msgstr "s'ouvre dans un nouvel onglet"
 
+msgid "1 unsaved change"
+msgstr "1 modification non enregistrée"
+
+#, python-format
+msgid "%%(count)s unsaved changes"
+msgstr "%%(count)s modifications non enregistrées"
+
 msgid "How it was set up"
 msgstr "Comment il a été configuré"
 
@@ -6155,11 +6206,14 @@ msgstr "Comment le configurer"
 msgid "Other settings"
 msgstr "Autres paramètres"
 
-msgid "Reset Changes"
-msgstr "Annuler les modifications"
+msgid "Discard preview"
+msgstr "Abandonner l'aperçu"
 
-msgid "Preview opens the site in a new tab with these values, for you only, until you save or reset them."
-msgstr "Aperçu ouvre le site dans un nouvel onglet avec ces valeurs, pour vous seul, jusqu'à ce que vous les enregistriez ou les réinitialisiez."
+msgid "Undo my changes"
+msgstr "Annuler mes modifications"
+
+msgid "Preview opens the site in a new tab with these values, for you only, until you save them or discard the preview."
+msgstr "Aperçu ouvre le site dans un nouvel onglet avec ces valeurs, pour vous seul, jusqu'à ce que vous les enregistriez ou abandonniez l'aperçu."
 
 msgid "Static pages"
 msgstr "Pages statiques"
@@ -8276,29 +8330,65 @@ msgstr "Vous avez publié le nombre maximal de réponses pour une heure. Veuille
 msgid "You have posted the maximum number of comments for one hour. Please wait a while."
 msgstr "Vous avez publié le nombre maximal de commentaires pour une heure. Veuillez patienter un moment."
 
-msgid "Ocean blue"
-msgstr "Bleu océan"
+msgid "Classic"
+msgstr "Classique"
 
-msgid "Forest green"
-msgstr "Vert forêt"
+msgid "The skin as it comes: blue links and buttons, an orange Ask button."
+msgstr "L'habillage d'origine : liens et boutons bleus, bouton Poser une question orange."
 
-msgid "Teal"
-msgstr "Bleu canard"
+msgid "Open Foris"
+msgstr "Open Foris"
+
+msgid "Muted red-brown from the Open Foris Support site, with a teal accent and a brand stripe on the header."
+msgstr "Le brun-rouge sourd du site Open Foris Support, avec un accent bleu canard et une bande de couleur dans l'en-tête."
+
+msgid "Forest"
+msgstr "Forêt"
+
+msgid "Deep green and amber on a green-tinted page, in a friendly sans-serif."
+msgstr "Vert profond et ambre sur une page teintée de vert, dans une sans-serif chaleureuse."
+
+msgid "Ocean"
+msgstr "Océan"
+
+msgid "Teal and orange on white, in a geometric sans-serif."
+msgstr "Bleu canard et orange sur blanc, dans une sans-serif géométrique."
+
+msgid "Editorial"
+msgstr "Éditorial"
+
+msgid "Ink and red on white, serif text, a narrow column and square corners: reads like a newspaper."
+msgstr "Encre et rouge sur blanc, texte à empattements, colonne étroite et coins carrés : se lit comme un journal."
 
 msgid "Plum"
 msgstr "Prune"
 
+msgid "Purple and pink with a rounded font and pill-shaped buttons and tags."
+msgstr "Violet et rose avec une police arrondie et des boutons et étiquettes en forme de pilule."
+
+msgid "Midnight"
+msgstr "Minuit"
+
+msgid "Navy and green; new visitors get the dark theme."
+msgstr "Bleu marine et vert ; les nouveaux visiteurs ont le thème sombre."
+
+msgid "Minimal"
+msgstr "Minimaliste"
+
+msgid "Greys only, white page, no shadows and square corners: the content comes first."
+msgstr "Uniquement des gris, page blanche, sans ombres et coins carrés : le contenu d'abord."
+
 msgid "Crimson"
 msgstr "Cramoisi"
+
+msgid "A university look: crimson with a blue accent and serif headings."
+msgstr "Un air universitaire : cramoisi avec un accent bleu et des titres à empattements."
 
 msgid "Earth"
 msgstr "Terre"
 
-msgid "Slate"
-msgstr "Ardoise"
-
-msgid "Midnight"
-msgstr "Minuit"
+msgid "Clay brown and teal on a warm tinted page, with rounded buttons."
+msgstr "Brun argile et bleu canard sur une page aux tons chauds, avec des boutons arrondis."
 
 #, python-format
 msgid "%d min"
@@ -8822,6 +8912,48 @@ msgstr "Nouvelle notification"
 msgid "Thanks! Your post will appear once a moderator has reviewed it."
 msgstr "Merci ! Votre message apparaîtra après la vérification d'un modérateur."
 
+msgid "Name the site"
+msgstr "Nommer le site"
+
+msgid "Its title and short name appear in the header, the browser tab and emails."
+msgstr "Son titre et son nom court apparaissent dans l'en-tête, l'onglet du navigateur et les e-mails."
+
+msgid "Set up sending email"
+msgstr "Configurer l'envoi d'e-mails"
+
+msgid "Sign-up confirmations, password resets and notifications need it. Test it from the same page."
+msgstr "Les confirmations d'inscription, les réinitialisations de mot de passe et les notifications en ont besoin. Testez-le depuis la même page."
+
+msgid "Upload your logo"
+msgstr "Téléverser votre logo"
+
+msgid "And the small icon browsers show in tabs."
+msgstr "Et la petite icône que les navigateurs affichent dans les onglets."
+
+msgid "Choose the colours"
+msgstr "Choisir les couleurs"
+
+msgid "Pick a preset or your own colours under Look and feel."
+msgstr "Choisissez une palette prédéfinie ou vos propres couleurs dans Apparence."
+
+msgid "Write the About page"
+msgstr "Rédiger la page À propos"
+
+msgid "Say what the site is for and who answers."
+msgstr "Expliquez à quoi sert le site et qui répond."
+
+msgid "Turn on spam protection"
+msgstr "Activer la protection contre le spam"
+
+msgid "reCAPTCHA, Akismet or AI review under External Keys, or reviewing new members' first posts under Moderation settings."
+msgstr "reCAPTCHA, Akismet ou la vérification par IA dans Clés externes, ou la relecture des premières publications des nouveaux membres dans les paramètres de modération."
+
+msgid "Let members sign in with Google, GitHub or Facebook"
+msgstr "Permettre aux membres de se connecter avec Google, GitHub ou Facebook"
+
+msgid "Optional: fewer passwords to remember, and confirmed email addresses."
+msgstr "Facultatif : moins de mots de passe à retenir et des adresses e-mail confirmées."
+
 msgid "Please confirm it's you first."
 msgstr "Veuillez d'abord confirmer qu'il s'agit bien de vous."
 
@@ -9039,8 +9171,14 @@ msgid "Users Graph"
 msgstr "Graphique des utilisateurs"
 
 #, python-format
-msgid "'%s' settings saved succesfully"
-msgstr "Paramètres « %s » enregistrés avec succès"
+msgid "%(page)s saved: %(settings)s changed."
+msgid_plural "%(page)s saved: %(count)d settings changed (%(settings)s)."
+msgstr[0] "%(page)s enregistré : %(settings)s modifié."
+msgstr[1] "%(page)s enregistré : %(count)d paramètres modifiés (%(settings)s)."
+
+#, python-format
+msgid "%(page)s: nothing to save, no setting was changed."
+msgstr "%(page)s : rien à enregistrer, aucun paramètre n'a été modifié."
 
 msgid "Set up"
 msgstr "Configuré"
