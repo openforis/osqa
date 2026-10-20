@@ -1,0 +1,20 @@
+{% load i18n extra_tags %}{# {% analytics_consent %} (templatetags/analytics_tags.py): asks before Google Analytics loads (osqa.analytics.js). #}
+<section id="analytics-consent" class="consent-banner" role="region" aria-labelledby="analytics-consent-title" tabindex="-1"
+         data-measurement-id="{{ measurement_id }}" data-cookie="{{ cookie }}" hidden>
+    <div class="consent-banner-inner">
+        <div class="consent-banner-text">
+            <h2 id="analytics-consent-title" class="consent-banner-title">{% trans "May we measure your visit?" %}</h2>
+            <p>{% blocktrans %}With your permission we use Google Analytics, which sets cookies, to count visits and see which pages help people. It is not used for advertising, and nothing is sent unless you accept. You can change your choice at any time with “Analytics cookies” at the bottom of the page.{% endblocktrans %}
+               <a href="https://policies.google.com/technologies/partner-sites" rel="noopener">{% trans "How Google uses this data" %}</a></p>
+            <p class="consent-banner-current" data-consent-current="yes" hidden>{% trans "You have accepted analytics cookies." %}</p>
+            <p class="consent-banner-current" data-consent-current="no" hidden>{% trans "You have declined analytics cookies." %}</p>
+        </div>
+        <div class="consent-banner-actions">
+            <button type="button" class="consent-button" data-analytics-choice="yes">{% trans "Accept" %}</button>
+            <button type="button" class="consent-button" data-analytics-choice="no">{% trans "Decline" %}</button>
+        </div>
+    </div>
+</section>
+{# Shown before the first paint when no choice is remembered, so nothing moves when the script arrives. #}
+<script nonce="{{ csp_nonce }}">if (!/(?:^|;\s*){{ cookie }}=(?:yes|no)(?:;|$)/.test(document.cookie)) document.getElementById('analytics-consent').hidden = false;</script>
+<script defer src="{% media "/media/js/osqa.analytics.js" %}"></script>

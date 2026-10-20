@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!-- base_content.html -->
-{% load i18n extra_tags extra_filters ui_registry seo_tags sentry_tags pwa_tags display_tags account_tags appearance_tags %}
+{% load i18n extra_tags extra_filters ui_registry seo_tags sentry_tags pwa_tags display_tags account_tags appearance_tags analytics_tags %}
 <html lang="{{ LANGUAGE_CODE }}"{% display_attrs %}>
     <head>{% block after_head_js %}{% endblock %}
         <meta charset="utf-8" />
@@ -101,6 +101,7 @@
     <body>
         <a class="skip-link" href="#wrapper">{% trans "Skip to content" %}</a>
         <div class="wrapper">
+        {% analytics_consent %}
         <div id="offline-banner" class="offline-banner" role="status" hidden>{% trans "You are offline – showing a saved copy of this page." %}</div>
         {% if settings.USE_CUSTOM_HEADER|or_preview:request %}
             <div id="custom_header">
@@ -150,16 +151,6 @@
         {% endif %}
         {% block endjs %}
         {% endblock %}
-        {% if settings.GOOGLE_ANALYTICS_KEY %}
-            {# Google Analytics 4 (gtag.js); the measurement ID is set under Admin > External Keys. #}
-            <script async src="https://www.googletagmanager.com/gtag/js?id={{ settings.GOOGLE_ANALYTICS_KEY|urlencode }}"></script>
-            <script nonce="{{ csp_nonce }}">
-                window.dataLayer = window.dataLayer || [];
-                function gtag() { dataLayer.push(arguments); }
-                gtag('js', new Date());
-                gtag('config', '{{ settings.GOOGLE_ANALYTICS_KEY|escapejs }}');
-            </script>
-        {% endif %}
         </div>
 
         <!-- Put all elements with fixed position here, IE6 fixed position fix: http://ryanfait.com/position-fixed-ie6/ -->

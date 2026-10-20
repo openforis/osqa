@@ -70,10 +70,12 @@ class GuidedSettingsTest(SettingMixin, OSQATestCase):
         self.assertContains(response, "curl &#x27;%s/api/v1/questions?sort=newest&amp;limit=5&#x27;" % settings.APP_URL)
         self.assertContains(response, 'data-copy-target="#api-example-ask"')
 
-    def test_analytics_snippet_is_gtag(self):
+    def test_analytics_waits_for_consent(self):
+        # gtag.js is fetched by osqa.analytics.js after "Accept" (forum/tests/test_analytics.py).
         self.set(settings.GOOGLE_ANALYTICS_KEY, 'G-ABC123XYZ9')
         response = self.client.get('/')
-        self.assertContains(response, 'https://www.googletagmanager.com/gtag/js?id=G-ABC123XYZ9')
+        self.assertContains(response, 'data-measurement-id="G-ABC123XYZ9"')
+        self.assertNotContains(response, 'https://www.googletagmanager.com/gtag/js')
         self.assertIn('https://www.googletagmanager.com', response['Content-Security-Policy'])
 
 

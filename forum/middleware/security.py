@@ -32,9 +32,6 @@ from django.urls import reverse
 
 # reCAPTCHA (forum_modules/recaptcha) loads from these.
 GOOGLE = 'https://www.google.com https://www.gstatic.com'
-# Google Analytics 4 (gtag.js): the script, and where it sends hits.
-ANALYTICS = ('https://www.googletagmanager.com https://*.google-analytics.com '
-             'https://*.analytics.google.com')
 
 PERMISSIONS_POLICY = 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()'
 
@@ -81,19 +78,24 @@ def content_security_policy(request, nonce=None):
         return None
     if configured:
         return configured.replace('{nonce}', nonce)
+    from forum.utils import analytics
     from forum.utils.sentry import frontend_dsn, dsn_origin
     extra = ' '.join(str(settings.CSP_EXTRA_SOURCES).split())
     with_extra = lambda sources: ('%s %s' % (sources, extra)).strip()
     sentry = dsn_origin(frontend_dsn())  # where browser errors are reported
+    # Google Analytics 4 (forum/utils/analytics.py), only while an ID is set.
+    ga = analytics.measurement_id() != ''
+    ga_scripts = analytics.SCRIPT_SOURCES if ga else ''
+    ga_connect = analytics.CONNECT_SOURCES if ga else ''
     policy = [
         "default-src 'self'",
         # No 'unsafe-inline': inline scripts need the nonce. No 'strict-dynamic'
         # either, so scripts that scripts add (reCAPTCHA's, Analytics) are
         # allowed by origin, as Google documents for reCAPTCHA without nonces.
-        "script-src " + with_extra("'self' 'nonce-%s' %s %s" % (nonce, GOOGLE, ANALYTICS)),
+        "script-src " + with_extra(("'self' 'nonce-%s' %s %s" % (nonce, GOOGLE, ga_scripts)).strip()),
         "style-src " + with_extra("'self' 'unsafe-inline' %s https://fonts.googleapis.com" % GOOGLE),
         "font-src " + with_extra("'self' data: https://fonts.gstatic.com"),
-        "connect-src " + with_extra(("'self' %s %s %s" % (GOOGLE, ANALYTICS, sentry)).strip()),
+        "connect-src " + with_extra(' '.join(filter(None, ("'self'", GOOGLE, ga_connect, sentry)))),
         "frame-src " + with_extra("'self' %s" % GOOGLE),
         # Posts may show images from anywhere.
         "worker-src 'self'",  # the service worker (/sw.js)

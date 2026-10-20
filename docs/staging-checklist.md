@@ -157,6 +157,10 @@ switch to the real SMTP server with an allow-list or for the last check.
 - [ ] Analytics or other scripts in the custom `<head>` load (allowed under
       Admin > Security > "Extra script sources"); the browser console shows
       no Content-Security-Policy errors.
+- [ ] Google Analytics (Admin > External Keys, a `G-` ID): the banner asks
+      on the first visit; after "Accept" the visit shows in Analytics'
+      Realtime report; "Decline" (footer "Analytics cookies") stops it. The
+      privacy page mentions Google Analytics.
 - [ ] Spanish, French and Portuguese: switch in the footer; a native speaker
       reads the main pages and one email in each.
 - [ ] Install the site as an app on a phone; open a question offline.

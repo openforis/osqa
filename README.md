@@ -529,8 +529,9 @@ link to the revisions; saving again replaces their version.
   (moderators exempt).
 - **Headers:** Content-Security-Policy, Permissions-Policy, plus Django's
   nosniff, Referrer-Policy and X-Frame-Options. The policy:
-  - scripts only from the site, the Google services OSQA uses (reCAPTCHA,
-    Analytics) and the extra sources setting, plus inline `<script>` elements
+  - scripts only from the site, the Google services OSQA uses (reCAPTCHA, and
+    Google Analytics while a measurement ID is set) and the extra sources
+    setting, plus inline `<script>` elements
     that carry the response's nonce: every response gets a new random nonce
     (`request.csp_nonce`, `{{ csp_nonce }}` in templates). Script injected into
     a post or profile has no nonce and doesn't run; there is no
@@ -957,6 +958,34 @@ both are set. Register this redirect (callback) URI with the provider:
 Signed-in users can connect more providers from their account's
 authentication settings.
 
+### Google Analytics
+
+Enter the measurement ID of a Google Analytics 4 web stream (`G-…`) under
+Admin > External Keys. Old Universal Analytics keys (`UA-…`) are ignored, as
+Google no longer collects their data.
+
+- **Visitors are asked first:** every visitor sees "May we measure your
+  visit?" above the header with **Accept** and **Decline**. Google's script
+  is fetched only after "Accept", so a visitor who declines or doesn't answer
+  sends nothing to Google. This is the opt-in that EU rules (GDPR, ePrivacy)
+  expect for analytics cookies; the banner is shown everywhere, as there is
+  no country lookup.
+- **The choice is remembered** in the `osqa_analytics` cookie (accepted for
+  13 months, declined for 6, then the banner asks again). "Analytics
+  cookies" in the footer shows the banner again; "Decline" then turns
+  Analytics off and deletes its `_ga` cookies. A custom footer that replaces
+  the standard one can offer the same with
+  `<button type="button" data-analytics-settings>Analytics cookies</button>`.
+- **What Google gets:** page views with Consent Mode's advertising signals
+  denied (`ad_storage`, `ad_user_data`, `ad_personalization`) and Google
+  signals off. Mention Google Analytics in your privacy page.
+- **Content-Security-Policy:** Google's origins (`www.googletagmanager.com`,
+  `*.google-analytics.com`, `*.analytics.google.com`) are allowed only while
+  an ID is set; nothing goes in "Extra script sources".
+
+Code: `forum/utils/analytics.py`, `{% analytics_consent %}`
+(`display/analytics_consent.html`) and `media/js/osqa.analytics.js`.
+
 ## Look and feel
 
 The default skin is responsive (phones, tablets, desktops). Its styles live
@@ -1017,8 +1046,8 @@ motion setting.
 
 jQuery 3.7, jQuery UI 1.14 (tag and user suggestions), Flot 4.2
 (charts) and highlight.js 11.11 are served from the skin (`media/vendor/`), so
-pages load no third-party scripts unless Google search, Analytics or a provider
-login is configured. jQuery UI is loaded when a suggestion field is first used
+pages load no third-party scripts unless Google search or a provider login is
+configured, or a visitor accepts Google Analytics. jQuery UI is loaded when a suggestion field is first used
 and highlight.js only on pages with code blocks.
 
 Page speed: uploaded images are stored re-encoded (metadata removed) and, next
