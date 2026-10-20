@@ -1,3 +1,4 @@
+import json
 import os
 from django import forms
 from forum.settings.base import Setting
@@ -55,10 +56,11 @@ class SettingsSetForm(forms.Form):
 
     def as_table(self, names=None):
         """One row per setting (id "setting-<NAME>", the admin search's
-        anchor) with "context" and "default" tools; only `names` when given
-        (the sections of a guided page, forum/settings/guides.py)."""
-        tools = ('<br /><a class="fieldtool context" href="#">%s</a><span class="sep">|</span>'
-                 '<a class="fieldtool default" href="#">%s</a>') % (_('context'), _('default'))
+        anchor): label and setting name, the field, its help and example, and
+        its default with a "Use default" button (osqa.admin.js fills the field
+        in; nothing is saved before Save). Rows of settings whose saved value
+        isn't the default are marked "Changed". Only `names` when given (the
+        sections of a guided page, forum/settings/guides.py)."""
         rows = []
         hidden = []
 
@@ -72,13 +74,34 @@ class SettingsSetForm(forms.Form):
                 hidden.append(str(bf))
                 continue
 
-            help_text = bf.help_text and '<br />%s' % bf.help_text or ''
-            example = self.settings[name].field_context.get('example') if name in self.settings else None
+            setting = self.settings.get(name)
+            # The id the field's aria-describedby names.
+            help_text = bf.help_text and '<span class="helptext" id="%s_helptext">%s</span>' % (
+                bf.auto_id, bf.help_text) or ''
+            example = setting.field_context.get('example') if setting is not None else None
             if example:
                 help_text += format_html('<span class="setting-example">{} <code>{}</code></span>',
                                          _('Example:'), example)
-            rows.append('<tr id="setting-%s" class="setting-row"><th>%s%s</th><td>%s%s%s</td></tr>' % (
-                name, bf.label and bf.label_tag() or '', tools, bf.errors, bf, help_text))
+            customized = setting is not None and is_customized(setting)
+            heading = format_html(
+                '{label}{changed}<span class="setting-name" title="{title}">{name}</span>',
+                label=bf.label and bf.label_tag() or '', name=name,
+                title=_('Name of the setting, e.g. for templates: {{ settings.%s }}') % name,
+                changed=format_html(' <span class="setting-changed">{}</span>', _('Changed')) if customized else '')
+            default = ''
+            if setting is not None and setting.default is not None:
+                default = format_html(
+                    '<div class="setting-default"{hidden}>{text} <span class="setting-default-value">{value}</span> '
+                    '<button type="button" class="setting-reset">{reset}'
+                    '<span class="admin-visually-hidden"> ({label})</span></button></div>',
+                    hidden=mark_safe('' if customized else ' hidden'), text=_('Default:'), label=bf.label or name,
+                    value=default_text(setting, self.fields[name]), reset=_('Use default'))
+            rows.append(format_html(
+                '<tr id="setting-{name}" class="setting-row{classes}" data-default="{default}">'
+                '<th>{heading}</th><td>{errors}{field}{help}{default_row}</td></tr>',
+                name=name, classes=' is-customized' if customized else '', default=default_value(setting),
+                heading=heading, errors=mark_safe(str(bf.errors)), field=mark_safe(str(bf)), help=mark_safe(help_text),
+                default_row=default))
 
         if hidden:
             if rows:
@@ -86,18 +109,62 @@ class SettingsSetForm(forms.Form):
             else:
                 rows.append('<tr><td colspan="2">%s</td></tr>' % ''.join(hidden))
 
-        return mark_safe('\n'.join(rows))
+        return mark_safe('\n'.join(str(r) for r in rows))
+
+    def changed_labels(self):
+        """Labels of the settings this (valid) form changes."""
+        return [str(self.fields[name].label or name) for name in self.changed_data if name in self.fields]
 
     def save(self):
         for setting in self.set:
             setting.set_value(self.cleaned_data[setting.name])
 
+def is_customized(setting):
+    """The saved value differs from the default."""
+    if setting.default is None:
+        return False
+    value = setting.value
+    if isinstance(setting.default, (list, tuple)):
+        return list(value or []) != list(setting.default)
+    return value != setting.default
+
+
+def default_value(setting):
+    """The default as osqa.admin.js puts it in the field: "true"/"false" for
+    check boxes, JSON for lists, else the text."""
+    if setting is None or setting.default is None:
+        return ''
+    default = setting.default
+    if isinstance(default, bool):
+        return 'true' if default else 'false'
+    if isinstance(default, (list, tuple)):
+        return json.dumps(list(default))
+    return str(default)
+
+
+def default_text(setting, field):
+    """The default as people read it: On/Off, a choice's label, "(empty)"."""
+    default = setting.default
+    if isinstance(default, bool):
+        return _('On') if default else _('Off')
+    if isinstance(default, (list, tuple)):
+        default = ', '.join(str(v) for v in default)
+    choices = getattr(field, 'choices', None) or getattr(getattr(field, 'widget', None), 'choices', None)
+    for key, label in choices or ():
+        if str(key) == str(default):
+            return str(label)
+    text = str(default)
+    if not text.strip():
+        return _('(empty)')
+    return text if len(text) <= 80 else text[:77] + '…'
+
+
 class ImageFormWidget(forms.Widget):
     def render(self, name, value, attrs=None, renderer=None):
         # The file input gets the field's id, so the setting's <label> names it.
         return format_html("""
-            <img src="{value}" alt="{alt}" /><br />
-            {change} <input type="file" id="{id}" name="{name}" />
+            <img src="{value}" alt="{alt}" class="setting-image-preview" /><br />
+            {change} <input type="file" id="{id}" name="{name}" accept="image/*" />
             <input type="hidden" name="{name}_old" value="{value}" />
             """, name=name, value=value or '', id=(attrs or {}).get('id') or 'id_%s' % name,
                            alt=_('Current image'), change=_('Change this:'))

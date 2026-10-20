@@ -118,6 +118,17 @@ and color, login and sign-in...), and links to the setting's row on its page,
 highlighted. Settings pages with many settings also have a "Find a setting on
 this page" filter.
 
+Every setting shows its name (as used in templates, `{{ settings.NAME }}`), a
+"Changed" mark when its saved value isn't the default, and the default with a
+"Use default" button, which only fills the field in: nothing is saved before
+Save. Fields edited since the page was opened are highlighted and counted in
+a save bar that stays at the bottom of the window ("Undo my changes" puts the
+page back), and leaving the page with unsaved changes asks first. `/` goes to
+the admin search. The dashboard starts with a "Getting started" list for new
+sites (name, email, logo, colours, About page, spam protection, and
+optionally sign-in with Google, GitHub or Facebook), which can be hidden and
+goes away once everything is done.
+
 Pages that need outside accounts explain how to get them. External Keys has
 one card per service (sign-in with Google, GitHub and Facebook, reCAPTCHA,
 Akismet, Gemini, Google Analytics, Google Search Console) saying whether it is

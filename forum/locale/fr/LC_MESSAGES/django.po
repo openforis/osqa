@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OSQA (Open Foris edition)\n"
 "Report-Msgid-Bugs-To: https://github.com/openforis/osqa/issues\n"
-"POT-Creation-Date: 2026-10-20 08:35-0400\n"
+"POT-Creation-Date: 2026-10-20 16:24-0400\n"
 "PO-Revision-Date: 2026-10-14 12:00+0000\n"
 "Last-Translator: Open Foris <https://github.com/openforis/osqa>\n"
 "Language-Team: French <https://github.com/openforis/osqa>\n"
@@ -1590,14 +1590,30 @@ msgstr "Afficher le Gravatar de l'auteur dans les commentaires"
 msgid "Show the gravatar image of a comment author."
 msgstr "Afficher l'image Gravatar de l'auteur d'un commentaire."
 
-msgid "context"
-msgstr "contexte"
-
-msgid "default"
-msgstr "par défaut"
-
 msgid "Example:"
 msgstr "Exemple :"
+
+#, python-format
+msgid "Name of the setting, e.g. for templates: {{ settings.%s }}"
+msgstr "Nom du paramètre, p. ex. pour les modèles : {{ settings.%s }}"
+
+msgid "Changed"
+msgstr "Modifié"
+
+msgid "Default:"
+msgstr "Par défaut :"
+
+msgid "Use default"
+msgstr "Utiliser la valeur par défaut"
+
+msgid "On"
+msgstr "Activée"
+
+msgid "Off"
+msgstr "Désactivée"
+
+msgid "(empty)"
+msgstr "(vide)"
 
 msgid "Current image"
 msgstr "Image actuelle"
@@ -5381,6 +5397,22 @@ msgstr "Enregistrer"
 msgid "How the community is doing: activity, answers, members and moderation, compared with the period before."
 msgstr "L'état de la communauté : activité, réponses, membres et modération, comparés à la période précédente."
 
+msgid "Getting started"
+msgstr "Premiers pas"
+
+#, python-format
+msgid "%(done)s of %(total)s done"
+msgstr "%(done)s sur %(total)s terminés"
+
+msgid "done"
+msgstr "terminé"
+
+msgid "to do"
+msgstr "à faire"
+
+msgid "Hide this list"
+msgstr "Masquer cette liste"
+
 msgid "Quick statistics"
 msgstr "Statistiques rapides"
 
@@ -5408,14 +5440,14 @@ msgstr "Votre site fonctionne avec certains paramètres personnalisés, cliquez 
 msgid "Are you sure you want to revert to the defaults?"
 msgstr "Voulez-vous vraiment revenir aux valeurs par défaut ?"
 
-msgid "revert to defaults"
-msgstr "revenir aux valeurs par défaut"
+msgid "Revert to defaults"
+msgstr "Revenir aux valeurs par défaut"
 
 msgid "Are you sure you want to run bootstrap mode?"
 msgstr "Voulez-vous vraiment passer en mode démarrage ?"
 
-msgid "go bootstrap"
-msgstr "passer en mode démarrage"
+msgid "Go bootstrap"
+msgstr "Passer en mode démarrage"
 
 msgid "\"Bootstrap mode\" relaxes the minimum required reputation to perform actions like voting and commenting. This is useful to help new communities get started."
 msgstr "Le « mode démarrage » abaisse la réputation minimale requise pour des actions comme voter ou commenter. C'est utile pour aider les nouvelles communautés à démarrer."
@@ -5428,6 +5460,9 @@ msgstr "Cette opération est lourde, voulez-vous vraiment continuer ?"
 
 msgid "Recalculate"
 msgstr "Recalculer"
+
+msgid "Show the Getting started list"
+msgstr "Afficher la liste des premiers pas"
 
 msgid "Recent activity"
 msgstr "Activité récente"
@@ -5506,12 +5541,6 @@ msgstr "Copier"
 
 msgid "Using the API"
 msgstr "Utiliser l'API"
-
-msgid "On"
-msgstr "Activée"
-
-msgid "Off"
-msgstr "Désactivée"
 
 msgid "Programs read public questions, answers, tags and members as JSON without signing in. To post, or to see what only a member may see, a member creates a <strong>personal access token</strong> on their account and sends it in the <code>Authorization</code> header. A token can only do what its member may do on the site, with the same reputation rules and limits."
 msgstr "Les programmes lisent les questions, réponses, étiquettes et membres publics en JSON sans se connecter. Pour publier, ou pour voir ce que seul un membre peut voir, un membre crée un <strong>jeton d'accès personnel</strong> sur son compte et l'envoie dans l'en-tête <code>Authorization</code>. Un jeton ne peut faire que ce que son membre peut faire sur le site, avec les mêmes règles de réputation et les mêmes limites."
@@ -6146,6 +6175,13 @@ msgstr "Masquer"
 msgid "opens in a new tab"
 msgstr "s'ouvre dans un nouvel onglet"
 
+msgid "1 unsaved change"
+msgstr "1 modification non enregistrée"
+
+#, python-format
+msgid "%%(count)s unsaved changes"
+msgstr "%%(count)s modifications non enregistrées"
+
 msgid "How it was set up"
 msgstr "Comment il a été configuré"
 
@@ -6155,11 +6191,14 @@ msgstr "Comment le configurer"
 msgid "Other settings"
 msgstr "Autres paramètres"
 
-msgid "Reset Changes"
-msgstr "Annuler les modifications"
+msgid "Discard preview"
+msgstr "Abandonner l'aperçu"
 
-msgid "Preview opens the site in a new tab with these values, for you only, until you save or reset them."
-msgstr "Aperçu ouvre le site dans un nouvel onglet avec ces valeurs, pour vous seul, jusqu'à ce que vous les enregistriez ou les réinitialisiez."
+msgid "Undo my changes"
+msgstr "Annuler mes modifications"
+
+msgid "Preview opens the site in a new tab with these values, for you only, until you save them or discard the preview."
+msgstr "Aperçu ouvre le site dans un nouvel onglet avec ces valeurs, pour vous seul, jusqu'à ce que vous les enregistriez ou abandonniez l'aperçu."
 
 msgid "Static pages"
 msgstr "Pages statiques"
@@ -8822,6 +8861,48 @@ msgstr "Nouvelle notification"
 msgid "Thanks! Your post will appear once a moderator has reviewed it."
 msgstr "Merci ! Votre message apparaîtra après la vérification d'un modérateur."
 
+msgid "Name the site"
+msgstr "Nommer le site"
+
+msgid "Its title and short name appear in the header, the browser tab and emails."
+msgstr "Son titre et son nom court apparaissent dans l'en-tête, l'onglet du navigateur et les e-mails."
+
+msgid "Set up sending email"
+msgstr "Configurer l'envoi d'e-mails"
+
+msgid "Sign-up confirmations, password resets and notifications need it. Test it from the same page."
+msgstr "Les confirmations d'inscription, les réinitialisations de mot de passe et les notifications en ont besoin. Testez-le depuis la même page."
+
+msgid "Upload your logo"
+msgstr "Téléverser votre logo"
+
+msgid "And the small icon browsers show in tabs."
+msgstr "Et la petite icône que les navigateurs affichent dans les onglets."
+
+msgid "Choose the colours"
+msgstr "Choisir les couleurs"
+
+msgid "Pick a preset or your own colours under Look and feel."
+msgstr "Choisissez une palette prédéfinie ou vos propres couleurs dans Apparence."
+
+msgid "Write the About page"
+msgstr "Rédiger la page À propos"
+
+msgid "Say what the site is for and who answers."
+msgstr "Expliquez à quoi sert le site et qui répond."
+
+msgid "Turn on spam protection"
+msgstr "Activer la protection contre le spam"
+
+msgid "reCAPTCHA, Akismet or AI review under External Keys, or reviewing new members' first posts under Moderation settings."
+msgstr "reCAPTCHA, Akismet ou la vérification par IA dans Clés externes, ou la relecture des premières publications des nouveaux membres dans les paramètres de modération."
+
+msgid "Let members sign in with Google, GitHub or Facebook"
+msgstr "Permettre aux membres de se connecter avec Google, GitHub ou Facebook"
+
+msgid "Optional: fewer passwords to remember, and confirmed email addresses."
+msgstr "Facultatif : moins de mots de passe à retenir et des adresses e-mail confirmées."
+
 msgid "Please confirm it's you first."
 msgstr "Veuillez d'abord confirmer qu'il s'agit bien de vous."
 
@@ -9039,8 +9120,14 @@ msgid "Users Graph"
 msgstr "Graphique des utilisateurs"
 
 #, python-format
-msgid "'%s' settings saved succesfully"
-msgstr "Paramètres « %s » enregistrés avec succès"
+msgid "%(page)s saved: %(settings)s changed."
+msgid_plural "%(page)s saved: %(count)d settings changed (%(settings)s)."
+msgstr[0] "%(page)s enregistré : %(settings)s modifié."
+msgstr[1] "%(page)s enregistré : %(count)d paramètres modifiés (%(settings)s)."
+
+#, python-format
+msgid "%(page)s: nothing to save, no setting was changed."
+msgstr "%(page)s : rien à enregistrer, aucun paramètre n'a été modifié."
 
 msgid "Set up"
 msgstr "Configuré"

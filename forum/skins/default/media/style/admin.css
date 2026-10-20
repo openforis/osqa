@@ -566,18 +566,118 @@ input[type="file"]::file-selector-button:hover {
     width: 100%;
 }
 
-/* "context | default" tools under each setting's label. */
-#admin_form tr th .fieldtool, .admin-settings-table tr th .fieldtool {
-    display: inline-block;
-    padding: 4px 2px;
-    font-size: 0.8125rem;
+/* Under each setting's label: its name, "Changed" when the saved value isn't
+   the default; under the field, the default and "Use default". */
+.setting-name {
+    display: block;
+    margin-top: 2px;
+    color: var(--body-quiet-color);
+    font-family: var(--font-family-monospace, monospace);
+    font-size: 0.75rem;
     font-weight: 400;
+    overflow-wrap: anywhere;
 }
 
-#admin_form tr th .sep, .admin-settings-table tr th .sep {
-    margin: 0 6px;
+.setting-changed {
+    display: inline-block;
+    margin-left: 4px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: var(--osqa-menu-current-bg);
+    color: var(--osqa-menu-current-fg);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    line-height: 1.6;
+    vertical-align: middle;
+}
+
+.setting-default {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 8px;
+    margin-top: 6px;
     color: var(--body-quiet-color);
-    font-weight: 400;
+    font-size: 0.8125rem;
+}
+
+.setting-default[hidden] {
+    display: none;
+}
+
+.setting-default-value {
+    padding: 0 4px;
+    border-radius: 3px;
+    background: var(--darkened-bg);
+    color: var(--body-fg);
+    font-family: var(--font-family-monospace, monospace);
+    overflow-wrap: anywhere;
+}
+
+#content-main .setting-reset {
+    min-height: 28px;
+    padding: 2px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--osqa-control-bg);
+    color: var(--link-fg);
+    font-size: 0.8125rem;
+    font-weight: 600;
+}
+
+#content-main .setting-reset:hover {
+    border-color: var(--link-fg);
+}
+
+/* Changed since the page was loaded, not saved yet. */
+.setting-row.is-dirty > th, .setting-row.is-dirty > td {
+    background: var(--osqa-notice-bg);
+}
+
+.setting-row.is-dirty > th {
+    box-shadow: inset 3px 0 0 var(--osqa-notice-border);
+}
+
+/* The save bar stays at the bottom of the window on long pages; Tab never
+   ends under it (WCAG 2.4.11). */
+html:has(.admin-savebar) {
+    scroll-padding-bottom: 96px;
+}
+
+#content-main .admin-savebar {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 -1px 0 var(--hairline-color);
+}
+
+.admin-settings-form.has-unsaved .admin-savebar {
+    background: var(--osqa-notice-bg);
+    box-shadow: 0 -2px 0 var(--osqa-notice-border), 0 -6px 12px rgba(0, 0, 0, .08);
+}
+
+#content-main .admin-savebar .admin-discard {
+    min-height: 35px;
+    margin: 0;
+    padding: 6px 14px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-weight: 600;
+    background: var(--osqa-control-bg);
+    color: var(--body-fg);
+}
+
+#content-main .admin-savebar .admin-discard[hidden] {
+    display: none;
+}
+
+.admin-unsaved-status {
+    color: var(--osqa-notice-fg);
+    font-weight: 600;
 }
 
 /* Stacked form used where there is no Django form (Stack Exchange importer). */
@@ -949,6 +1049,57 @@ input[type="file"]::file-selector-button:hover {
     font-size: 0.8125rem;
     line-height: 1.5;
     white-space: pre;
+}
+
+/* The dashboard's "Getting started" list (forum/utils/setup_checklist.py). */
+.admin-checklist-items {
+    margin: 4px 0 8px;
+    padding: 0;
+}
+
+.admin-checklist-items li {
+    display: flex;
+    gap: 10px;
+    margin: 0 0 10px;
+    padding: 0;
+    list-style: none;
+}
+
+.admin-checklist-mark {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    margin-top: 1px;
+    border: 2px solid var(--border-color);
+    border-radius: 50%;
+    color: var(--osqa-good-fg);
+    font-weight: 700;
+}
+
+.admin-checklist-items li.is-done .admin-checklist-mark {
+    border-color: var(--osqa-good-fg);
+    background: var(--osqa-accepted-bg);
+}
+
+.admin-checklist-items a {
+    font-weight: 600;
+}
+
+.admin-checklist-items li.is-done a {
+    color: var(--body-quiet-color);
+}
+
+.admin-checklist-items p {
+    margin: 2px 0 0;
+    padding: 0;
+    color: var(--body-quiet-color);
+}
+
+.admin-checklist-hide {
+    margin: 0 0 8px;
 }
 
 /* ---- Look and feel (osqaadmin/guides/appearance.html) ------------------- */
@@ -2360,18 +2511,6 @@ input.color-input {
 
     #admin_form tr th, .admin-settings-table tr th {
         white-space: normal;
-    }
-
-    #admin_form tr th .fieldtool, .admin-settings-table tr th .fieldtool {
-        display: inline-flex;
-        align-items: center;
-        min-height: 44px;
-        padding: 0 8px;
-        font-size: 0.875rem;
-    }
-
-    #admin_form tr th .fieldtool.context, .admin-settings-table tr th .fieldtool.context {
-        padding-left: 0;
     }
 
     .admin-form-table input[type="text"], .admin-form-table input[type="email"],

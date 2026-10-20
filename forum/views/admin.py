@@ -6,7 +6,7 @@ from django.views.decorators.http import require_POST, require_http_methods
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.http import HttpResponseRedirect, HttpResponse, Http404
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext as _, ngettext
 from django.utils.translation import gettext_lazy as _lazy
 from django.db import models
 from django.template import TemplateDoesNotExist
@@ -176,6 +176,9 @@ def dashboard(request):
     if request.method == 'POST' and 'refresh' in request.POST:
         health.figures(days, refresh=True)
         return HttpResponseRedirect('%s?days=%d' % (reverse('admin_index'), days))
+    if request.method == 'POST' and request.user.is_superuser and 'checklist' in request.POST:
+        settings.SETUP_CHECKLIST_HIDDEN.set_value(request.POST['checklist'] == 'hide')
+        return HttpResponseRedirect(reverse('admin_index'))
 
     data = health.figures(days)
     groups = health.tiles(data, review.inbox_counts())
@@ -197,7 +200,9 @@ def dashboard(request):
         'recent_activity': get_recent_activity(),
     }
     if request.user.is_superuser:
-        context.update(settings_pack=str(settings.SETTINGS_PACK), statistics=get_statistics())
+        from forum.utils.setup_checklist import checklist
+        context.update(settings_pack=str(settings.SETTINGS_PACK), statistics=get_statistics(),
+                       checklist=checklist(), checklist_hidden=bool(settings.SETUP_CHECKLIST_HIDDEN))
     return ('osqaadmin/dashboard.html', pagination.paginated(
         request, ("recent_activity", ActivityPaginatorContext()), context))
 
@@ -290,9 +295,17 @@ def settings_set(request, set_name):
 
                 if not 'reset' in request.POST:
                     changed = [name for name in form.changed_data if name in form.fields]
+                    labels = form.changed_labels()
                     form.save()
                     security_log.event('settings_changed', request, set=set_name, fields=','.join(changed))
-                    messages.info(request, _("'%s' settings saved succesfully") % set_name)
+                    # Flash messages are shown unescaped.
+                    if labels:
+                        messages.info(request, escape(ngettext(
+                            "%(page)s saved: %(settings)s changed.", "%(page)s saved: %(count)d settings changed (%(settings)s).",
+                            len(labels)) % {'page': set.title, 'count': len(labels), 'settings': ', '.join(labels)}))
+                    else:
+                        messages.info(request, escape(_("%(page)s: nothing to save, no setting was changed.") % {
+                            'page': set.title}))
 
                     if set_name in ('minrep', 'badges', 'repgain'):
                         settings.SETTINGS_PACK.set_value("custom")
@@ -358,22 +371,6 @@ def guide_template(set_name):
     except TemplateDoesNotExist:
         return None
     return name
-
-@super_user_required
-def get_default(request, set_name, var_name):
-    set = Setting.sets.get(set_name, None)
-    if set is None: raise Http404
-
-    setting = dict([(s.name, s) for s in set]).get(var_name, None)
-    if setting is None: raise Http404
-
-    setting.to_default()
-
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        return HttpResponse(setting.default)
-    else:
-        return HttpResponseRedirect(reverse('admin_set', kwargs={'set_name': set_name}))
-
 
 def get_recent_activity():
     return Action.objects.order_by('-action_date')

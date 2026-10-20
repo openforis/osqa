@@ -199,3 +199,83 @@ class AdminGuidanceTest(E2ETestCase):
         visitor = self.open()
         self.visit(visitor, '/')
         self.assertEqual(visitor.locator('#appearance-style').count(), 0)
+
+    def test_unsaved_changes(self):
+        page = self.open(self.admin)
+        self.visit(page, '/admin/settings/minrep/')
+        bar = page.locator('.admin-savebar')
+        self.assertFalse(page.locator('.admin-discard').is_visible())
+        page.fill('#id_REP_TO_VOTE_UP', '20')
+        page.fill('#id_REP_TO_COMMENT', '60')
+        self.assertEqual(page.locator('.admin-unsaved-status').inner_text(), '2 unsaved changes')
+        self.assertEqual(page.locator('.setting-row.is-dirty').count(), 2)
+        # The save bar stays in view at the bottom of the window.
+        box = bar.bounding_box()
+        self.assertLessEqual(box['y'] + box['height'], page.viewport_size['height'] + 1)
+        self.screenshot(page, 'unsaved')
+
+        # Leaving asks first (the test browser accepts).
+        dialogs = []
+        page.on('dialog', lambda dialog: dialogs.append(dialog.type))
+        self.visit(page, '/admin/')
+        self.assertEqual(dialogs, ['beforeunload'])
+        self.assertEqual(settings.REP_TO_VOTE_UP.value, settings.REP_TO_VOTE_UP.default)
+
+        # "Undo my changes" puts the page back as loaded.
+        self.visit(page, '/admin/settings/minrep/')
+        page.fill('#id_REP_TO_VOTE_UP', '20')
+        page.click('.admin-discard')
+        page.wait_for_selector('.admin-discard', state='hidden')
+        self.assertEqual(page.input_value('#id_REP_TO_VOTE_UP'), str(settings.REP_TO_VOTE_UP.default))
+        self.assertEqual(page.locator('.setting-row.is-dirty').count(), 0)
+
+        # Saving doesn't ask.
+        page.fill('#id_REP_TO_VOTE_UP', '20')
+        with page.expect_navigation():
+            page.click('#submit')
+        self.check_page(page)
+        self.assertEqual(dialogs, ['beforeunload'])
+        self.assertIn('Minimum reputation config saved: Minimum reputation to vote up changed.',
+                      page.locator('.admin_message').all_inner_texts())
+        settings.REP_TO_VOTE_UP._temp = None
+        self.assertEqual(settings.REP_TO_VOTE_UP.value, 20)
+
+        phone = self.open(self.admin, device='mobile', dark=True)
+        self.visit(phone, '/admin/settings/minrep/')
+        phone.fill('#id_REP_TO_COMMENT', '60')
+        self.screenshot(phone, 'unsaved')
+
+    def test_getting_started_list(self):
+        page = self.open(self.admin)
+        self.visit(page, '/admin/')
+        checklist = page.locator('.admin-checklist')
+        self.assertIn('0 of 6 done', checklist.inner_text())
+        self.screenshot(page, 'checklist')
+        with page.expect_navigation():
+            checklist.get_by_role('link', name='Name the site').click()
+        self.check_page(page)
+        self.assertTrue(page.url.endswith('/admin/settings/basic/#setting-APP_TITLE'))
+        page.fill('#id_APP_TITLE', 'Open Foris Support')
+        with page.expect_navigation():
+            page.click('#submit')
+        self.visit(page, '/admin/')
+        self.assertIn('1 of 6 done', checklist.inner_text())
+        self.assertIn('is-done', checklist.locator('li').first.get_attribute('class'))
+
+        with page.expect_navigation():
+            page.get_by_role('button', name='Hide this list').click()
+        self.check_page(page)
+        self.assertEqual(page.locator('.admin-checklist').count(), 0)
+        with page.expect_navigation():
+            page.get_by_role('button', name='Show the Getting started list').click()
+        self.assertEqual(page.locator('.admin-checklist').count(), 1)
+
+    def test_slash_goes_to_the_search(self):
+        page = self.open(self.admin)
+        self.visit(page, '/admin/settings/basic/')
+        page.locator('body').press('/')
+        self.assertEqual(page.evaluate('document.activeElement.id'), 'admin-search-q')
+        # Not while typing.
+        page.locator('#id_APP_TITLE').press('/')
+        self.assertIn('/', page.input_value('#id_APP_TITLE'))
+        self.assertEqual(page.evaluate('document.activeElement.id'), 'id_APP_TITLE')
