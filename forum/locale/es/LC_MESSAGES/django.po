@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OSQA (Open Foris edition)\n"
 "Report-Msgid-Bugs-To: https://github.com/openforis/osqa/issues\n"
-"POT-Creation-Date: 2026-10-20 16:24-0400\n"
+"POT-Creation-Date: 2026-10-20 16:42-0400\n"
 "PO-Revision-Date: 2026-10-14 12:00+0000\n"
 "Last-Translator: Open Foris <https://github.com/openforis/osqa>\n"
 "Language-Team: Spanish <https://github.com/openforis/osqa>\n"
@@ -1113,11 +1113,23 @@ msgstr "Orígenes autorizados a leer la API con JavaScript (CORS), separados por
 msgid "Look and feel"
 msgstr "Apariencia"
 
-msgid "Colours, font and page width of the public pages, and the colour theme visitors get. Pick a preset or your own colours, check them in the sample, then press Preview to see the whole site with them before you save. For anything else, use Custom CSS."
-msgstr "Colores, fuente y ancho de página de las páginas públicas, y el tema de colores que reciben los visitantes. Elija una combinación predefinida o sus propios colores, compruébelos en la muestra y pulse Vista previa para ver todo el sitio con ellos antes de guardar. Para todo lo demás, use el CSS personalizado."
+msgid "Colours, font and page width of the public pages, and the colour theme visitors get. Pick a ready-made style or your own colours, check them in the sample, then press Preview to see the whole site with them before you save. For anything else, use Custom CSS."
+msgstr "Colores, fuente y ancho de página de las páginas públicas, y el tema de colores que reciben los visitantes. Elija un estilo predefinido o sus propios colores, compruébelos en la muestra y pulse Vista previa para ver todo el sitio con ellos antes de guardar. Para todo lo demás, use el CSS personalizado."
 
 msgid "Enter a colour as # and six hexadecimal digits, e.g. #2c5aa0."
 msgstr "Introduzca un color como # y seis dígitos hexadecimales, p. ej., #2c5aa0."
+
+msgid "None: only the values below"
+msgstr "Ninguno: solo los valores de abajo"
+
+msgid "Style"
+msgstr "Estilo"
+
+msgid "A ready-made style also changes a few shapes: corners, a stripe on the header, the headings' font. Picking one above fills in the values below as well; change any of them afterwards."
+msgstr "Un estilo predefinido también cambia algunas formas: las esquinas, una franja en el encabezado, la fuente de los títulos. Al elegir uno arriba también se rellenan los valores de abajo; puede cambiar cualquiera después."
+
+msgid "theme style preset template skin design"
+msgstr "tema estilo predefinido plantilla apariencia diseño"
 
 msgid "Brand colour"
 msgstr "Color de marca"
@@ -5602,11 +5614,14 @@ msgstr "Lectura desde una página web de un sitio permitido (CORS)"
 msgid "Lists come as <code>{\"data\": [...], \"next\": \"...\"}</code>: request the <code>next</code> address for the following page. Errors are JSON problem documents with a <code>type</code>, a <code>title</code> and, for invalid fields, <code>errors</code>. Going over a rate limit answers 429 with a <code>Retry-After</code> header."
 msgstr "Las listas llegan como <code>{\"data\": [...], \"next\": \"...\"}</code>: solicite la dirección <code>next</code> para obtener la página siguiente. Los errores son documentos de problema JSON con un <code>type</code>, un <code>title</code> y, para los campos no válidos, <code>errors</code>. Al superar un límite de frecuencia se responde 429 con un encabezado <code>Retry-After</code>."
 
-msgid "Colour presets"
-msgstr "Combinaciones de colores predefinidas"
+msgid "Ready-made styles"
+msgstr "Estilos predefinidos"
 
-msgid "Pick a starting point; it fills in the brand and accent colours below, which you can still change. Nothing changes for visitors until you save."
-msgstr "Elija un punto de partida; rellena los colores de marca y de acento de abajo, que aún puede cambiar. Nada cambia para los visitantes hasta que guarde."
+msgid "Each style sets the colours, background, font and page width below, and adds a few touches of its own (corners, a header stripe, heading font). Choose one, adjust anything below, then press Preview or Save. Nothing changes for visitors until you save."
+msgstr "Cada estilo fija los colores, el fondo, la fuente y el ancho de página de abajo, y añade algunos toques propios (esquinas, una franja en el encabezado, la fuente de los títulos). Elija uno, ajuste lo que quiera abajo y pulse Vista previa o Guardar. Nada cambia para los visitantes hasta que guarde."
+
+msgid "Use this style"
+msgstr "Usar este estilo"
 
 msgid "Sample"
 msgstr "Muestra"
@@ -8397,29 +8412,65 @@ msgstr "Ha publicado el número máximo de respuestas permitido en una hora. Esp
 msgid "You have posted the maximum number of comments for one hour. Please wait a while."
 msgstr "Ha publicado el número máximo de comentarios permitido en una hora. Espere un rato."
 
-msgid "Ocean blue"
-msgstr "Azul océano"
+msgid "Classic"
+msgstr "Clásico"
 
-msgid "Forest green"
-msgstr "Verde bosque"
+msgid "The skin as it comes: blue links and buttons, an orange Ask button."
+msgstr "El aspecto original: enlaces y botones azules, botón Preguntar naranja."
 
-msgid "Teal"
-msgstr "Verde azulado"
+msgid "Open Foris"
+msgstr "Open Foris"
+
+msgid "Muted red-brown from the Open Foris Support site, with a teal accent and a brand stripe on the header."
+msgstr "El marrón rojizo apagado del sitio Open Foris Support, con un acento verde azulado y una franja de color en el encabezado."
+
+msgid "Forest"
+msgstr "Bosque"
+
+msgid "Deep green and amber on a green-tinted page, in a friendly sans-serif."
+msgstr "Verde intenso y ámbar sobre una página teñida de verde, con una sans-serif amable."
+
+msgid "Ocean"
+msgstr "Océano"
+
+msgid "Teal and orange on white, in a geometric sans-serif."
+msgstr "Verde azulado y naranja sobre blanco, con una sans-serif geométrica."
+
+msgid "Editorial"
+msgstr "Editorial"
+
+msgid "Ink and red on white, serif text, a narrow column and square corners: reads like a newspaper."
+msgstr "Tinta y rojo sobre blanco, texto con serifa, una columna estrecha y esquinas rectas: se lee como un periódico."
 
 msgid "Plum"
 msgstr "Ciruela"
 
+msgid "Purple and pink with a rounded font and pill-shaped buttons and tags."
+msgstr "Morado y rosa con una fuente redondeada y botones y etiquetas en forma de píldora."
+
+msgid "Midnight"
+msgstr "Medianoche"
+
+msgid "Navy and green; new visitors get the dark theme."
+msgstr "Azul marino y verde; los visitantes nuevos ven el tema oscuro."
+
+msgid "Minimal"
+msgstr "Minimalista"
+
+msgid "Greys only, white page, no shadows and square corners: the content comes first."
+msgstr "Solo grises, página blanca, sin sombras y esquinas rectas: el contenido es lo primero."
+
 msgid "Crimson"
 msgstr "Carmesí"
+
+msgid "A university look: crimson with a blue accent and serif headings."
+msgstr "Un aire universitario: carmesí con acento azul y títulos con serifa."
 
 msgid "Earth"
 msgstr "Tierra"
 
-msgid "Slate"
-msgstr "Pizarra"
-
-msgid "Midnight"
-msgstr "Medianoche"
+msgid "Clay brown and teal on a warm tinted page, with rounded buttons."
+msgstr "Marrón arcilla y verde azulado sobre una página de tono cálido, con botones redondeados."
 
 #, python-format
 msgid "%d min"

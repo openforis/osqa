@@ -1,22 +1,31 @@
 {% load i18n extra_tags appearance_tags %}{% comment %}
-Admin > Look and feel (forum/settings/appearance.py): colour presets and a
-sample of the site in both themes, both following the fields as they change
+Admin > Look and feel (forum/settings/appearance.py): the ready-made styles
+(forum.utils.appearance.STYLES), which fill the fields in, and a sample of
+the site in both themes, following the fields as they change
 (media/js/osqa.appearance.js, which computes the colours the way
 forum/utils/appearance.py does). Included above the settings by set.html.
 {% endcomment %}{% appearance_info as info %}
 <script defer src="{% media "/media/js/osqa.appearance.js" %}"></script>
-<section class="admin-guide appearance-guide" aria-labelledby="appearance-presets-title">
-    <div class="admin-guide-header"><h2 id="appearance-presets-title">{% trans "Colour presets" %}</h2></div>
-    <p class="admin-guide-summary">{% trans "Pick a starting point; it fills in the brand and accent colours below, which you can still change. Nothing changes for visitors until you save." %}</p>
-    <div class="appearance-presets" role="group" aria-labelledby="appearance-presets-title">
-        {% for key, label, brand, accent in info.presets %}
-        <button type="button" class="appearance-preset" data-brand="{{ brand }}" data-accent="{{ accent }}"
-                aria-pressed="{% if brand == info.values.brand and accent == info.values.accent %}true{% else %}false{% endif %}">
-            <span class="appearance-swatches" aria-hidden="true"><span style="background: {{ brand }}"></span><span style="background: {{ accent }}"></span></span>
-            {{ label }}
-        </button>
+<section class="admin-guide appearance-guide" aria-labelledby="appearance-styles-title">
+    <div class="admin-guide-header"><h2 id="appearance-styles-title">{% trans "Ready-made styles" %}</h2></div>
+    <p class="admin-guide-summary">{% trans "Each style sets the colours, background, font and page width below, and adds a few touches of its own (corners, a header stripe, heading font). Choose one, adjust anything below, then press Preview or Save. Nothing changes for visitors until you save." %}</p>
+    <ul class="appearance-styles">
+        {% for style in info.styles %}
+        <li class="appearance-style-card">
+            <div class="appearance-style-preview appearance-style-{{ style.key }}" aria-hidden="true"
+                 style="--p-brand: {{ style.brand }}; --p-accent: {{ style.accent }}; --p-bg: {{ style.page }};{% if style.font_stack %} --p-font: {{ style.font_stack }};{% endif %}">
+                <span class="p-header"><span class="p-logo"></span><span class="p-tab"></span><span class="p-ask"></span></span>
+                <span class="p-body"><span class="p-title">Aa</span><span class="p-line"></span><span class="p-line p-short"></span><span class="p-button"></span></span>
+            </div>
+            <h3 id="style-{{ style.key }}-name">{{ style.label }}</h3>
+            <p>{{ style.description }}</p>
+            <button type="button" class="appearance-style-use" aria-describedby="style-{{ style.key }}-name"
+                    data-style="{{ style.key }}" data-brand="{{ style.brand }}" data-accent="{{ style.accent }}"
+                    data-background="{{ style.background }}" data-font="{{ style.font }}" data-width="{{ style.width }}"
+                    data-theme="{{ style.theme|default:"" }}" aria-pressed="{% if style.key == info.values.style %}true{% else %}false{% endif %}">{% trans "Use this style" %}</button>
+        </li>
         {% endfor %}
-    </div>
+    </ul>
 </section>
 <section class="admin-guide appearance-guide" aria-labelledby="appearance-sample-title">
     <div class="admin-guide-header"><h2 id="appearance-sample-title">{% trans "Sample" %}</h2></div>

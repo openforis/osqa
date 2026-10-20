@@ -975,7 +975,17 @@ in one file, `forum/skins/default/media/style/osqa.css`, drawn with colour
 variables (`--brand`, `--accent`, ... at the start of its section 2).
 
 Admin > Look and feel changes the common things without writing CSS:
-- **Colours:** pick one of the presets or a brand colour (links, buttons,
+- **Ready-made styles:** ten complete looks, each shown as a card with a
+  small drawing: Classic (the skin as it comes), Open Foris (the palette of
+  the Open Foris Support site: muted red-brown links with a teal accent),
+  Forest, Ocean, Editorial (serif, narrow, square corners), Plum (rounded,
+  pill-shaped buttons), Midnight (new visitors get the dark theme), Minimal
+  (greys, no shadows), Crimson and Earth. "Use this style" (or the Style
+  list) fills in the fields below, which can still be changed; while a
+  style is chosen its own touches (corners, a stripe on the header, the
+  headings' font) are added too. Styles are data, `STYLES` in
+  `forum/utils/appearance.py`.
+- **Colours:** a brand colour (links, buttons,
   the current tab) and an accent colour (the Ask button). A sample of a
   page in the light and dark themes follows the fields as they change.
   Text stays readable whatever is picked: a colour too light for white

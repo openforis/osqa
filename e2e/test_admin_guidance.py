@@ -1,6 +1,6 @@
 """The admin's guidance: the admin search, the filter of a settings page, the
 External Keys page's per-service setup guides and Admin > Look and feel
-(presets, sample, contrast, what the public pages get).
+(ready-made styles, sample, contrast, what the public pages get).
 
 E2E_SCREENSHOTS=<folder> saves screenshots of the pages, on a desktop and on
 a phone in dark mode, for a look by eye."""
@@ -133,9 +133,13 @@ class AdminGuidanceTest(E2ETestCase):
         page = self.open(self.admin)
         self.visit(page, '/admin/settings/appearance/')
         self.screenshot(page, 'appearance')
-        page.get_by_role('button', name='Forest green').click()
+        page.click('.appearance-style-use[data-style="forest"]')
         self.assertEqual(page.input_value('#id_THEME_BRAND_COLOR'), '#2d6a3e')
-        self.assertEqual(page.locator('.appearance-preset[aria-pressed="true"]').inner_text().strip(), 'Forest green')
+        self.assertEqual(page.input_value('#id_THEME_STYLE'), 'forest')
+        self.assertEqual(page.input_value('#id_THEME_FONT'), 'humanist')
+        self.assertEqual(page.input_value('#id_THEME_BACKGROUND'), 'tinted')
+        self.assertEqual(page.get_attribute('.appearance-style-use[data-style="forest"]', 'aria-pressed'), 'true')
+        self.assertIn('unsaved changes', page.locator('.admin-unsaved-status').inner_text())
         sample = page.locator('.appearance-sample-light')
         self.assertEqual(sample.evaluate('s => s.style.getPropertyValue("--sample-brand")'), '#2d6a3e')
         page.select_option('#id_THEME_FONT', 'serif')
@@ -149,6 +153,7 @@ class AdminGuidanceTest(E2ETestCase):
         style = visitor.locator('#appearance-style').inner_text()
         self.assertIn('--brand:#2d6a3e', style)
         self.assertIn('--content-width:1320px', style)
+        self.assertIn('#roof{box-shadow:inset 0 4px 0 var(--brand)}', style)  # the style's own rule
         self.assertEqual(visitor.evaluate('getComputedStyle(document.documentElement).getPropertyValue("--brand").trim()'),
                          '#2d6a3e')
         self.assertIn('Charter', visitor.evaluate('getComputedStyle(document.body).fontFamily'))
@@ -188,7 +193,7 @@ class AdminGuidanceTest(E2ETestCase):
     def test_preview_look_and_feel_before_saving(self):
         page = self.open(self.admin)
         self.visit(page, '/admin/settings/appearance/')
-        page.get_by_role('button', name='Plum').click()
+        page.click('.appearance-style-use[data-style="plum"]')
         with page.expect_popup() as popup:
             page.click('#preview')
         preview = popup.value
@@ -279,3 +284,31 @@ class AdminGuidanceTest(E2ETestCase):
         page.locator('#id_APP_TITLE').press('/')
         self.assertIn('/', page.input_value('#id_APP_TITLE'))
         self.assertEqual(page.evaluate('document.activeElement.id'), 'id_APP_TITLE')
+
+    def test_choosing_a_style_from_the_list(self):
+        page = self.open(self.admin)
+        self.visit(page, '/admin/settings/appearance/')
+        page.select_option('#id_THEME_STYLE', 'midnight')
+        self.assertEqual(page.input_value('#id_THEME_BRAND_COLOR'), '#1e3a8a')
+        self.assertEqual(page.input_value('#id_DEFAULT_THEME'), 'dark')
+        with page.expect_navigation():
+            page.click('#submit')
+        self.check_page(page)
+        self.assertEqual(settings.THEME_STYLE.value, 'midnight')
+
+    def test_every_style_on_the_site(self):
+        """Each style applied, as visitors see it (screenshots with E2E_SCREENSHOTS)."""
+        from forum.utils import appearance
+        alice = self.create_user('alice', reputation=100)
+        question = self.create_question(alice, 'How do I export Collect survey data to CSV?', tags='collect export')
+        self.create_answer(alice, question)
+        for style in appearance.STYLES:
+            with self.subTest(style=style.key):
+                for setting, value in ((settings.THEME_STYLE, style.key), (settings.THEME_BRAND_COLOR, style.brand),
+                                       (settings.THEME_ACCENT_COLOR, style.accent),
+                                       (settings.THEME_BACKGROUND, style.background),
+                                       (settings.THEME_FONT, style.font), (settings.THEME_PAGE_WIDTH, style.width)):
+                    self.set_setting(setting, value)
+                visitor = self.open(dark=style.theme == 'dark')
+                self.visit(visitor, question.get_absolute_url())
+                self.screenshot(visitor, 'style-%s' % style.key)

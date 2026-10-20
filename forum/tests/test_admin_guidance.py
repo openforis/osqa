@@ -117,15 +117,41 @@ class AdminSearchTest(OSQATestCase):
 class AppearanceTest(SettingMixin, OSQATestCase):
     def values(self, **changes):
         return dict({'brand': appearance.DEFAULT_BRAND, 'accent': appearance.DEFAULT_ACCENT,
-                     'background': 'default', 'font': 'system', 'width': 'standard'}, **changes)
+                     'background': 'default', 'font': 'system', 'width': 'standard', 'style': 'none'}, **changes)
 
     def test_defaults_write_nothing(self):
         self.assertEqual(appearance.css(self.values()), '')
         self.assertNotContains(self.client.get('/'), 'appearance-style')
 
-    def test_presets_are_readable_as_they_are(self):
-        for key, label, brand, accent in appearance.PRESETS:
-            self.assertEqual(appearance.adjustments(self.values(brand=brand, accent=accent)), [], key)
+    def test_ten_styles_that_are_readable_as_they_are(self):
+        from forum.utils import display
+        self.assertEqual(len(appearance.STYLES), 10)
+        self.assertEqual(len(appearance.STYLES_BY_KEY), 10)
+        for style in appearance.STYLES:
+            values = self.values(brand=style.brand, accent=style.accent, background=style.background,
+                                 font=style.font, width=style.width, style=style.key)
+            self.assertEqual(appearance.adjustments(values), [], style.key)
+            self.assertIn(style.font, appearance.FONTS)
+            self.assertIn(style.width, appearance.WIDTHS)
+            self.assertIn(style.background, appearance.BACKGROUNDS)
+            self.assertIn(style.theme, (None,) + display.THEMES)
+            self.assertNotIn('<', appearance.css(values))
+
+    def test_open_foris_style(self):
+        style = appearance.STYLES_BY_KEY['openforis']
+        self.assertEqual((style.brand, style.accent), ('#8f5a5a', '#17798f'))
+        css = appearance.css(self.values(brand=style.brand, accent=style.accent, style='openforis'))
+        self.assertIn('--brand:#8f5a5a', css)
+        self.assertIn('#roof{box-shadow:inset 0 4px 0 var(--brand)}', css)
+
+    def test_a_style_adds_its_rules_only_while_chosen(self):
+        self.set(settings.THEME_STYLE, 'minimal')
+        self.assertContains(self.client.get('/'), '--shadow:none')
+        self.set(settings.THEME_STYLE, 'none')
+        self.assertNotContains(self.client.get('/'), '--shadow:none')
+        # The classic style is the skin itself: nothing to write.
+        self.set(settings.THEME_STYLE, 'classic')
+        self.assertNotContains(self.client.get('/'), 'appearance-style')
 
     def test_light_colours_are_darkened_and_dark_mode_gets_its_own(self):
         values = self.values(brand='#ffd166', accent='#ffe066')
