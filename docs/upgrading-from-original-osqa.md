@@ -248,8 +248,11 @@ these, because the old values may not fit the new version:
   - Inline `<script>` elements there still run (they get the page's CSP
     nonce), but inline event handlers (`onclick="..."`), `javascript:` links
     and scripts in the sidebar or custom pages don't.
-  - Old Google Analytics (`ga.js`) no longer collects data; use Google
-    Analytics 4 or another tool.
+  - Old Google Analytics (`ga.js`, a `UA-` key) no longer collects data. Enter
+    a Google Analytics 4 measurement ID (`G-…`) under Admin > External Keys
+    instead: visitors are asked before it loads (README, "Google Analytics").
+    Remove any old Analytics snippet from the custom `<head>`, or it runs
+    without asking.
 - **Header search:** the forum's own search is used by default. It finds
   questions by keywords, and by meaning when the AI module is configured.
   The Open Foris forum used a Google Programmable Search engine, which was

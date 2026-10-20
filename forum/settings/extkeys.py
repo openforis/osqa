@@ -9,8 +9,8 @@ help_text = _("This is the code you get when you register your site at <a href='
 required=False))
 
 GOOGLE_ANALYTICS_KEY = Setting('GOOGLE_ANALYTICS_KEY', '', EXT_KEYS_SET, dict(
-label = _("Google analytics key"),
-help_text = _("Your Google analytics key. You can get one at the <a href='http://www.google.com/analytics/'>Google analytics official website</a>"),
+label = _("Google Analytics 4 measurement ID"),
+help_text = _("The measurement ID of your Google Analytics 4 web stream, starting with G- (Admin > Data streams at <a href='https://analytics.google.com/'>analytics.google.com</a>). Visitors are asked first: Analytics loads only for those who accept. Old Universal Analytics keys (UA-) are ignored."),
 required=False))
 
 

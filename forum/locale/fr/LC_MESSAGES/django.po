@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: OSQA (Open Foris edition)\n"
-"Report-Msgid-Bugs-To: https://github.com/openforis/osqa/issues\n"
-"POT-Creation-Date: 2026-10-14 10:57-0400\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-20 08:36-0400\n"
 "PO-Revision-Date: 2026-10-14 12:00+0000\n"
 "Last-Translator: Open Foris <https://github.com/openforis/osqa>\n"
 "Language-Team: French <https://github.com/openforis/osqa>\n"
@@ -1299,11 +1299,11 @@ msgstr "Code de sitemap Google"
 msgid "This is the code you get when you register your site at <a href='https://www.google.com/webmasters/tools/'>Google webmaster central</a>."
 msgstr "Il s'agit du code obtenu lors de l'enregistrement de votre site sur <a href='https://www.google.com/webmasters/tools/'>Google webmaster central</a>."
 
-msgid "Google analytics key"
-msgstr "Clé Google Analytics"
+msgid "Google Analytics 4 measurement ID"
+msgstr "ID de mesure Google Analytics 4"
 
-msgid "Your Google analytics key. You can get one at the <a href='http://www.google.com/analytics/'>Google analytics official website</a>"
-msgstr "Votre clé Google Analytics. Vous pouvez en obtenir une sur le <a href='http://www.google.com/analytics/'>site officiel de Google Analytics</a>"
+msgid "The measurement ID of your Google Analytics 4 web stream, starting with G- (Admin > Data streams at <a href='https://analytics.google.com/'>analytics.google.com</a>). Visitors are asked first: Analytics loads only for those who accept. Old Universal Analytics keys (UA-) are ignored."
+msgstr "L'ID de mesure de votre flux Web Google Analytics 4, qui commence par G- (Administration > Flux de données sur <a href='https://analytics.google.com/'>analytics.google.com</a>). Les visiteurs sont d'abord consultés : Analytics ne se charge que pour ceux qui acceptent. Les anciennes clés Universal Analytics (UA-) sont ignorées."
 
 msgid "Google custom search engine ID"
 msgstr "ID du moteur de recherche personnalisé Google"
@@ -3887,6 +3887,30 @@ msgstr "Non précisée"
 msgid "%(name)s (current)"
 msgstr "%(name)s (actuelle)"
 
+msgid "May we measure your visit?"
+msgstr "Pouvons-nous mesurer votre visite ?"
+
+msgid "With your permission we use Google Analytics, which sets cookies, to count visits and see which pages help people. It is not used for advertising, and nothing is sent unless you accept. You can change your choice at any time with “Analytics cookies” at the bottom of the page."
+msgstr "Avec votre accord, nous utilisons Google Analytics, qui dépose des cookies, pour compter les visites et voir quelles pages aident les gens. Il ne sert pas à la publicité et rien n'est envoyé si vous n'acceptez pas. Vous pouvez changer votre choix à tout moment avec « Cookies de mesure d'audience » en bas de la page."
+
+msgid "How Google uses this data"
+msgstr "Comment Google utilise ces données"
+
+msgid "You have accepted analytics cookies."
+msgstr "Vous avez accepté les cookies de mesure d'audience."
+
+msgid "You have declined analytics cookies."
+msgstr "Vous avez refusé les cookies de mesure d'audience."
+
+msgid "Accept"
+msgstr "Accepter"
+
+msgid "Decline"
+msgstr "Refuser"
+
+msgid "Analytics cookies"
+msgstr "Cookies de mesure d'audience"
+
 msgid "Keyboard shortcuts"
 msgstr "Raccourcis clavier"
 
@@ -4466,9 +4490,6 @@ msgstr "%(who)s a choisi cette réponse comme réponse correcte"
 
 msgid "mark this answer as the accepted answer"
 msgstr "marquer cette réponse comme réponse acceptée"
-
-msgid "Accept"
-msgstr "Accepter"
 
 msgctxt "answer state"
 msgid "Accepted"

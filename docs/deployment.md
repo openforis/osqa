@@ -647,14 +647,16 @@ python manage.py restore_site backups/osqa-backup-20261015-033000.tar.gz --confi
    settings". Notifications, sign-in links and digests depend on it.
 3. **Admin > Basic settings and look and feel:** site name, description, logo
    and colours; the about, FAQ and privacy page texts.
-4. **Admin > Security:** sign-in lockout, posting limits. If you add analytics
-   or widgets in the custom `<head>` or footer, list their origins under
-   "Extra script sources", or the Content-Security-Policy blocks them.
+4. **Admin > Security:** sign-in lockout, posting limits. If you add widgets
+   or another analytics tool in the custom `<head>` or footer, list their
+   origins under "Extra script sources", or the Content-Security-Policy blocks
+   them (Google Analytics needs nothing there: see the next step).
 5. **Admin > Users settings:** sign-up protections and dormant-account
    clean-up (defaults are fine for most sites).
 6. **Optional:**
    - Admin > External Keys: Google/GitHub/Facebook sign-in (callback URLs in
-     the README's "Social login").
+     the README's "Social login"), Google Analytics 4 measurement ID
+     (visitors are asked first; README "Google Analytics").
    - Admin > AI assistance: Gemini key or Vertex AI project.
    - `SENTRY_DSN`.
 7. **Check:**

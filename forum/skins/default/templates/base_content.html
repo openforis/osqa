@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!-- base_content.html -->
-{% load i18n extra_tags extra_filters ui_registry seo_tags sentry_tags pwa_tags display_tags account_tags %}
+{% load i18n extra_tags extra_filters ui_registry seo_tags sentry_tags pwa_tags display_tags account_tags analytics_tags %}
 <html lang="{{ LANGUAGE_CODE }}"{% display_attrs %}>
     <head>{% block after_head_js %}{% endblock %}
         <meta charset="utf-8" />
@@ -100,6 +100,7 @@
     <body>
         <a class="skip-link" href="#wrapper">{% trans "Skip to content" %}</a>
         <div class="wrapper">
+        {% analytics_consent %}
         <div id="offline-banner" class="offline-banner" role="status" hidden>{% trans "You are offline – showing a saved copy of this page." %}</div>
         {% if settings.USE_CUSTOM_HEADER|or_preview:request %}
             <div id="custom_header">
@@ -149,19 +150,6 @@
         {% endif %}
         {% block endjs %}
         {% endblock %}
-        {% if settings.GOOGLE_ANALYTICS_KEY %}
-            <script nonce="{{ csp_nonce }}" type="text/javascript">
-                var _gaq = _gaq || [];
-                _gaq.push(['_setAccount', '{{ settings.GOOGLE_ANALYTICS_KEY }}']);
-                _gaq.push(['_trackPageview']);
-
-                (function() {
-                    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-                    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-                    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-                })();
-            </script>
-        {% endif %}
         </div>
 
         <!-- Put all elements with fixed position here, IE6 fixed position fix: http://ryanfait.com/position-fixed-ie6/ -->

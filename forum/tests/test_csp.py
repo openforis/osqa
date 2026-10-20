@@ -101,7 +101,7 @@ class NoncePolicyTest(SettingMixin, OSQATestCase):
     def test_pages_have_no_script_without_nonce(self):
         question = Question(author=self.admin, title='A question about nonces', body='<p>Body text</p>', tagnames='csp')
         question.save()
-        self.set(settings.GOOGLE_ANALYTICS_KEY, 'UA-1234-5')
+        self.set(settings.GOOGLE_ANALYTICS_KEY, 'G-TEST1234')  # the consent banner's inline script
         anonymous = ['/', question.get_absolute_url(), '/users/', '/tags/', '/account/signin/',
                      '/account/local/register/', '/does-not-exist/']
         for url in anonymous:
