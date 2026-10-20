@@ -4,7 +4,7 @@ from django.utils.html import format_html
 
 from forum import settings
 from forum.templatetags.extra_tags import media
-from forum.utils import display
+from forum.utils import appearance, display
 from forum.views import pwa
 
 register = template.Library()
@@ -30,9 +30,9 @@ def pwa_head(context):
         theme = format_html(
             '<meta name="theme-color" content="{}" media="{}" />\n        '
             '<meta name="theme-color" content="{}" media="{}" />',
-            pwa.THEME_COLOR, light, pwa.THEME_COLOR_DARK, dark)
+            appearance.theme_color(context.get('request')), light, pwa.THEME_COLOR_DARK, dark)
     else:
-        theme = format_html('<meta name="theme-color" content="{}" />', pwa.THEME_COLOR)
+        theme = format_html('<meta name="theme-color" content="{}" />', appearance.theme_color(context.get('request')))
     return format_html(
         '{}\n        <link rel="manifest" href="{}" />\n        <link rel="apple-touch-icon" href="{}" />\n        '
         '<script defer src="{}" data-user="{}"></script>',

@@ -1,7 +1,9 @@
-"""Tags for the administration layout (osqaadmin/base.html)."""
+"""Tags for the administration layout (osqaadmin/base.html) and its pages."""
 import html
+import textwrap
 
 from django import template
+from django.template.loader import get_template
 from django.template.loader_tags import BLOCK_CONTEXT_KEY
 from django.utils.html import strip_tags
 
@@ -20,3 +22,38 @@ def block_text(context, name):
         return ''
     # Plain text (escaped again by simple_tag), not HTML: it's a heading.
     return ' '.join(html.unescape(strip_tags(block.nodelist.render(context))).split())
+
+
+class ExampleNode(template.Node):
+    def __init__(self, nodelist, example_id, title):
+        self.nodelist, self.example_id, self.title = nodelist, example_id, title
+
+    def render(self, context):
+        # The code as written (variables such as {{ app_url }} filled in, not
+        # escaped twice), without the template's indentation.
+        autoescape, context.autoescape = context.autoescape, False
+        try:
+            code = self.nodelist.render(context)
+        finally:
+            context.autoescape = autoescape
+        return get_template('osqaadmin/guides/_example.html').render({
+            'id': self.example_id.resolve(context), 'title': self.title.resolve(context),
+            'code': textwrap.dedent(code.strip('\n')).rstrip(),
+        })
+
+
+@register.tag
+def example(parser, token):
+    """A code example with a copy button, for the settings pages' guides
+    (osqaadmin/guides/*.html):
+
+        {% example "css-logo" _("A bigger logo") %}
+            #logo img { max-height: 56px; }
+        {% endexample %}
+    """
+    bits = token.split_contents()
+    if len(bits) != 3:
+        raise template.TemplateSyntaxError('%s takes an id and a title' % bits[0])
+    nodelist = parser.parse(('endexample',))
+    parser.delete_first_token()
+    return ExampleNode(nodelist, parser.compile_filter(bits[1]), parser.compile_filter(bits[2]))

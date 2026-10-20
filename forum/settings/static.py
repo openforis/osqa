@@ -10,7 +10,7 @@ RENDER_CHOICES = (
 
 STATIC_PAGE_REGISTRY = Setting('STATIC_PAGE_REGISTRY', {})
 
-CSS_SET = SettingSet('css', 'Custom CSS', "Define some custom css you can use to override the default css.", 2000,
+CSS_SET = SettingSet('css', _('Custom CSS'), _("Define some custom css you can use to override the default css."), 2000,
                      can_preview=True)
 
 USE_CUSTOM_CSS = Setting('USE_CUSTOM_CSS', False, CSS_SET, dict(
@@ -24,7 +24,7 @@ CUSTOM_CSS = Setting('CUSTOM_CSS', '', CSS_SET, dict(
         widget=Textarea(attrs={'rows': '25'}),
         required=False))
 
-HEAD_AND_FOOT_SET = SettingSet('headandfoot', 'Header and Footer', "Adds a custom header and/or footer to your page",
+HEAD_AND_FOOT_SET = SettingSet('headandfoot', _('Header and Footer'), _("Adds a custom header and/or footer to your page"),
                                2000, can_preview=True)
 
 USE_CUSTOM_HEADER = Setting('USE_CUSTOM_HEADER', False, HEAD_AND_FOOT_SET, dict(
@@ -91,7 +91,7 @@ CUSTOM_FOOTER_MODE = Setting('CUSTOM_FOOTER_MODE', 'replace', HEAD_AND_FOOT_SET,
         choices=CUSTOM_FOOTER_MODE_CHOICES,
         required=False))
 
-HEAD_SET = SettingSet('head', '<head>', "Define some custom elements to include in the head section of every page.",
+HEAD_SET = SettingSet('head', '<head>', _("Define some custom elements to include in the head section of every page."),
                       2000, can_preview=True)
 
 USE_CUSTOM_HEAD = Setting('USE_CUSTOM_HEAD', False, HEAD_SET, dict(

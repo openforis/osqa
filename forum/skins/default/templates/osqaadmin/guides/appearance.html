@@ -1,0 +1,58 @@
+{% load i18n extra_tags appearance_tags %}{% comment %}
+Admin > Look and feel (forum/settings/appearance.py): colour presets and a
+sample of the site in both themes, both following the fields as they change
+(media/js/osqa.appearance.js, which computes the colours the way
+forum/utils/appearance.py does). Included above the settings by set.html.
+{% endcomment %}{% appearance_info as info %}
+<script defer src="{% media "/media/js/osqa.appearance.js" %}"></script>
+<section class="admin-guide appearance-guide" aria-labelledby="appearance-presets-title">
+    <div class="admin-guide-header"><h2 id="appearance-presets-title">{% trans "Colour presets" %}</h2></div>
+    <p class="admin-guide-summary">{% trans "Pick a starting point; it fills in the brand and accent colours below, which you can still change. Nothing changes for visitors until you save." %}</p>
+    <div class="appearance-presets" role="group" aria-labelledby="appearance-presets-title">
+        {% for key, label, brand, accent in info.presets %}
+        <button type="button" class="appearance-preset" data-brand="{{ brand }}" data-accent="{{ accent }}"
+                aria-pressed="{% if brand == info.values.brand and accent == info.values.accent %}true{% else %}false{% endif %}">
+            <span class="appearance-swatches" aria-hidden="true"><span style="background: {{ brand }}"></span><span style="background: {{ accent }}"></span></span>
+            {{ label }}
+        </button>
+        {% endfor %}
+    </div>
+</section>
+<section class="admin-guide appearance-guide" aria-labelledby="appearance-sample-title">
+    <div class="admin-guide-header"><h2 id="appearance-sample-title">{% trans "Sample" %}</h2></div>
+    <p class="admin-guide-summary">{% trans "How the colours and font look on the site's light and dark themes. Press Preview below the settings to browse the whole site with them." %}</p>
+    <div class="appearance-samples" id="appearance-samples"
+         data-default-brand="{{ info.defaults.brand }}" data-default-accent="{{ info.defaults.accent }}"
+         data-fonts="{{ info.fonts_json }}">
+        {% for theme, theme_label in info.themes %}
+        <div class="appearance-sample appearance-sample-{{ theme }}" data-theme-sample="{{ theme }}" aria-label="{{ theme_label }}" role="img">
+            <div class="sample-header">
+                <span class="sample-site">{{ settings.APP_SHORT_NAME }}</span>
+                <span class="sample-tab sample-tab-current">{% trans "Questions" %}</span>
+                <span class="sample-tab">{% trans "Tags" %}</span>
+                <span class="sample-ask">{% trans "Ask a question" %}</span>
+            </div>
+            <div class="sample-body">
+                <div class="sample-card">
+                    <span class="sample-score">12<small>{% trans "votes" %}</small></span>
+                    <div>
+                        <span class="sample-link">{% trans "How do I export survey data to CSV?" %}</span>
+                        <p class="sample-text">{% trans "Plain text looks like this, with a highlighted" %} <span class="sample-soft">{% trans "notice" %}</span>.</p>
+                        <span class="sample-tag">export</span> <span class="sample-tag">csv</span>
+                    </div>
+                </div>
+                <span class="sample-button">{% trans "Post your answer" %}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <ul class="appearance-contrast" id="appearance-contrast" aria-live="polite"
+        data-ok-text="{% trans "readable" %}"
+        data-brand-text="{% trans "Brand colour: links and white button text %(ratio)s:1." %}"
+        data-accent-text="{% trans "Accent colour: white text %(ratio)s:1." %}"
+        data-adjusted-text="{% trans "Too light for 4.5:1, so the site uses the darker %(color)s instead." %}">
+        {% for what, picked, used in info.adjustments %}
+        <li>{% if what == "brand" %}{% blocktrans %}Brand colour {{ picked }} is too light for 4.5:1 contrast; the site uses {{ used }}.{% endblocktrans %}{% else %}{% blocktrans %}Accent colour {{ picked }} is too light for 4.5:1 contrast; the site uses {{ used }}.{% endblocktrans %}{% endif %}</li>
+        {% endfor %}
+    </ul>
+</section>

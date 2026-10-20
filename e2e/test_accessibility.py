@@ -187,7 +187,9 @@ class AccessibilityTest(E2ETestCase):
 
     def test_administrator_pages(self):
         self.check_pages(self.admin, [self.question.get_absolute_url(), reverse('admin_index'),
-                                      '/admin/settings/basic/', '/admin/support/', '/admin/statistics/',
+                                      '/admin/settings/basic/', '/admin/settings/extkeys/',
+                                      '/admin/settings/appearance/', '/admin/settings/api/', '/admin/search/?q=logo',
+                                      '/admin/support/', '/admin/statistics/',
                                       '/admin/static_pages/new/', '/admin/email-previews/new-answer/',
                                       '/admin/tools/createuser/', '/admin/tools/nodeman/'])
         self.check_pages(self.admin, [(reverse('admin_index'), '#admin-menu > summary')], views=[('mobile', True)])

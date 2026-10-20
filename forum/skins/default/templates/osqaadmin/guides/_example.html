@@ -1,0 +1,10 @@
+{% load i18n %}{% comment %}
+One code example of a settings page guide, with a copy button
+(osqa.copy.js). Include with id, title and code.
+{% endcomment %}<div class="admin-example">
+    <div class="admin-example-head">
+        <span class="admin-example-title" id="{{ id }}-title">{{ title }}</span>
+        <button type="button" class="button admin-example-copy" data-copy-target="#{{ id }}" data-copied-text="{% trans "Copied" %}" aria-describedby="{{ id }}-title">{% trans "Copy" %}</button>
+    </div>
+    <pre class="admin-example-code" tabindex="0" aria-labelledby="{{ id }}-title"><code id="{{ id }}">{{ code }}</code></pre>
+</div>

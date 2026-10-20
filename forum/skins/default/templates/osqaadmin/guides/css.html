@@ -1,0 +1,49 @@
+{% load i18n admin_tags %}{% comment %}
+Admin > Custom CSS (forum/settings/static.py): the skin's variables and
+examples to start from.
+{% endcomment %}
+<section class="admin-guide" aria-labelledby="css-guide-title">
+    <div class="admin-guide-header"><h2 id="css-guide-title">{% trans "Before writing CSS" %}</h2></div>
+    <p class="admin-guide-summary">{% url "admin_set" "appearance" as look_url %}{% blocktrans %}Colours, the font and the page width are easier to change under <a href="{{ look_url }}">Look and feel</a>, which also keeps text readable and works out dark mode for you. Custom CSS is loaded after it and after the skin's style sheet, so its rules win. Use Preview to try it on the site before visitors see it.{% endblocktrans %}</p>
+    <details class="admin-guide-steps">
+        <summary>{% trans "Variables and examples" %}</summary>
+        <p>{% blocktrans %}The skin draws with CSS variables; changing one changes it everywhere. The main ones: <code>--brand</code> (links, buttons), <code>--brand-dark</code> (hover), <code>--brand-soft</code> (light highlights), <code>--accent</code> (the Ask button), <code>--text</code>, <code>--muted</code>, <code>--border</code>, <code>--surface</code> (boxes), <code>--background</code> (page), <code>--radius</code>, <code>--font</code> and <code>--content-width</code>.{% endblocktrans %}</p>
+        {% example "css-example-colours" _("Colours for both themes") %}
+            :root {
+                --brand: #2d6a3e;
+                --brand-dark: #1f4d2c;
+                --brand-soft: #e9f3ec;
+            }
+
+            /* Dark theme: always :root[data-theme="dark"], never a media query. */
+            :root[data-theme="dark"] {
+                --brand: #7fcf94;
+                --brand-soft: #16281c;
+            }
+        {% endexample %}
+        {% example "css-example-logo" _("A bigger, rounded logo") %}
+            #logo img {
+                max-height: 56px;
+                border-radius: 8px;
+            }
+        {% endexample %}
+        {% example "css-example-corners" _("Square corners on boxes and buttons") %}
+            :root {
+                --radius: 0;
+            }
+
+            input[type="submit"], input[type="button"], button, a.button {
+                border-radius: 0;
+            }
+        {% endexample %}
+        {% example "css-example-header" _("Style the custom header (Admin > Header and Footer)") %}
+            #custom_header {
+                padding: 6px 16px;
+                background: var(--brand-soft);
+                font-size: 13px;
+            }
+        {% endexample %}
+        <p>{% blocktrans %}Check your changes on a phone-sized window and in the dark theme as well (the theme switch is in the footer). If your CSS assumes a light background, turn off dark mode under Look and feel.{% endblocktrans %}</p>
+        <p class="admin-visually-hidden" role="status"></p>
+    </details>
+</section>

@@ -8,7 +8,7 @@
    "Dark mode"). Django's own CSS follows the same attribute.
 
    Sections: palette, layout (header, breadcrumbs, menu, content), messages,
-   buttons and forms, then one per page (dashboard, community health, statistics, static pages,
+   buttons and forms, settings guides and search, then one per page (dashboard, community health, statistics, static pages,
    node manager, moderation inbox, support), then phones. */
 
 /* :root[data-theme]: above Django's html[data-theme="light"/"dark"] palettes;
@@ -434,7 +434,8 @@ input.longstring {
 }
 
 /* Links within text are underlined, so they don't rely on colour alone (WCAG 1.4.1). */
-.breadcrumbs a, .admin_message a, #footer a, .mod-note a {
+.breadcrumbs a, .admin_message a, #footer a, .mod-note a, .admin-guide p a, .admin-guide li a,
+.admin-settings-table td a, .admin-search-help a {
     text-decoration: underline;
 }
 
@@ -557,23 +558,23 @@ input[type="file"]::file-selector-button:hover {
     color: var(--body-quiet-color);
 }
 
-#admin_form tr th {
+#admin_form tr th, .admin-settings-table tr th {
     white-space: nowrap;
 }
 
-#admin_form tr td:first-of-type {
+#admin_form tr td:first-of-type, .admin-settings-table tr td:first-of-type {
     width: 100%;
 }
 
 /* "context | default" tools under each setting's label. */
-#admin_form tr th .fieldtool {
+#admin_form tr th .fieldtool, .admin-settings-table tr th .fieldtool {
     display: inline-block;
     padding: 4px 2px;
     font-size: 0.8125rem;
     font-weight: 400;
 }
 
-#admin_form tr th .sep {
+#admin_form tr th .sep, .admin-settings-table tr th .sep {
     margin: 0 6px;
     color: var(--body-quiet-color);
     font-weight: 400;
@@ -598,6 +599,555 @@ input[type="file"]::file-selector-button:hover {
     align-items: center;
     gap: 8px;
     font-weight: 400;
+}
+
+/* ---- Settings guides and search ------------------------------------------ */
+
+/* Text for screen readers only. */
+.admin-visually-hidden {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* The search box at the top of the menu (admin.search). */
+.admin-menu-search {
+    display: flex;
+    gap: 4px;
+    margin: 0 0 8px;
+}
+
+.admin-menu-search input[type="search"], .admin-search-page input[type="search"] {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: var(--osqa-tap);
+    padding: 4px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--osqa-control-bg);
+    color: var(--body-fg);
+    box-sizing: border-box;
+}
+
+.admin-menu-search button {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: var(--osqa-tap);
+    min-height: var(--osqa-tap);
+    padding: 0;
+}
+
+.admin-search-page {
+    display: flex;
+    gap: 8px;
+    max-width: 640px;
+    margin: 0 0 12px;
+}
+
+.admin-search-count {
+    margin: 0 0 12px;
+    color: var(--body-quiet-color);
+}
+
+.admin-search-results {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.admin-search-results li.admin-search-result {
+    margin: 0 0 8px;
+    padding: 10px 14px;
+    border: 1px solid var(--hairline-color);
+    border-radius: var(--osqa-radius);
+    list-style: none;
+}
+
+.admin-search-title {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.admin-search-where {
+    display: block;
+    margin-top: 2px;
+    color: var(--body-quiet-color);
+    font-size: 0.8125rem;
+}
+
+.admin-search-help {
+    margin: 4px 0 0;
+    padding: 0;
+}
+
+.admin-search-results mark {
+    padding: 0 1px;
+    border-radius: 2px;
+    background: var(--osqa-notice-bg);
+    color: inherit;
+    box-shadow: inset 0 -2px 0 var(--osqa-notice-border);
+}
+
+/* "Find a setting on this page" (osqa.admin.js). */
+.admin-filter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 10px;
+    margin: 0 0 16px;
+}
+
+.admin-filter label {
+    font-weight: 600;
+}
+
+.admin-filter-input {
+    flex: 1 1 260px;
+    max-width: 420px;
+    min-height: var(--osqa-tap);
+    box-sizing: border-box;
+}
+
+.admin-filter-status {
+    flex-basis: 100%;
+    margin: 0;
+    color: var(--body-quiet-color);
+}
+
+.admin-filter-status:empty {
+    display: none;
+}
+
+.admin-settings-table tr[hidden], .admin-guide[hidden] {
+    display: none !important;
+}
+
+/* A setting the search linked to. */
+.setting-row {
+    scroll-margin-top: 16px;
+}
+
+.setting-row:target > th, .setting-row:target > td {
+    background: var(--osqa-notice-bg);
+}
+
+.setting-example {
+    display: block;
+    margin-top: 4px;
+    color: var(--body-quiet-color);
+    font-size: 0.8125rem;
+    overflow-wrap: anywhere;
+}
+
+/* A settings page's sections (forum/settings/guides.py). */
+.admin-guide {
+    margin: 0 0 16px;
+    padding: 14px 16px 6px;
+    border: 1px solid var(--hairline-color);
+    border-radius: var(--osqa-radius);
+}
+
+.admin-guide-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 12px;
+    margin: 0 0 6px;
+}
+
+#content-main .admin-guide-header h2 {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--body-loud-color);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+.admin-status {
+    display: inline-block;
+    padding: 2px 10px;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+.admin-status-on {
+    background: var(--osqa-accepted-bg);
+    color: var(--osqa-good-fg);
+}
+
+.admin-status-partial {
+    border-color: var(--osqa-notice-border);
+    background: var(--osqa-notice-bg);
+    color: var(--osqa-notice-fg);
+}
+
+.admin-status-off {
+    border-color: var(--hairline-color);
+    background: var(--darkened-bg);
+    color: var(--body-quiet-color);
+}
+
+.admin-status-warning {
+    background: var(--osqa-verdict-bg);
+    color: var(--osqa-verdict-fg);
+}
+
+.admin-guide-summary, .admin-guide-message {
+    max-width: 75ch;
+    margin: 0 0 8px;
+    padding: 0;
+}
+
+.admin-guide-message {
+    padding: 8px 12px;
+    border-radius: 6px;
+    background: var(--darkened-bg);
+}
+
+.admin-guide-warning .admin-guide-message {
+    background: var(--osqa-verdict-bg);
+    color: var(--osqa-verdict-fg);
+}
+
+.admin-guide-partial .admin-guide-message {
+    background: var(--osqa-notice-bg);
+    color: var(--osqa-notice-fg);
+}
+
+.admin-guide-steps {
+    margin: 0 0 10px;
+}
+
+.admin-guide-steps > summary {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--osqa-tap);
+    color: var(--link-fg);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.admin-guide-steps ol {
+    max-width: 75ch;
+    margin: 4px 0 10px;
+    padding-left: 22px;
+}
+
+/* Django's code strong is brown, too dark on the dark theme. */
+.admin-guide code strong {
+    color: inherit;
+}
+
+.admin-guide-steps ol li {
+    margin: 0 0 6px;
+    padding-left: 2px;
+    list-style: decimal;
+    line-height: 1.5;
+}
+
+.admin-guide-links {
+    margin: 4px 0 8px;
+    padding: 0;
+}
+
+.admin-guide-links li {
+    display: inline-block;
+    margin: 0 16px 4px 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* A value to copy (a redirect URI) with its button. */
+.admin-copy {
+    max-width: 640px;
+    margin: 0 0 10px;
+}
+
+.admin-copy label {
+    display: block;
+    margin: 0 0 4px;
+    font-weight: 600;
+}
+
+.admin-copy-row, .secret-field {
+    display: flex;
+    gap: 6px;
+    align-items: stretch;
+}
+
+.admin-copy-row input {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: var(--osqa-tap);
+    font-family: var(--font-family-monospace);
+    box-sizing: border-box;
+}
+
+.admin-copy-row .button, .secret-toggle {
+    flex: 0 0 auto;
+    min-height: var(--osqa-tap);
+    min-width: 64px;
+}
+
+.secret-field input.secret-input {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.admin-preview-note {
+    max-width: 75ch;
+    color: var(--body-quiet-color);
+}
+
+/* Code examples with a copy button (the {% example %} tag, admin_tags.py). */
+.admin-example {
+    max-width: 760px;
+    margin: 0 0 12px;
+}
+
+.admin-example-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px 12px;
+    margin: 0 0 4px;
+}
+
+.admin-example-title {
+    font-weight: 600;
+}
+
+.admin-example-copy {
+    min-height: var(--osqa-tap);
+    min-width: 64px;
+}
+
+.admin-example-code {
+    margin: 0;
+    padding: 10px 12px;
+    overflow-x: auto;
+    border: 1px solid var(--hairline-color);
+    border-radius: 6px;
+    background: var(--darkened-bg);
+    color: var(--body-fg);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    white-space: pre;
+}
+
+/* ---- Look and feel (osqaadmin/guides/appearance.html) ------------------- */
+
+input.color-input {
+    width: 72px;
+    height: 40px;
+    padding: 2px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--osqa-control-bg);
+    cursor: pointer;
+}
+
+.appearance-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 10px;
+}
+
+#content-main .appearance-preset {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: var(--osqa-tap);
+    padding: 4px 12px 4px 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    background: var(--osqa-control-bg);
+    color: var(--body-fg);
+    font-weight: 500;
+}
+
+#content-main .appearance-preset:hover {
+    border-color: var(--link-fg);
+}
+
+#content-main .appearance-preset[aria-pressed="true"] {
+    border-color: var(--link-fg);
+    box-shadow: inset 0 0 0 1px var(--link-fg);
+    font-weight: 700;
+}
+
+.appearance-swatches {
+    display: inline-flex;
+}
+
+.appearance-swatches span {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--body-bg);
+    border-radius: 50%;
+}
+
+.appearance-swatches span + span {
+    margin-left: -5px;
+}
+
+.appearance-samples {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: 12px;
+    margin: 0 0 10px;
+}
+
+.appearance-sample {
+    --sample-brand: #2c5aa0;
+    --sample-button: #2c5aa0;
+    --sample-accent: #c2410c;
+    --sample-soft: #eaf1fb;
+    --sample-background: #f5f7fa;
+    --sample-surface: #fff;
+    --sample-text: #1f2328;
+    --sample-muted: #5f6b7a;
+    --sample-border: #dfe3e8;
+    overflow: hidden;
+    border: 1px solid var(--hairline-color);
+    border-radius: var(--osqa-radius);
+    background: var(--sample-background);
+    color: var(--sample-text);
+    font-family: var(--sample-font, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+    font-size: 14px;
+    line-height: 1.45;
+}
+
+.appearance-sample-dark {
+    --sample-brand: #79b0ff;
+    --sample-button: #2f6fd6;
+    --sample-accent: #cf430c;
+    --sample-soft: #1a2a42;
+    --sample-background: #0d1117;
+    --sample-surface: #161b22;
+    --sample-text: #e6edf3;
+    --sample-muted: #9ba7b4;
+    --sample-border: #30363d;
+}
+
+.sample-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 12px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--sample-border);
+    background: var(--sample-surface);
+}
+
+.sample-site {
+    font-weight: 700;
+}
+
+.sample-tab {
+    padding: 2px 0;
+    color: var(--sample-muted);
+}
+
+.sample-tab-current {
+    color: var(--sample-brand);
+    font-weight: 600;
+    box-shadow: inset 0 -2px 0 var(--sample-brand);
+}
+
+.sample-ask, .sample-button {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 6px;
+    background: var(--sample-accent);
+    color: #fff;
+    font-weight: 600;
+}
+
+.sample-ask {
+    margin-left: auto;
+}
+
+.sample-button {
+    margin-top: 10px;
+    background: var(--sample-button);
+}
+
+.sample-body {
+    padding: 12px;
+}
+
+.sample-card {
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    border: 1px solid var(--sample-border);
+    border-radius: 8px;
+    background: var(--sample-surface);
+}
+
+.sample-score {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 44px;
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.sample-score small {
+    color: var(--sample-muted);
+    font-size: 0.75rem;
+    font-weight: 400;
+}
+
+.sample-link {
+    color: var(--sample-brand);
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+.sample-text {
+    margin: 4px 0 8px;
+    padding: 0;
+    font-size: 13px;
+}
+
+.sample-soft, .sample-tag {
+    padding: 1px 6px;
+    border-radius: 4px;
+    background: var(--sample-soft);
+}
+
+.sample-tag {
+    color: var(--sample-brand);
+    font-size: 12px;
+}
+
+.appearance-contrast {
+    margin: 0 0 8px;
+    padding-left: 20px;
+}
+
+.appearance-contrast li {
+    list-style: disc;
 }
 
 /* ---- String list setting (one text box per item, remove/add buttons) ---- */
@@ -1808,11 +2358,11 @@ input[type="file"]::file-selector-button:hover {
         padding-bottom: 2px;
     }
 
-    #admin_form tr th {
+    #admin_form tr th, .admin-settings-table tr th {
         white-space: normal;
     }
 
-    #admin_form tr th .fieldtool {
+    #admin_form tr th .fieldtool, .admin-settings-table tr th .fieldtool {
         display: inline-flex;
         align-items: center;
         min-height: 44px;
@@ -1820,7 +2370,7 @@ input[type="file"]::file-selector-button:hover {
         font-size: 0.875rem;
     }
 
-    #admin_form tr th .fieldtool.context {
+    #admin_form tr th .fieldtool.context, .admin-settings-table tr th .fieldtool.context {
         padding-left: 0;
     }
 

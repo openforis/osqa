@@ -81,6 +81,83 @@ $(function() {
         rewrite_anchor();        
     });
 
+    // Keys and passwords (SecretInput): dots, with a button that shows them.
+    $('input.secret-input').each(function() {
+        var $input = $(this);
+        var $button = $('<button type="button" class="secret-toggle" aria-pressed="false"></button>')
+            .text($input.closest('form').attr('data-show-text') || 'Show')
+            .attr('aria-controls', this.id);
+        $input.wrap('<span class="secret-field"></span>').after($button);
+        $button.on('click', function() {
+            var shown = $input.attr('type') === 'text';
+            var $form = $input.closest('form');
+            $input.attr('type', shown ? 'password' : 'text');
+            $button.attr('aria-pressed', shown ? 'false' : 'true')
+                .text(shown ? ($form.attr('data-show-text') || 'Show') : ($form.attr('data-hide-text') || 'Hide'));
+        });
+    });
+
+    // Links to other sites in the setup guides open in a new tab, so the
+    // settings typed so far stay in this one.
+    $('.admin-guide a[href^="http"]').each(function() {
+        var $link = $(this);
+        $link.attr({target: '_blank', rel: 'noopener noreferrer'});
+        var hint = $('.admin-settings-form').attr('data-new-tab-text');
+        if (hint) {
+            $link.append($('<span class="admin-visually-hidden"></span>').text(' (' + hint + ')'));
+        }
+    });
+
+    // "Find a setting on this page": hides the rows (and sections) that don't
+    // match every word typed.
+    var $filter = $('#settings-filter');
+    if ($filter.length) {
+        var normalize = function(text) {
+            text = String(text || '').toLowerCase();
+            return text.normalize ? text.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : text;
+        };
+        var $status = $('.admin-filter-status');
+        var timer = null;
+        var apply = function() {
+            var words = normalize($filter.val()).split(/\s+/).filter(Boolean);
+            var shown = 0;
+            var matches = function(text) {
+                return words.every(function(word) { return text.indexOf(word) !== -1; });
+            };
+            $('.admin-settings-form .setting-row').each(function() {
+                var text = normalize(this.textContent + ' ' + this.id.replace(/^setting-/, '').replace(/_/g, ' '));
+                var $section = $(this).closest('.admin-guide');
+                var heading = $section.length ? normalize($section.find('h2').first().text()) : '';
+                var visible = !words.length || matches(text) || (heading && matches(heading));
+                this.hidden = !visible;
+                if (visible) shown++;
+            });
+            $('.admin-settings-form .admin-guide').each(function() {
+                this.hidden = $(this).find('.setting-row').length > 0 && !$(this).find('.setting-row:not([hidden])').length;
+            });
+            if (!words.length) {
+                $status.text('');
+            } else if (shown) {
+                $status.text(($filter.attr('data-count-text') || '%(count)s').replace('%(count)s', shown));
+            } else {
+                $status.text($filter.attr('data-none-text') || '');
+            }
+        };
+        $filter.on('input', function() {
+            window.clearTimeout(timer);
+            timer = window.setTimeout(apply, 120);
+        });
+        $filter.on('keydown', function(evt) {
+            // Enter goes to the first setting shown instead of submitting anything.
+            if (evt.key === 'Enter') {
+                evt.preventDefault();
+                apply();
+                var $first = $('.admin-settings-form .setting-row:not([hidden])').first();
+                $first.find('input:not([type=hidden]), select, textarea').first().trigger('focus');
+            }
+        });
+    }
+
     $('#test_email_settings a.test_button').on('click', function(evt) {
         evt.preventDefault();
         $('div.test_status').hide('slow')

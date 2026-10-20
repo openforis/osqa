@@ -109,6 +109,33 @@ manifests are in `docs/k8s/`. See [docs/deployment.md](docs/deployment.md).
   header (database time and number of queries, template rendering, total),
   shown by the browser's developer tools; with `DEBUG` every page has it.
 
+## Administration
+
+Administrators find every setting with the search box at the top of the
+admin menu (`/admin/search/`): it matches the setting's label, help text,
+name and keywords, the page and section titles, and a few synonyms (colour
+and color, login and sign-in...), and links to the setting's row on its page,
+highlighted. Settings pages with many settings also have a "Find a setting on
+this page" filter.
+
+Pages that need outside accounts explain how to get them. External Keys has
+one card per service (sign-in with Google, GitHub and Facebook, reCAPTCHA,
+Akismet, Gemini, Google Analytics, Google Search Console) saying whether it is
+set up, partly set up or needs checking (for example a Google client ID that
+doesn't end in `.apps.googleusercontent.com`, an old `UA-` Analytics ID or a
+plain `http://` site address), what it does, the steps on the provider's
+site, the redirect address to register with a copy button, and an example of
+each value. Secrets are shown as dots until "Show" is pressed. The Public API,
+Custom CSS, Header and Footer and `<head>` pages have examples to copy, with
+the site's address filled in.
+
+For developers: a page's guidance is data. Register sections with
+`forum.settings.guides.register(set_name, Section(...))` (title, settings,
+summary, steps, values to copy, links, keywords, a status function, weight),
+give a setting `example=` and `keywords=` in its field context, and add
+free-form help as the template `osqaadmin/guides/<set name>.html` (code
+examples with `{% example %}` from `admin_tags`).
+
 ## Languages
 
 The interface is available in English, Spanish, French and Portuguese.
@@ -933,18 +960,36 @@ authentication settings.
 ## Look and feel
 
 The default skin is responsive (phones, tablets, desktops). Its styles live
-in one file, `forum/skins/default/media/style/osqa.css`; the colour tokens at
-the start of its section 2 (`--brand`, `--accent`, ...) are the quickest way
-to re-brand the site. Admin > Custom CSS is loaded
-last and can override them, e.g. `:root { --brand: #00704a; }`.
+in one file, `forum/skins/default/media/style/osqa.css`, drawn with colour
+variables (`--brand`, `--accent`, ... at the start of its section 2).
+
+Admin > Look and feel changes the common things without writing CSS:
+- **Colours:** pick one of the presets or a brand colour (links, buttons,
+  the current tab) and an accent colour (the Ask button). A sample of a
+  page in the light and dark themes follows the fields as they change.
+  Text stays readable whatever is picked: a colour too light for white
+  text or for links (less than 4.5:1, WCAG AA) is darkened, keeping its
+  hue, and the page says which shade the site uses; dark mode gets a
+  lighter shade for links and a darker one for buttons.
+- **Page background** (light grey, white or a tint of the brand colour),
+  **font** (system font stacks: nothing is downloaded) and **page width**.
+- **Dark mode** on or off, and the **theme for new visitors** (System,
+  Light or Dark) until they pick one.
+
+Preview shows the whole site with the new values, to the administrator only,
+before saving. The values become a small `<style>` after `osqa.css`
+(`{% appearance_style %}`, `forum/utils/appearance.py`); nothing is added
+while they are the defaults. For anything else, Admin > Custom CSS is loaded
+last and can override any rule or variable, e.g. `:root { --brand: #00704a; }`;
+its page lists the variables and examples to copy.
 
 Visitors choose a theme, Light, Dark or System (the default: it follows the
 device's dark mode setting), in the footer, and members also from the header.
 The choice applies at once, without a flash of the other theme on the next
 page, and is kept in an `osqa_theme` cookie and, for members, with their
-preferences; the admin pages follow it. Turn dark mode off under Admin > View
-settings > "Dark mode" if your custom CSS assumes a light background (the
-switch then disappears). In custom CSS, write dark rules as
+preferences; the admin pages follow it. Turn dark mode off under Admin > Look
+and feel if your custom CSS assumes a light background (the switch then
+disappears). In custom CSS, write dark rules as
 `:root[data-theme="dark"] .my-class { ... }`: `data-theme` on `<html>` is
 always the resolved theme, "light" or "dark". (Rules written for the old
 `@media (prefers-color-scheme: dark) { :root[data-color-scheme="auto"] ... }`
