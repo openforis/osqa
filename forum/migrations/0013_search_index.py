@@ -97,5 +97,6 @@ class Migration(migrations.Migration):
                 ("updated_at", models.DateTimeField(auto_now=True)),
             ],
         ),
-        migrations.RunPython(create_fulltext_index, drop_fulltext_index),
+        # Not atomic: MySQL refuses DDL inside a transaction (TransactionManagementError).
+        migrations.RunPython(create_fulltext_index, drop_fulltext_index, atomic=False),
     ]
