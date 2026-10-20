@@ -46,7 +46,7 @@ def analytics_status(values):
                           "Google Analytics 4 property and enter its measurement ID, which starts with G-.")
     if not MEASUREMENT_ID.match(key):
         return WARNING, _("This doesn't look like a measurement ID, which starts with G- (for example G-ABC123XYZ9).")
-    return ON, _("Every public page loads Google Analytics.")
+    return ON, _("Visitors are asked first; Google Analytics loads only for those who accept.")
 
 
 def verification_status(values):
@@ -77,16 +77,17 @@ register('extkeys', Section(
 
 register('extkeys', Section(
     'analytics', _("Google Analytics"), ('GOOGLE_ANALYTICS_KEY',),
-    summary=_("Counts visits and shows where visitors come from. Analytics sets cookies, which may need visitors' "
-              "consent where you operate."),
+    summary=_("Counts visits and shows where visitors come from. Analytics sets cookies, so every visitor is "
+              "asked first (Accept / Decline, as EU rules expect); only those who accept are counted."),
     steps=(
         _("In <a href=\"https://analytics.google.com/\">Google Analytics</a>, go to <strong>Admin &gt; Data "
           "streams</strong> and add a <strong>Web</strong> stream for <code>{app_url}</code> (or open the one "
           "you have)."),
         _("Copy its <strong>Measurement ID</strong>, which starts with <code>G-</code>, into the field below "
           "and save."),
-        _("Open the site in another browser tab and check that the visit appears in the <strong>Realtime</strong> "
-          "report."),
+        _("Open the site in another browser tab, press <strong>Accept</strong> in the banner and check that the "
+          "visit appears in the <strong>Realtime</strong> report."),
+        _("Mention Google Analytics in your privacy page."),
     ),
     keywords=_("statistics tracking gtag ga4 visitors"),
     status=analytics_status, weight=40))

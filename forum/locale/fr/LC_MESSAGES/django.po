@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: OSQA (Open Foris edition)\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-20 09:29-0400\n"
+"Report-Msgid-Bugs-To: https://github.com/openforis/osqa/issues\n"
+"POT-Creation-Date: 2026-10-20 10:37-0400\n"
 "PO-Revision-Date: 2026-10-14 12:00+0000\n"
 "Last-Translator: Open Foris <https://github.com/openforis/osqa>\n"
 "Language-Team: French <https://github.com/openforis/osqa>\n"
@@ -1440,8 +1440,8 @@ msgstr "Les ID UA- appartiennent à Universal Analytics, qui a cessé de collect
 msgid "This doesn't look like a measurement ID, which starts with G- (for example G-ABC123XYZ9)."
 msgstr "Cela ne ressemble pas à un ID de mesure, qui commence par G- (par exemple G-ABC123XYZ9)."
 
-msgid "Every public page loads Google Analytics."
-msgstr "Chaque page publique charge Google Analytics."
+msgid "Visitors are asked first; Google Analytics loads only for those who accept."
+msgstr "Les visiteurs sont d'abord consultés : Google Analytics ne se charge que pour ceux qui acceptent."
 
 msgid "Enter only the value of content=\"...\" from the tag, not the whole tag."
 msgstr "Saisissez uniquement la valeur de content=\"...\" de la balise, pas la balise entière."
@@ -1478,8 +1478,8 @@ msgstr "seo référencement sitemap plan du site google webmaster vérification"
 msgid "Google Analytics"
 msgstr "Google Analytics"
 
-msgid "Counts visits and shows where visitors come from. Analytics sets cookies, which may need visitors' consent where you operate."
-msgstr "Compte les visites et montre d'où viennent les visiteurs. Analytics dépose des cookies, ce qui peut nécessiter le consentement des visiteurs selon le pays où vous exercez."
+msgid "Counts visits and shows where visitors come from. Analytics sets cookies, so every visitor is asked first (Accept / Decline, as EU rules expect); only those who accept are counted."
+msgstr "Compte les visites et montre d'où viennent les visiteurs. Analytics dépose des cookies : chaque visiteur est donc d'abord consulté (Accepter / Refuser, comme l'exigent les règles de l'UE) ; seuls ceux qui acceptent sont comptés."
 
 #, python-brace-format
 msgid "In <a href=\"https://analytics.google.com/\">Google Analytics</a>, go to <strong>Admin &gt; Data streams</strong> and add a <strong>Web</strong> stream for <code>{app_url}</code> (or open the one you have)."
@@ -1488,8 +1488,11 @@ msgstr "Dans <a href=\"https://analytics.google.com/\">Google Analytics</a>, all
 msgid "Copy its <strong>Measurement ID</strong>, which starts with <code>G-</code>, into the field below and save."
 msgstr "Copiez son <strong>Measurement ID</strong>, qui commence par <code>G-</code>, dans le champ ci-dessous et enregistrez."
 
-msgid "Open the site in another browser tab and check that the visit appears in the <strong>Realtime</strong> report."
-msgstr "Ouvrez le site dans un autre onglet du navigateur et vérifiez que la visite apparaît dans le rapport <strong>Realtime</strong>."
+msgid "Open the site in another browser tab, press <strong>Accept</strong> in the banner and check that the visit appears in the <strong>Realtime</strong> report."
+msgstr "Ouvrez le site dans un autre onglet du navigateur, cliquez sur <strong>Accepter</strong> dans le bandeau et vérifiez que la visite apparaît dans le rapport <strong>Realtime</strong>."
+
+msgid "Mention Google Analytics in your privacy page."
+msgstr "Mentionnez Google Analytics dans votre page de confidentialité."
 
 msgid "statistics tracking gtag ga4 visitors"
 msgstr "statistiques suivi gtag ga4 visiteurs audience"
@@ -4079,6 +4082,30 @@ msgstr "Non précisée"
 msgid "%(name)s (current)"
 msgstr "%(name)s (actuelle)"
 
+msgid "May we measure your visit?"
+msgstr "Pouvons-nous mesurer votre visite ?"
+
+msgid "With your permission we use Google Analytics, which sets cookies, to count visits and see which pages help people. It is not used for advertising, and nothing is sent unless you accept. You can change your choice at any time with “Analytics cookies” at the bottom of the page."
+msgstr "Avec votre accord, nous utilisons Google Analytics, qui dépose des cookies, pour compter les visites et voir quelles pages aident les gens. Il ne sert pas à la publicité et rien n'est envoyé si vous n'acceptez pas. Vous pouvez changer votre choix à tout moment avec « Cookies de mesure d'audience » en bas de la page."
+
+msgid "How Google uses this data"
+msgstr "Comment Google utilise ces données"
+
+msgid "You have accepted analytics cookies."
+msgstr "Vous avez accepté les cookies de mesure d'audience."
+
+msgid "You have declined analytics cookies."
+msgstr "Vous avez refusé les cookies de mesure d'audience."
+
+msgid "Accept"
+msgstr "Accepter"
+
+msgid "Decline"
+msgstr "Refuser"
+
+msgid "Analytics cookies"
+msgstr "Cookies de mesure d'audience"
+
 msgid "Keyboard shortcuts"
 msgstr "Raccourcis clavier"
 
@@ -4658,9 +4685,6 @@ msgstr "%(who)s a choisi cette réponse comme réponse correcte"
 
 msgid "mark this answer as the accepted answer"
 msgstr "marquer cette réponse comme réponse acceptée"
-
-msgid "Accept"
-msgstr "Accepter"
 
 msgctxt "answer state"
 msgid "Accepted"
