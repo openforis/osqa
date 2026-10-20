@@ -1,0 +1,16 @@
+{% load i18n %}{# Admin > AI assistance, after the connection settings (diagnostics.status_panel; the section's status says what is in use). #}
+<div class="ai-status">
+    <p class="ai-status-index">
+        {% blocktrans with forum=knowledge.forum web=knowledge.web %}Knowledge index: {{ forum }} forum and {{ web }} documentation passages.{% endblocktrans %}
+        {% if knowledge.built %}{% blocktrans with when=knowledge.built|timesince %}Last built {{ when }} ago.{% endblocktrans %}{% else %}{% trans "Not built yet (manage.py build_knowledge_index, nightly)." %}{% endif %}
+    </p>
+    {% if knowledge.stale_models %}
+        <p class="ai-status-warn">{% blocktrans with old=knowledge.stale_models|join:", " new=knowledge.model %}The index was built with {{ old }}; the next build embeds everything again with {{ new }}.{% endblocktrans %}</p>
+    {% endif %}
+    <div class="ai-test">
+        <button type="button" id="ai-test-button" class="button" data-ai-test="{% url "ai_test_connection" %}" data-busy-label="{% trans "Testing…" %}" data-error-label="{% trans "The test could not run:" %}" aria-describedby="ai-test-note">{% trans "Test connection" %}</button>
+        <span id="ai-test-note" class="ai-test-note">{% trans "Tries the values above with one short request to each model. Nothing is saved." %}</span>
+        <noscript><span class="ai-test-note">{% trans "The test needs JavaScript." %}</span></noscript>
+    </div>
+    <div id="ai-test-result" class="ai-test-result" role="status" aria-live="polite"></div>
+</div>

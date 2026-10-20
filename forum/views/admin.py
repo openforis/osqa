@@ -301,7 +301,7 @@ def settings_set(request, set_name):
     else:
         form = SettingsSetForm(set, unsaved=current_preview)
 
-    sections, others = guide_sections(set, form)
+    sections, others = guide_sections(set, form, request)
     return 'osqaadmin/set.html', {
     'form': form,
     'markdown': set.markdown,
@@ -325,7 +325,7 @@ def with_app_url(text):
     return mark_safe(str(text).replace('{app_url}', escape(str(settings.APP_URL).rstrip('/'))))
 
 
-def guide_sections(setting_set, form):
+def guide_sections(setting_set, form, request=None):
     """The sections of a settings page, ready for osqaadmin/set.html, and the
     names of the settings no section lists."""
     values = dict((s.name, s.value) for s in setting_set)
@@ -346,6 +346,7 @@ def guide_sections(setting_set, form):
                      for label, value in section.copy],
             'links': section.links,
             'rows': form.as_table(names),
+            'extra': section.extra(request) if section.extra else '',
         })
     return sections, [n for n in form.fields if n not in listed]
 

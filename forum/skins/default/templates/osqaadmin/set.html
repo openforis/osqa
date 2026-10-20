@@ -66,6 +66,7 @@ and sections that don't match.
             <table class="admin-form-table admin-settings-table">
                 {{ section.rows }}
             </table>
+            {% if section.extra %}<div class="admin-guide-extra">{{ section.extra }}</div>{% endif %}
         </section>
         {% endfor %}
         {% if sections %}

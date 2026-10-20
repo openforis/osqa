@@ -566,6 +566,25 @@ input[type="file"]::file-selector-button:hover {
     width: 100%;
 }
 
+/* Links in help texts are underlined (WCAG 1.4.1); choices given as radio
+   buttons are 24px apart, with the whole label to click (WCAG 2.5.8). */
+#admin_form td a {
+    text-decoration: underline;
+}
+
+:is(#admin_form, .admin-settings-table) td label:has(> input[type="radio"]) {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 28px;
+}
+
+:is(#admin_form, .admin-settings-table) td input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+}
+
 /* "context | default" tools under each setting's label. */
 #admin_form tr th .fieldtool, .admin-settings-table tr th .fieldtool {
     display: inline-block;
@@ -1223,6 +1242,141 @@ input.color-input {
     border: 1px solid var(--hairline-color);
     border-radius: 4px;
     background: var(--darkened-bg);
+}
+
+/* A guide section's panel after its settings (Section(extra=...)). */
+.admin-guide-extra {
+    margin-top: 12px;
+}
+
+/* Admin > AI assistance: what is in use now and "Test connection"
+   (forum_modules/ai/templates/status.html, test_result.html). */
+.ai-status {
+    padding: 12px 14px;
+    border: 1px solid var(--hairline-color);
+    border-radius: var(--osqa-radius);
+    background: var(--darkened-bg);
+}
+
+.ai-status h3 {
+    margin: 0 0 6px;
+    font-size: 0.95rem;
+}
+
+.ai-status p {
+    margin: 0 0 6px;
+}
+
+.ai-status-line {
+    font-weight: 600;
+}
+
+.ai-status-on {
+    color: var(--osqa-good-fg);
+}
+
+.ai-status-off {
+    color: var(--osqa-error-fg);
+}
+
+.ai-status-warn {
+    padding: 6px 10px;
+    border: 1px solid var(--osqa-notice-border);
+    border-radius: 4px;
+    background: var(--osqa-notice-bg);
+    color: var(--osqa-notice-fg);
+}
+
+.ai-test {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    margin-top: 10px;
+}
+
+.ai-test-note {
+    color: var(--body-quiet-color);
+}
+
+.ai-test-result:not(:empty) {
+    margin-top: 12px;
+}
+
+.ai-test-summary {
+    margin-bottom: 8px;
+}
+
+.ai-test-ok {
+    color: var(--osqa-good-fg);
+}
+
+.ai-test-fail {
+    color: var(--osqa-error-fg);
+}
+
+.ai-checks {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.ai-checks > li.ai-check {
+    display: flex;
+    gap: 10px;
+    margin: 0;
+    padding: 8px 0;
+    border-top: 1px solid var(--hairline-color);
+    list-style: none;
+}
+
+.ai-check-state {
+    flex: 0 0 5.5em;
+    font-weight: 700;
+}
+
+.ai-check-ok .ai-check-state {
+    color: var(--osqa-good-fg);
+}
+
+.ai-check-warn .ai-check-state {
+    color: var(--osqa-notice-fg);
+}
+
+.ai-check-fail .ai-check-state {
+    color: var(--osqa-error-fg);
+}
+
+.ai-check-skip .ai-check-state {
+    color: var(--body-quiet-color);
+}
+
+.ai-check-body {
+    min-width: 0;
+}
+
+.ai-check-hints {
+    margin: 6px 0 0;
+    padding-left: 20px;
+}
+
+.ai-check-hints li {
+    list-style: disc;
+}
+
+.ai-check-hints a, .ai-status a {
+    text-decoration: underline;
+}
+
+.ai-check-detail {
+    margin-top: 6px;
+}
+
+.ai-check-detail pre {
+    max-height: 16em;
+    overflow: auto;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
 }
 
 /* ---- Dashboard ----------------------------------------------------------- */

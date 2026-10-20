@@ -8,12 +8,12 @@ from datetime import datetime
 
 import numpy as np
 
-from forum.models import Question, Answer, KnowledgeChunk
+from forum.models import Question, Answer, KnowledgeChunk, KeyValue
 from forum.utils import similar
 
 from .client import embed_texts, is_configured
 from .crawler import crawl
-from .settings import AI_KNOWLEDGE_SEEDS, AI_KNOWLEDGE_MAX_PAGES
+from .settings import AI_KNOWLEDGE_SEEDS, AI_KNOWLEDGE_MAX_PAGES, AI_EMBEDDING_MODEL
 
 log = logging.getLogger(__name__)
 
@@ -97,11 +97,37 @@ def web_documents(seeds=None, max_pages=None, fetcher=None):
                 yield dict(url=url, position=position, title=title[:300], text=chunk, node=None, quality=1.0)
 
 
+# The embedding model each source's vectors come from: vectors of another
+# model can't be compared, so a new model re-embeds every chunk.
+MODEL_KEY = 'ai.knowledge.embedding_model.%s'
+
+
+def index_model(source):
+    """The embedding model `source`'s chunks were embedded with, or None."""
+    try:
+        return KeyValue.objects.get(key=MODEL_KEY % source).value
+    except KeyValue.DoesNotExist:
+        return None
+
+
+def _remember_model(source, model):
+    try:
+        kv = KeyValue.objects.get(key=MODEL_KEY % source)
+    except KeyValue.DoesNotExist:
+        kv = KeyValue(key=MODEL_KEY % source)
+    kv.value = model
+    kv.save()
+
+
 def sync(source, documents, stdout=None):
     """Stores `documents` as the chunks of `source`: unchanged chunks are kept,
-    changed or new ones embedded, chunks no longer produced removed.
-    Returns (kept, embedded, removed)."""
+    changed or new ones embedded, chunks no longer produced removed; all of
+    them when the embedding model changed. Returns (kept, embedded, removed)."""
     existing = {(c.url, c.position): c for c in KnowledgeChunk.objects.filter(source=source).defer('embedding')}
+    model = str(AI_EMBEDDING_MODEL).strip()
+    # An index from before the model was recorded is taken to be the current model's.
+    previous = index_model(source)
+    new_model = previous is not None and previous != model
     seen, pending = set(), []
     kept = 0
     for doc in documents:
@@ -109,7 +135,7 @@ def sync(source, documents, stdout=None):
         seen.add(key)
         digest = hashlib.sha1(('%s\n%s' % (doc['title'], doc['text'])).encode('utf-8')).hexdigest()
         chunk = existing.get(key)
-        if chunk is not None and chunk.content_hash == digest:
+        if chunk is not None and chunk.content_hash == digest and not new_model:
             if abs(chunk.quality - doc['quality']) > 1e-6:
                 KnowledgeChunk.objects.filter(id=chunk.id).update(quality=doc['quality'])
             kept += 1
@@ -133,6 +159,8 @@ def sync(source, documents, stdout=None):
 
     stale = [c.id for key, c in existing.items() if key not in seen]
     KnowledgeChunk.objects.filter(id__in=stale).delete()
+    if previous != model:
+        _remember_model(source, model)
     _matrix_cache.clear()
     return kept, embedded, len(stale)
 

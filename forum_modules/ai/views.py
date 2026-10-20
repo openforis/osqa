@@ -75,3 +75,25 @@ def assistant_answer(request):
         result = {'insufficient': result['insufficient'], 'html': str(result['html']), 'sources': result['sources']}
         cache.set(key, result, 3600)
     return JsonResponse(result)
+
+
+def test_connection(request):
+    """Admin > AI assistance > "Test connection": tries the connection values
+    of the settings form (posted, not saved) and explains what fails. The form
+    posts here with fetch() and shows the fragment; without JavaScript the
+    result is a page of its own."""
+    from django.shortcuts import redirect, render
+    from django.urls import reverse
+    from forum.views.admin import admin_page_wrapper, super_user_required
+    from . import diagnostics
+
+    @super_user_required
+    def view(request):
+        if request.method != 'POST':
+            return redirect(reverse('admin_set', args=['ai']))
+        context = {'result': diagnostics.run_test(diagnostics.form_values(request.POST))}
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return render(request, 'modules/ai/test_result.html', context)
+        return admin_page_wrapper(lambda request: ('modules/ai/test_page.html', context), request)
+
+    return view(request)

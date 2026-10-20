@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: OSQA (Open Foris edition)\n"
-"Report-Msgid-Bugs-To: https://github.com/openforis/osqa/issues\n"
-"POT-Creation-Date: 2026-10-20 08:35-0400\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-20 09:29-0400\n"
 "PO-Revision-Date: 2026-10-14 12:00+0000\n"
 "Last-Translator: Open Foris <https://github.com/openforis/osqa>\n"
 "Language-Team: French <https://github.com/openforis/osqa>\n"
@@ -10019,38 +10019,369 @@ msgstr "Convertie en question"
 msgid "Your answer is pending until you %s."
 msgstr "Votre réponse est en attente jusqu'à ce que vous ayez pu %s."
 
-msgid "AI assistance"
-msgstr "Assistance IA"
+msgid "this page"
+msgstr "cette page"
 
-msgid "Duplicate detection and spam moderation with Google Gemini. Enabled features send the text of new public posts (titles, bodies, comments) to Google (the Gemini API, or Vertex AI in your Google Cloud project); nothing else about the author is sent."
-msgstr "Détection des doublons et modération du spam avec Google Gemini. Les fonctionnalités activées envoient le texte des nouvelles publications publiques (titres, corps, commentaires) à Google (l'API Gemini, ou Vertex AI dans votre projet Google Cloud) ; aucune autre information sur l'auteur n'est envoyée."
+msgid "the default"
+msgstr "la valeur par défaut"
 
-msgid "Gemini API key"
-msgstr "Clé API Gemini"
+#, python-format
+msgid "the %(name)s environment variable"
+msgstr "la variable d'environnement %(name)s"
 
-msgid "Turns on the AI features (Admin > AI assistance) through the Gemini API. Get a key at <a href='https://aistudio.google.com/apikey'>Google AI Studio</a>. Not needed when a Vertex AI project is set under Admin > AI assistance. If empty, the server's GEMINI_API_KEY or GOOGLE_API_KEY environment variable is used."
-msgstr "Active les fonctionnalités d'IA (Admin > Assistance IA) via l'API Gemini. Obtenez une clé sur <a href='https://aistudio.google.com/apikey'>Google AI Studio</a>. Inutile lorsqu'un projet Vertex AI est défini sous Admin > Assistance IA. Si ce champ est vide, la variable d'environnement GEMINI_API_KEY ou GOOGLE_API_KEY du serveur est utilisée."
+msgid "Not configured: the AI features are off."
+msgstr "Non configuré : les fonctionnalités d'IA sont désactivées."
 
-msgid "ai gemini google llm artificial intelligence"
-msgstr "ia gemini google llm intelligence artificielle"
+#, python-format
+msgid "Vertex AI in project %(project)s (from %(project_from)s), location %(location)s (from %(location_from)s)."
+msgstr "Vertex AI dans le projet %(project)s (source : %(project_from)s), emplacement %(location)s (source : %(location_from)s)."
+
+#, python-format
+msgid "Gemini API with the key %(key)s (from %(key_from)s)."
+msgstr "API Gemini avec la clé %(key)s (source : %(key_from)s)."
+
+msgid "Library"
+msgstr "Bibliothèque"
+
+msgid "The google-genai package is not installed on the server."
+msgstr "Le paquet google-genai n'est pas installé sur le serveur."
+
+msgid "Install the requirements: pip install -r requirements.txt, then restart the site."
+msgstr "Installez les dépendances : pip install -r requirements.txt, puis redémarrez le site."
+
+msgid "Connection"
+msgstr "Connexion"
+
+msgid "Embedding model"
+msgstr "Modèle d'embedding"
+
+msgid "Not tested: fix the problem above first."
+msgstr "Non testé : corrigez d'abord le problème ci-dessus."
+
+msgid "Enter a Gemini API key, or set GEMINI_API_KEY on the server. Create one at aistudio.google.com/apikey."
+msgstr "Saisissez une clé API Gemini, ou définissez GEMINI_API_KEY sur le serveur. Créez-en une sur aistudio.google.com/apikey."
+
+msgid "Enter the Google Cloud project ID under \"Vertex AI project\", or set GOOGLE_CLOUD_PROJECT on the server."
+msgstr "Saisissez l'ID du projet Google Cloud sous « Projet Vertex AI », ou définissez GOOGLE_CLOUD_PROJECT sur le serveur."
+
+msgid "The simplest is a Gemini API key from aistudio.google.com/apikey."
+msgstr "Le plus simple est une clé API Gemini obtenue sur aistudio.google.com/apikey."
+
+msgid "Or use Vertex AI: enter your Google Cloud project ID."
+msgstr "Ou utilisez Vertex AI : saisissez l'ID de votre projet Google Cloud."
+
+msgid "No API key or Vertex AI project is set."
+msgstr "Aucune clé API ni aucun projet Vertex AI n'est défini."
+
+msgid "A Vertex AI project is set, so the Gemini API key is not used."
+msgstr "Un projet Vertex AI est défini, la clé API Gemini n'est donc pas utilisée."
+
+msgid "To use the key instead, choose \"Gemini API key\" under \"Connect through\"."
+msgstr "Pour utiliser plutôt la clé, choisissez « Clé API Gemini » sous « Se connecter via »."
+
+msgid "API key"
+msgstr "Clé API"
+
+msgid "Gemini API keys usually start with AIza."
+msgstr "Les clés API Gemini commencent généralement par AIza."
+
+msgid "Check that you copied the whole key from Google AI Studio, without spaces."
+msgstr "Vérifiez que vous avez copié la clé entière depuis Google AI Studio, sans espaces."
 
 msgid "Vertex AI project"
 msgstr "Projet Vertex AI"
 
-msgid "Google Cloud project ID to use Gemini through Vertex AI instead of an API key. The server authenticates with Application Default Credentials (its service account, or <code>gcloud auth application-default login</code>), which need the Vertex AI User role. If empty, the GOOGLE_CLOUD_PROJECT environment variable is used."
-msgstr "ID du projet Google Cloud permettant d'utiliser Gemini via Vertex AI au lieu d'une clé API. Le serveur s'authentifie avec les identifiants par défaut de l'application (son compte de service, ou <code>gcloud auth application-default login</code>), qui nécessitent le rôle Utilisateur Vertex AI. Si ce champ est vide, la variable d'environnement GOOGLE_CLOUD_PROJECT est utilisée."
+#, python-format
+msgid "\"%(project)s\" doesn't look like a project ID."
+msgstr "« %(project)s » ne ressemble pas à un ID de projet."
 
-msgid "Vertex AI location"
-msgstr "Emplacement Vertex AI"
-
-msgid "Region of the Vertex AI endpoint, e.g. global, europe-west1 or us-central1."
-msgstr "Région du point de terminaison Vertex AI, p. ex. global, europe-west1 ou us-central1."
+msgid "Use the project ID shown in the Google Cloud console's project picker (lowercase letters, digits and dashes), not the project's display name."
+msgstr "Utilisez l'ID de projet affiché dans le sélecteur de projets de la console Google Cloud (lettres minuscules, chiffres et tirets), et non le nom d'affichage du projet."
 
 msgid "Gemini model"
 msgstr "Modèle Gemini"
 
-msgid "The model ID used for all AI features, e.g. gemini-3.8-flash, or gemini-3.5-flash-lite for lower cost."
-msgstr "L'ID du modèle utilisé pour toutes les fonctionnalités d'IA, p. ex. gemini-3.8-flash, ou gemini-3.5-flash-lite pour un coût moindre."
+msgid "No model is set."
+msgstr "Aucun modèle n'est défini."
+
+msgid "Enter a model ID, e.g. the default."
+msgstr "Saisissez un ID de modèle, p. ex. la valeur par défaut."
+
+msgid "Google Cloud credentials"
+msgstr "Identifiants Google Cloud"
+
+msgid "The google-auth package is missing."
+msgstr "Le paquet google-auth est manquant."
+
+msgid "Install the requirements: pip install -r requirements.txt."
+msgstr "Installez les dépendances : pip install -r requirements.txt."
+
+msgid "The server has no Google Cloud credentials (Application Default Credentials)."
+msgstr "Le serveur n'a pas d'identifiants Google Cloud (Application Default Credentials)."
+
+msgid "Google Cloud credentials could not be loaded."
+msgstr "Les identifiants Google Cloud n'ont pas pu être chargés."
+
+#, python-format
+msgid "Signed in as the service account %(account)s."
+msgstr "Connecté avec le compte de service %(account)s."
+
+#, python-format
+msgid "Signed in with %(kind)s credentials."
+msgstr "Connecté avec des identifiants de type %(kind)s."
+
+#, python-format
+msgid "(The credentials' own project is %(project)s; requests go to %(target)s.)"
+msgstr "(Le projet propre aux identifiants est %(project)s ; les requêtes vont vers %(target)s.)"
+
+msgid "On Google Cloud (Compute Engine, Cloud Run, GKE): attach a service account to the instance or service."
+msgstr "Sur Google Cloud (Compute Engine, Cloud Run, GKE) : associez un compte de service à l'instance ou au service."
+
+msgid "Elsewhere: create a service account key and point GOOGLE_APPLICATION_CREDENTIALS at the JSON file, or run gcloud auth application-default login as the user the site runs as."
+msgstr "Ailleurs : créez une clé de compte de service et faites pointer GOOGLE_APPLICATION_CREDENTIALS vers le fichier JSON, ou exécutez gcloud auth application-default login avec l'utilisateur sous lequel le site s'exécute."
+
+msgid "The account needs the Vertex AI User role in the project. Restart the site after changing credentials."
+msgstr "Le compte a besoin du rôle Utilisateur Vertex AI dans le projet. Redémarrez le site après avoir modifié les identifiants."
+
+#, python-format
+msgid "%(model)s answered but did not finish (%(reason)s)."
+msgstr "%(model)s a répondu mais n'a pas terminé (%(reason)s)."
+
+msgid "Try again; if it keeps happening, choose another model."
+msgstr "Réessayez ; si cela se reproduit, choisissez un autre modèle."
+
+#, python-format
+msgid "%(model)s answered, but not with the JSON it was asked for."
+msgstr "%(model)s a répondu, mais pas avec le JSON demandé."
+
+msgid "Choose a model that supports JSON output, e.g. the default."
+msgstr "Choisissez un modèle qui prend en charge la sortie JSON, p. ex. la valeur par défaut."
+
+#, python-format
+msgid "%(model)s answered in %(seconds).1f s."
+msgstr "%(model)s a répondu en %(seconds).1f s."
+
+#, python-format
+msgid "%(model)s did not return a vector of %(size)d numbers."
+msgstr "%(model)s n'a pas renvoyé de vecteur de %(size)d nombres."
+
+msgid "Choose an embedding model that supports output_dimensionality, e.g. gemini-embedding-2."
+msgstr "Choisissez un modèle d'embedding qui prend en charge output_dimensionality, p. ex. gemini-embedding-2."
+
+msgid "Google doesn't accept this API key."
+msgstr "Google n'accepte pas cette clé API."
+
+msgid "Copy the key again from aistudio.google.com/apikey (the whole key, without spaces) and test again."
+msgstr "Copiez à nouveau la clé depuis aistudio.google.com/apikey (la clé entière, sans espaces) et testez à nouveau."
+
+msgid "Keys of deleted projects, and keys that were rotated or expired, stop working."
+msgstr "Les clés de projets supprimés, ainsi que les clés ayant fait l'objet d'une rotation ou expirées, cessent de fonctionner."
+
+msgid "The API key's restrictions don't allow this request."
+msgstr "Les restrictions de la clé API n'autorisent pas cette requête."
+
+msgid "In the Google Cloud console > APIs & Services > Credentials, open the key: under \"API restrictions\" allow the Generative Language API."
+msgstr "Dans la console Google Cloud > API et services > Identifiants, ouvrez la clé : sous « Restrictions relatives aux API », autorisez Generative Language API."
+
+msgid "Under \"Application restrictions\" choose None or IP addresses (with this server's address): website (HTTP referrer) restrictions block requests from a server."
+msgstr "Sous « Restrictions relatives aux applications », choisissez Aucune ou Adresses IP (avec l'adresse de ce serveur) : les restrictions par site Web (référent HTTP) bloquent les requêtes provenant d'un serveur."
+
+msgid "Vertex AI API"
+msgstr "Vertex AI API"
+
+msgid "Generative Language API"
+msgstr "Generative Language API"
+
+#, python-format
+msgid "The %(api)s is not enabled in the Google Cloud project."
+msgstr "Le service %(api)s n'est pas activé dans le projet Google Cloud."
+
+#, python-format
+msgid "Enable it at %(url)s, wait a few minutes and test again."
+msgstr "Activez-le sur %(url)s, patientez quelques minutes, puis testez à nouveau."
+
+msgid "Billing is not enabled for the Google Cloud project."
+msgstr "La facturation n'est pas activée pour le projet Google Cloud."
+
+msgid "Link a billing account in the Google Cloud console > Billing, then test again."
+msgstr "Associez un compte de facturation dans la console Google Cloud > Facturation, puis testez à nouveau."
+
+msgid "The Gemini API is not available from the country this server is in."
+msgstr "L'API Gemini n'est pas disponible depuis le pays où se trouve ce serveur."
+
+msgid "Use Vertex AI instead: choose \"Vertex AI\" and enter a Google Cloud project."
+msgstr "Utilisez plutôt Vertex AI : choisissez « Vertex AI » et saisissez un projet Google Cloud."
+
+msgid "The credentials were refused or have expired: run gcloud auth application-default login again, or check the service account key."
+msgstr "Les identifiants ont été refusés ou ont expiré : exécutez à nouveau gcloud auth application-default login, ou vérifiez la clé du compte de service."
+
+msgid "Copy the API key again from aistudio.google.com/apikey."
+msgstr "Copiez à nouveau la clé API depuis aistudio.google.com/apikey."
+
+msgid "Google couldn't confirm who is calling (HTTP 401)."
+msgstr "Google n'a pas pu confirmer l'identité de l'appelant (HTTP 401)."
+
+#, python-format
+msgid "The server's Google Cloud account may not use Vertex AI in project %(project)s."
+msgstr "Le compte Google Cloud du serveur n'a peut-être pas le droit d'utiliser Vertex AI dans le projet %(project)s."
+
+#, python-format
+msgid "Check that %(project)s is the project ID (a wrong ID gives this error too)."
+msgstr "Vérifiez que %(project)s est bien l'ID du projet (un ID erroné provoque aussi cette erreur)."
+
+msgid "Give the account the Vertex AI User role (roles/aiplatform.user) in Google Cloud console > IAM, then test again."
+msgstr "Attribuez au compte le rôle Utilisateur Vertex AI (roles/aiplatform.user) dans la console Google Cloud > IAM, puis testez à nouveau."
+
+msgid "Google refused the request (HTTP 403)."
+msgstr "Google a refusé la requête (HTTP 403)."
+
+msgid "Check that the key belongs to a project with the Generative Language API enabled, and that its restrictions allow it."
+msgstr "Vérifiez que la clé appartient à un projet dans lequel Generative Language API est activée, et que ses restrictions l'autorisent."
+
+msgid "Check the spelling of the model ID; models are retired after a while."
+msgstr "Vérifiez l'orthographe de l'ID du modèle ; les modèles sont retirés au bout d'un certain temps."
+
+#, python-format
+msgid "Not every model is offered in %(location)s: try the location global."
+msgstr "Tous les modèles ne sont pas proposés dans %(location)s : essayez l'emplacement global."
+
+#, python-format
+msgid "Models this connection offers include: %(models)s."
+msgstr "Parmi les modèles proposés par cette connexion : %(models)s."
+
+#, python-format
+msgid "The model %(model)s was not found."
+msgstr "Le modèle %(model)s est introuvable."
+
+msgid "Google's quota for this key or project is used up for now (HTTP 429)."
+msgstr "Le quota de Google pour cette clé ou ce projet est épuisé pour le moment (HTTP 429)."
+
+msgid "Wait a minute and test again; free-tier limits are per minute and per day."
+msgstr "Patientez une minute et testez à nouveau ; les limites du niveau gratuit s'appliquent par minute et par jour."
+
+msgid "For more, enable billing or ask for a higher quota in the Google Cloud console > Quotas."
+msgstr "Pour aller plus loin, activez la facturation ou demandez un quota plus élevé dans la console Google Cloud > Quotas."
+
+#, python-format
+msgid "%(model)s doesn't support the thinking setting the AI features use."
+msgstr "%(model)s ne prend pas en charge le réglage de réflexion (thinking) utilisé par les fonctionnalités d'IA."
+
+msgid "Choose a Gemini 3 model, e.g. the default."
+msgstr "Choisissez un modèle Gemini 3, p. ex. la valeur par défaut."
+
+#, python-format
+msgid "%(model)s doesn't support the JSON answers the AI features need."
+msgstr "%(model)s ne prend pas en charge les réponses JSON dont les fonctionnalités d'IA ont besoin."
+
+msgid "Choose another model, e.g. the default."
+msgstr "Choisissez un autre modèle, p. ex. la valeur par défaut."
+
+#, python-format
+msgid "%(model)s can't make vectors of %(size)d numbers."
+msgstr "%(model)s ne peut pas produire de vecteurs de %(size)d nombres."
+
+msgid "Choose gemini-embedding-2 or another model that supports output_dimensionality."
+msgstr "Choisissez gemini-embedding-2 ou un autre modèle qui prend en charge output_dimensionality."
+
+#, python-format
+msgid "Vertex AI doesn't know the location %(location)s."
+msgstr "Vertex AI ne connaît pas l'emplacement %(location)s."
+
+msgid "Use global, or a region such as europe-west1 or us-central1."
+msgstr "Utilisez global, ou une région comme europe-west1 ou us-central1."
+
+#, python-format
+msgid "Google's servers had a problem (HTTP %(code)s); it is usually temporary."
+msgstr "Les serveurs de Google ont rencontré un problème (HTTP %(code)s) ; il est généralement temporaire."
+
+msgid "Test again in a few minutes."
+msgstr "Testez à nouveau dans quelques minutes."
+
+#, python-format
+msgid "Google refused the request (HTTP %(code)s %(status)s)."
+msgstr "Google a refusé la requête (HTTP %(code)s %(status)s)."
+
+msgid "Google's message below says why."
+msgstr "Le message de Google ci-dessous en indique la raison."
+
+msgid "The Google Cloud credentials could not be renewed."
+msgstr "Les identifiants Google Cloud n'ont pas pu être renouvelés."
+
+msgid "They may have been revoked or expired: run gcloud auth application-default login again, or create a new service account key."
+msgstr "Ils ont peut-être été révoqués ou ont expiré : exécutez à nouveau gcloud auth application-default login, ou créez une nouvelle clé de compte de service."
+
+msgid "The server must also reach oauth2.googleapis.com over HTTPS."
+msgstr "Le serveur doit aussi pouvoir joindre oauth2.googleapis.com en HTTPS."
+
+#, python-format
+msgid "%(host)s didn't answer within %(seconds)d seconds."
+msgstr "%(host)s n'a pas répondu dans un délai de %(seconds)d secondes."
+
+msgid "Test again; if it keeps happening, check the server's network and any proxy."
+msgstr "Testez à nouveau ; si cela se reproduit, vérifiez le réseau du serveur et l'éventuel proxy."
+
+#, python-format
+msgid "The server can't reach %(host)s."
+msgstr "Le serveur ne parvient pas à joindre %(host)s."
+
+#, python-format
+msgid "Allow outgoing HTTPS (port 443) from this server to %(host)s in its firewall."
+msgstr "Autorisez le trafic HTTPS sortant (port 443) de ce serveur vers %(host)s dans son pare-feu."
+
+msgid "Behind a proxy, set HTTPS_PROXY for the site's process and restart it."
+msgstr "Derrière un proxy, définissez HTTPS_PROXY pour le processus du site et redémarrez-le."
+
+msgid "Check that the server can resolve the name (DNS)."
+msgstr "Vérifiez que le serveur peut résoudre le nom (DNS)."
+
+#, python-format
+msgid "The request failed: %(error)s"
+msgstr "La requête a échoué : %(error)s"
+
+msgid "Google's message below may say why."
+msgstr "Le message de Google ci-dessous en indique peut-être la raison."
+
+msgid "AI assistance"
+msgstr "Assistance IA"
+
+msgid "Duplicate detection, spam moderation, an assistant and suggested answers with Google Gemini. Enabled features send the text of public posts (titles, bodies, comments) to Google (the Gemini API, or Vertex AI in your Google Cloud project); nothing else about the author is sent. Fill in the connection, press \"Test connection\" to check it, then save."
+msgstr "Détection des doublons, modération du spam, un assistant et des réponses suggérées avec Google Gemini. Les fonctionnalités activées envoient le texte des publications publiques (titres, corps, commentaires) à Google (l'API Gemini, ou Vertex AI dans votre projet Google Cloud) ; aucune autre information sur l'auteur n'est envoyée. Renseignez la connexion, cliquez sur « Tester la connexion » pour la vérifier, puis enregistrez."
+
+msgid "Connect through"
+msgstr "Se connecter via"
+
+msgid "Automatic uses Vertex AI when a project is set (here or in GOOGLE_CLOUD_PROJECT), otherwise the Gemini API key."
+msgstr "« Automatique » utilise Vertex AI lorsqu'un projet est défini (ici ou dans GOOGLE_CLOUD_PROJECT), sinon la clé API Gemini."
+
+msgid "Automatic"
+msgstr "Automatique"
+
+msgid "Gemini API key"
+msgstr "Clé API Gemini"
+
+msgid "Vertex AI (Google Cloud project)"
+msgstr "Vertex AI (projet Google Cloud)"
+
+msgid "For the Gemini API: create a key at <a href='https://aistudio.google.com/apikey'>Google AI Studio</a> (it starts with AIza). If empty, the server's GEMINI_API_KEY or GOOGLE_API_KEY environment variable is used."
+msgstr "Pour l'API Gemini : créez une clé sur <a href='https://aistudio.google.com/apikey'>Google AI Studio</a> (elle commence par AIza). Si ce champ est vide, la variable d'environnement GEMINI_API_KEY ou GOOGLE_API_KEY du serveur est utilisée."
+
+msgid "ai gemini google llm artificial intelligence"
+msgstr "ia gemini google llm intelligence artificielle"
+
+msgid "For Vertex AI: the Google Cloud project ID (not its name or number). The server signs in with Application Default Credentials (on Google Cloud its service account, elsewhere GOOGLE_APPLICATION_CREDENTIALS or <code>gcloud auth application-default login</code>), which need the Vertex AI User role and the Vertex AI API enabled in the project. If empty, the GOOGLE_CLOUD_PROJECT environment variable is used."
+msgstr "Pour Vertex AI : l'ID du projet Google Cloud (pas son nom ni son numéro). Le serveur se connecte avec les identifiants par défaut de l'application (Application Default Credentials : sur Google Cloud, son compte de service ; ailleurs, GOOGLE_APPLICATION_CREDENTIALS ou <code>gcloud auth application-default login</code>), qui nécessitent le rôle Utilisateur Vertex AI et l'activation de Vertex AI API dans le projet. Si ce champ est vide, la variable d'environnement GOOGLE_CLOUD_PROJECT est utilisée."
+
+msgid "Vertex AI location"
+msgstr "Emplacement Vertex AI"
+
+msgid "Region of the Vertex AI endpoint: global (recommended, has the newest models), or e.g. europe-west1 or us-central1 to keep requests in a region."
+msgstr "Région du point de terminaison Vertex AI : global (recommandé, propose les modèles les plus récents), ou p. ex. europe-west1 ou us-central1 pour que les requêtes restent dans une région."
+
+msgid "The model ID used for all text features, e.g. gemini-3.8-flash, or gemini-3.5-flash-lite for lower cost. It must support JSON output and thinking levels (Gemini 3 models do)."
+msgstr "L'ID du modèle utilisé pour toutes les fonctionnalités textuelles, p. ex. gemini-3.8-flash, ou gemini-3.5-flash-lite pour un coût moindre. Il doit prendre en charge la sortie JSON et les niveaux de réflexion (c'est le cas des modèles Gemini 3)."
+
+msgid "Gemini model used to index forum threads and documentation for semantic search and the assistant. After a change, the next run of manage.py build_knowledge_index embeds everything again (until then semantic search and the assistant find little)."
+msgstr "Modèle Gemini utilisé pour indexer les discussions du forum et la documentation pour la recherche sémantique et l'assistant. Après un changement, la prochaine exécution de manage.py build_knowledge_index recalcule tous les embeddings (d'ici là, la recherche sémantique et l'assistant trouvent peu de résultats)."
 
 msgid "Duplicate detection"
 msgstr "Détection des doublons"
@@ -10088,12 +10419,6 @@ msgstr "Examen des profils de spam"
 msgid "When a user below the skip reputation fills in or changes their website or \"about me\", check it for profile spam (SEO links, advertising). Suspect accounts are listed for moderators under Flagged posts; they are never suspended or deleted automatically."
 msgstr "Lorsqu'un utilisateur dont la réputation est inférieure au seuil d'exemption renseigne ou modifie son site web ou sa rubrique « à propos de moi », vérifier s'il s'agit de spam de profil (liens SEO, publicité). Les comptes suspects sont listés pour les modérateurs sous Publications signalées ; ils ne sont jamais suspendus ni supprimés automatiquement."
 
-msgid "Embedding model"
-msgstr "Modèle d'embedding"
-
-msgid "Gemini model used to index forum threads and documentation for semantic search."
-msgstr "Modèle Gemini utilisé pour indexer les discussions du forum et la documentation pour la recherche sémantique."
-
 msgid "Documentation to crawl"
 msgstr "Documentation à explorer"
 
@@ -10124,39 +10449,113 @@ msgstr "manage.py suggest_answers (exécuté toutes les heures) ajoute une sugge
 msgid "Suggest an answer after (hours)"
 msgstr "Suggérer une réponse après (heures)"
 
-#, python-format
-msgid "AI features run through Vertex AI in the Google Cloud project %s (Admin > AI assistance); the key is not used."
-msgstr "Les fonctions d'IA passent par Vertex AI dans le projet Google Cloud %s (Admin > Assistance IA) ; la clé n'est pas utilisée."
+msgid "The google-genai package is not installed on the server: pip install -r requirements.txt."
+msgstr "Le paquet google-genai n'est pas installé sur le serveur : pip install -r requirements.txt."
 
 msgid "Gemini API keys start with AIza; check that you copied the key itself."
 msgstr "Les clés API Gemini commencent par AIza ; vérifiez que vous avez copié la clé elle-même."
 
-msgid "AI features are on; choose which ones under Admin > AI assistance."
-msgstr "Les fonctions d'IA sont activées ; choisissez lesquelles sous Admin > Assistance IA."
+msgid "Needs the connection above."
+msgstr "Nécessite la connexion ci-dessus."
 
-msgid "Using the key in the server's GEMINI_API_KEY or GOOGLE_API_KEY environment variable."
-msgstr "Utilise la clé de la variable d'environnement GEMINI_API_KEY ou GOOGLE_API_KEY du serveur."
+msgid "Connection to Google Gemini"
+msgstr "Connexion à Google Gemini"
 
-msgid "Google Gemini (AI assistance)"
-msgstr "Google Gemini (assistance IA)"
-
-msgid "Turns on duplicate detection, spam and abuse review, and the answer assistant. The text of new public posts is sent to Google; see Admin > AI assistance for what each feature does."
-msgstr "Active la détection des doublons, l'examen du spam et des abus, et l'assistant de réponse. Le texte des nouvelles publications publiques est envoyé à Google ; voir Admin > Assistance IA pour le rôle de chaque fonction."
+msgid "Every AI feature on this page needs it. Fill it in, press <strong>Test connection</strong> to check it, then save."
+msgstr "Toutes les fonctionnalités d'IA de cette page en ont besoin. Renseignez-la, cliquez sur <strong>Tester la connexion</strong> pour la vérifier, puis enregistrez."
 
 msgid "Sign in to <a href=\"https://aistudio.google.com/apikey\">Google AI Studio</a> and choose <strong>Create API key</strong> (in a Google Cloud project with billing for more than the free tier's limits)."
 msgstr "Connectez-vous à <a href=\"https://aistudio.google.com/apikey\">Google AI Studio</a> et choisissez <strong>Create API key</strong> (dans un projet Google Cloud avec facturation pour dépasser les limites de l'offre gratuite)."
 
-msgid "Paste the key, which starts with <code>AIza</code>, below and save."
-msgstr "Collez la clé, qui commence par <code>AIza</code>, ci-dessous et enregistrez."
+msgid "Paste the key, which starts with <code>AIza</code>, under <strong>Gemini API key</strong>."
+msgstr "Collez la clé, qui commence par <code>AIza</code>, sous <strong>Clé API Gemini</strong>."
 
-msgid "Choose the features and the model under Admin &gt; AI assistance. On Google Cloud you can use a Vertex AI project there instead of a key."
-msgstr "Choisissez les fonctions et le modèle sous Admin &gt; Assistance IA. Sur Google Cloud, vous pouvez y utiliser un projet Vertex AI au lieu d'une clé."
+msgid "Or, on Google Cloud: choose <strong>Vertex AI</strong>, enter the project ID, enable the Vertex AI API in the project and give the server's account the Vertex AI User role."
+msgstr "Ou, sur Google Cloud : choisissez <strong>Vertex AI</strong>, saisissez l'ID du projet, activez Vertex AI API dans le projet et attribuez au compte du serveur le rôle Utilisateur Vertex AI."
+
+msgid "Press <strong>Test connection</strong>: it says what works and, when something fails, how to fix it. Then save."
+msgstr "Cliquez sur <strong>Tester la connexion</strong> : le test indique ce qui fonctionne et, en cas d'échec, comment corriger le problème. Enregistrez ensuite."
 
 msgid "Google: using Gemini API keys"
 msgstr "Google : utiliser les clés API Gemini"
 
+msgid "Google: Gemini on Vertex AI"
+msgstr "Google : Gemini sur Vertex AI"
+
 msgid "ai gemini llm vertex artificial intelligence duplicates moderation assistant"
 msgstr "ia gemini llm vertex intelligence artificielle doublons modération assistant"
+
+msgid "Duplicates and moderation"
+msgstr "Doublons et modération"
+
+msgid "While a question is written, and in the background after posts and profile changes. Nothing is hidden or deleted automatically: suspect posts and profiles go to the moderation inbox."
+msgstr "Pendant la rédaction d'une question, et en arrière-plan après les publications et les modifications de profil. Rien n'est masqué ni supprimé automatiquement : les publications et profils suspects sont envoyés dans la boîte de modération."
+
+msgid "Knowledge index, assistant and suggested answers"
+msgstr "Index de connaissances, assistant et réponses suggérées"
+
+msgid "Answers drawn only from the forum and the documentation below, with sources. The index is built nightly by manage.py build_knowledge_index; suggestions by manage.py suggest_answers (hourly)."
+msgstr "Des réponses tirées uniquement du forum et de la documentation ci-dessous, avec leurs sources. L'index est construit chaque nuit par manage.py build_knowledge_index ; les suggestions par manage.py suggest_answers (toutes les heures)."
+
+#, python-format
+msgid "Knowledge index: %(forum)s forum and %(web)s documentation passages."
+msgstr "Index de connaissances : %(forum)s passages du forum et %(web)s passages de documentation."
+
+#, python-format
+msgid "Last built %(when)s ago."
+msgstr "Dernière construction il y a %(when)s."
+
+msgid "Not built yet (manage.py build_knowledge_index, nightly)."
+msgstr "Pas encore construit (manage.py build_knowledge_index, chaque nuit)."
+
+#, python-format
+msgid "The index was built with %(old)s; the next build embeds everything again with %(new)s."
+msgstr "L'index a été construit avec %(old)s ; la prochaine construction recalculera tous les embeddings avec %(new)s."
+
+msgid "Testing…"
+msgstr "Test en cours…"
+
+msgid "The test could not run:"
+msgstr "Le test n'a pas pu s'exécuter :"
+
+msgid "Test connection"
+msgstr "Tester la connexion"
+
+msgid "Tries the values above with one short request to each model. Nothing is saved."
+msgstr "Essaie les valeurs ci-dessus avec une courte requête à chaque modèle. Rien n'est enregistré."
+
+msgid "The test needs JavaScript."
+msgstr "Le test nécessite JavaScript."
+
+msgid "Test the AI connection"
+msgstr "Tester la connexion IA"
+
+msgid "Back to AI assistance"
+msgstr "Retour à l'assistance IA"
+
+msgid "The connection works: the AI features can use it."
+msgstr "La connexion fonctionne : les fonctionnalités d'IA peuvent l'utiliser."
+
+msgid "The test found a problem; what to do is below."
+msgstr "Le test a détecté un problème ; la marche à suivre est indiquée ci-dessous."
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Note"
+msgstr "Remarque"
+
+msgid "Skipped"
+msgstr "Ignoré"
+
+msgid "Failed"
+msgstr "Échec"
+
+msgid "Error reported by Google"
+msgstr "Erreur signalée par Google"
+
+msgid "The tested values are not saved: press Save to use them."
+msgstr "Les valeurs testées ne sont pas enregistrées : cliquez sur Enregistrer pour les utiliser."
 
 msgid "Akismet API key"
 msgstr "Clé API Akismet"
@@ -10770,9 +11169,6 @@ msgstr "Restaurer les utilisateurs, questions, réponses, commentaires, votes, �
 
 msgid "Restore data from a previous export"
 msgstr "Restaurer les données d'une exportation précédente"
-
-msgid "Skipped"
-msgstr "Ignoré"
 
 msgid "Your backup is ready to be downloaded."
 msgstr "Votre sauvegarde est prête à être téléchargée."
