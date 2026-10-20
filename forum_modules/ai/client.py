@@ -15,7 +15,7 @@ try:
 except ImportError:  # pip install -r requirements.txt
     genai = None
 
-from .settings import GEMINI_API_KEY, AI_VERTEX_PROJECT, AI_VERTEX_LOCATION, AI_MODEL, AI_EMBEDDING_MODEL
+from .settings import GEMINI_API_KEY, AI_PROVIDER, AI_VERTEX_PROJECT, AI_VERTEX_LOCATION, AI_MODEL, AI_EMBEDDING_MODEL
 
 log = logging.getLogger(__name__)
 
@@ -26,15 +26,44 @@ BLOCKED = object()
 _client = {}
 
 
-def connection():
-    """('vertex', project, location), ('gemini', api_key) or None."""
-    project = str(AI_VERTEX_PROJECT).strip() or os.environ.get('GOOGLE_CLOUD_PROJECT', '').strip()
-    if project:
-        location = str(AI_VERTEX_LOCATION).strip() or os.environ.get('GOOGLE_CLOUD_LOCATION', '').strip() or 'global'
-        return ('vertex', project, location)
-    key = str(GEMINI_API_KEY).strip() or os.environ.get('GEMINI_API_KEY', '').strip() \
-        or os.environ.get('GOOGLE_API_KEY', '').strip()
-    if key:
+def _first(*candidates):
+    """(value, source) of the first non-empty (value, source) candidate;
+    sources are 'setting', an environment variable's name or 'default'."""
+    for value, source in candidates:
+        value = str(value or '').strip()
+        if value:
+            return value, source
+    return '', None
+
+
+def resolve(values=None):
+    """Where each connection value comes from: {'provider': 'auto' | 'gemini' |
+    'vertex', and for key, project, location, model, embedding_model a
+    (value, source) pair}. `values` (by setting name) replaces saved settings:
+    the admin tests the form before saving it."""
+    values = values or {}
+    saved = lambda setting: values.get(setting.name, setting.value)
+    env = os.environ.get
+    return {
+        'provider': str(saved(AI_PROVIDER) or '').strip() or 'auto',
+        'key': _first((saved(GEMINI_API_KEY), 'setting'), (env('GEMINI_API_KEY'), 'GEMINI_API_KEY'),
+                      (env('GOOGLE_API_KEY'), 'GOOGLE_API_KEY')),
+        'project': _first((saved(AI_VERTEX_PROJECT), 'setting'), (env('GOOGLE_CLOUD_PROJECT'), 'GOOGLE_CLOUD_PROJECT')),
+        'location': _first((saved(AI_VERTEX_LOCATION), 'setting'),
+                           (env('GOOGLE_CLOUD_LOCATION'), 'GOOGLE_CLOUD_LOCATION'), ('global', 'default')),
+        'model': _first((saved(AI_MODEL), 'setting')),
+        'embedding_model': _first((saved(AI_EMBEDDING_MODEL), 'setting')),
+    }
+
+
+def connection(values=None):
+    """('vertex', project, location), ('gemini', api_key) or None. "Connect
+    through" picks one; Automatic prefers Vertex AI when a project is set."""
+    found = resolve(values)
+    provider, project, key = found['provider'], found['project'][0], found['key'][0]
+    if project and provider in ('auto', 'vertex'):
+        return ('vertex', project, found['location'][0])
+    if key and provider in ('auto', 'gemini'):
         return ('gemini', key)
     return None
 
@@ -43,27 +72,26 @@ def is_configured():
     return genai is not None and connection() is not None
 
 
+def build_client(target, timeout=None):
+    """A google.genai client for a connection() target; `timeout` in seconds."""
+    options = {'http_options': types.HttpOptions(timeout=int(timeout * 1000))} if timeout else {}
+    if target[0] == 'vertex':
+        # Credentials come from Application Default Credentials (the
+        # server's service account, or `gcloud auth application-default login`).
+        return genai.Client(vertexai=True, project=target[1], location=target[2], **options)
+    return genai.Client(api_key=target[1], **options)
+
+
 def get_client():
     target = connection()
     if _client.get('target') != target:
-        if target[0] == 'vertex':
-            # Credentials come from Application Default Credentials (the
-            # server's service account, or `gcloud auth application-default login`).
-            client = genai.Client(vertexai=True, project=target[1], location=target[2])
-        else:
-            client = genai.Client(api_key=target[1])
-        _client.update(target=target, client=client)
+        _client.update(target=target, client=build_client(target))
     return _client['client']
 
 
-def ask_model(system, content, schema, thinking='low'):
-    """The model's answer to `content` as a dict matching the JSON `schema`;
-    None if there is no usable answer, BLOCKED if the safety filters refused."""
-    if not is_configured():
-        return None
-
-    model = str(AI_MODEL).strip()
-    config = types.GenerateContentConfig(
+def json_config(system, schema, thinking='low'):
+    """The request settings of every JSON answer (ask_model, the admin's test)."""
+    return types.GenerateContentConfig(
         system_instruction=system,
         response_mime_type='application/json',
         response_json_schema=schema,
@@ -78,6 +106,16 @@ def ask_model(system, content, schema, thinking='low'):
                                           types.HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
                                           types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT)],
     )
+
+
+def ask_model(system, content, schema, thinking='low'):
+    """The model's answer to `content` as a dict matching the JSON `schema`;
+    None if there is no usable answer, BLOCKED if the safety filters refused."""
+    if not is_configured():
+        return None
+
+    model = str(AI_MODEL).strip()
+    config = json_config(system, schema, thinking)
 
     try:
         response = get_client().models.generate_content(model=model, contents=content, config=config)

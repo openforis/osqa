@@ -171,4 +171,36 @@ $(function() {
             $('div.test_status').show('slow')
         })
     })
+
+    // Admin > AI assistance > "Test connection" (forum_modules/ai): posts the
+    // form as it is now, unsaved, and shows the explained result.
+    $(document).on('click', '[data-ai-test]', function() {
+        var button = this, form = button.form, result = document.getElementById('ai-test-result');
+        if (!form || !result || button.disabled) {
+            return;
+        }
+        var label = button.textContent;
+        button.disabled = true;
+        button.setAttribute('aria-busy', 'true');
+        button.textContent = button.getAttribute('data-busy-label') || label;
+        result.innerHTML = '';
+        fetch(button.getAttribute('data-ai-test'), {
+            method: 'POST', body: new FormData(form), credentials: 'same-origin',
+            headers: {'X-Requested-With': 'XMLHttpRequest', 'X-CSRFToken': $('meta[name="csrf-token"]').attr('content')}
+        }).then(function(response) {
+            return response.text().then(function(text) {
+                if (!response.ok) {
+                    throw new Error('HTTP ' + response.status);
+                }
+                result.innerHTML = text;
+            });
+        }).catch(function(error) {
+            result.textContent = (button.getAttribute('data-error-label') || '') + ' ' + error.message;
+        }).then(function() {
+            button.disabled = false;
+            button.removeAttribute('aria-busy');
+            button.textContent = label;
+            result.scrollIntoView({block: 'nearest'});
+        });
+    });
 });

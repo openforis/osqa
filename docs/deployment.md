@@ -655,7 +655,8 @@ python manage.py restore_site backups/osqa-backup-20261015-033000.tar.gz --confi
 6. **Optional:**
    - Admin > External Keys: Google/GitHub/Facebook sign-in (callback URLs in
      the README's "Social login").
-   - Admin > AI assistance: Gemini key or Vertex AI project.
+   - Admin > AI assistance: Gemini key or Vertex AI project, then "Test
+     connection" (it explains what to fix) and save.
    - `SENTRY_DSN`.
 7. **Check:**
    - `/healthz` and `/readyz` return `ok`.

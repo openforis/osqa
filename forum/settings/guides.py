@@ -37,7 +37,7 @@ SECTIONS = {}
 
 class Section:
     def __init__(self, key, title, settings, summary='', steps=(), copy=(), links=(),
-                 keywords='', status=None, weight=100):
+                 keywords='', status=None, extra=None, weight=100):
         self.key = key
         self.title = title
         self.settings = tuple(settings)
@@ -49,6 +49,8 @@ class Section:
         self.keywords = keywords
         # values (a dict of setting name -> current value) -> (state, message) or None.
         self.status = status
+        # request -> HTML shown after the section's settings (e.g. a test button), or None.
+        self.extra = extra
         # Lower comes first on the page.
         self.weight = weight
 

@@ -109,6 +109,23 @@ class KnowledgeIndexTest(AITestCase):
         DeleteAction(user=self.alice, node=self.landsat, ip='127.0.0.1').save()
         self.assertEqual(self.sync_forum(), (1, 0, 1))
 
+    def test_a_new_embedding_model_embeds_everything_again(self):
+        from forum_modules.ai import knowledge
+        self.assertEqual(self.sync_forum(), (0, 2, 0))
+        self.assertEqual(knowledge.index_model('forum'), 'gemini-embedding-2')
+        self.set(self.ai.AI_EMBEDDING_MODEL, 'gemini-embedding-3')
+        self.assertEqual(self.sync_forum(), (0, 2, 0))
+        self.assertEqual(knowledge.index_model('forum'), 'gemini-embedding-3')
+        self.assertEqual(self.sync_forum(), (2, 0, 0))
+
+    def test_an_index_from_before_the_model_was_recorded_is_kept(self):
+        from forum.models import KeyValue
+        from forum_modules.ai import knowledge
+        self.sync_forum()
+        KeyValue.objects.filter(key=knowledge.MODEL_KEY % 'forum').delete()
+        self.assertEqual(self.sync_forum(), (2, 0, 0))
+        self.assertEqual(knowledge.index_model('forum'), 'gemini-embedding-2')
+
     def test_documentation_crawl(self):
         from forum_modules.ai import knowledge
         documents = list(knowledge.web_documents(seeds='https://docs.example.org/docs/', max_pages=10, fetcher=fake_fetch))

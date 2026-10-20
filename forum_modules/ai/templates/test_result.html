@@ -1,0 +1,26 @@
+{% load i18n %}{# The result of "Test connection" (views.test_connection, diagnostics.run_test). #}
+<div class="ai-test-summary {% if result.ok %}ai-test-ok{% else %}ai-test-fail{% endif %}">
+    <strong>{% if result.ok %}{% trans "The connection works: the AI features can use it." %}{% else %}{% trans "The test found a problem; what to do is below." %}{% endif %}</strong>
+</div>
+<ul class="ai-checks">
+    {% for item in result.checks %}
+    <li class="ai-check ai-check-{{ item.state }}">
+        <span class="ai-check-state">{% if item.state == "ok" %}{% trans "OK" %}{% elif item.state == "warn" %}{% trans "Note" %}{% elif item.state == "skip" %}{% trans "Skipped" %}{% else %}{% trans "Failed" %}{% endif %}</span>
+        <div class="ai-check-body">
+            <strong>{{ item.name }}:</strong> {{ item.summary }}
+            {% if item.hints %}
+            <ul class="ai-check-hints">
+                {% for hint in item.hints %}<li>{{ hint|urlize }}</li>{% endfor %}
+            </ul>
+            {% endif %}
+            {% if item.detail %}
+            <details class="ai-check-detail">
+                <summary>{% trans "Error reported by Google" %}</summary>
+                <pre>{{ item.detail }}</pre>
+            </details>
+            {% endif %}
+        </div>
+    </li>
+    {% endfor %}
+</ul>
+<p class="ai-test-note">{% trans "The tested values are not saved: press Save to use them." %}</p>

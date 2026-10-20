@@ -846,17 +846,30 @@ Users settings:
 ### AI assistance
 
 The `ai` module uses Google Gemini, either through the Gemini API or through
-Vertex AI in your own Google Cloud project:
+Vertex AI in your own Google Cloud project. Everything is set up under
+Admin > AI assistance > "Connection to Google Gemini":
 
-- **Gemini API**: enter a key from Google AI Studio under Admin > External
-  Keys (or set `GEMINI_API_KEY` / `GOOGLE_API_KEY` on the server).
-- **Vertex AI**: enter the project ID (and region, default `global`) under
-  Admin > AI assistance, or set `GOOGLE_CLOUD_PROJECT` / `GOOGLE_CLOUD_LOCATION`.
-  The server authenticates with Application Default Credentials: on Google
-  Cloud the instance's service account, elsewhere a service account key in
-  `GOOGLE_APPLICATION_CREDENTIALS` or `gcloud auth application-default login`.
-  The account needs the Vertex AI User role. A project set here wins over an
-  API key.
+- **Gemini API**: enter a key from Google AI Studio (or set `GEMINI_API_KEY`
+  / `GOOGLE_API_KEY` on the server).
+- **Vertex AI**: enter the project ID (and region, default `global`), or set
+  `GOOGLE_CLOUD_PROJECT` / `GOOGLE_CLOUD_LOCATION`. The server authenticates
+  with Application Default Credentials: on Google Cloud the instance's service
+  account, elsewhere a service account key in `GOOGLE_APPLICATION_CREDENTIALS`
+  or `gcloud auth application-default login`. The account needs the Vertex AI
+  User role and the project the Vertex AI API.
+- **Connect through**: Automatic (the default) uses Vertex AI when a project
+  is set and the key otherwise; choose one to ignore the other (e.g. when the
+  server's environment has both).
+- **Test connection** tries the values in the form, before saving them: it
+  checks the library, where each value comes from (the page or an
+  environment variable), the Google Cloud credentials, one JSON answer from
+  the text model with the settings the features use and one embedding. Each
+  failure is explained with what to do (invalid key, key restrictions, API not
+  enabled, missing role, unknown model with the models offered instead, quota,
+  network or proxy) and Google's own message; keys are never shown.
+- After changing the **embedding model**, the next nightly
+  `build_knowledge_index` embeds the whole index again (it records which model
+  built it; until then semantic search finds little).
 
 Each feature can be switched off under Admin > AI assistance:
 

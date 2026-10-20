@@ -1,0 +1,14 @@
+{% extends "osqaadmin/base.html" %}
+
+{% load i18n %}
+
+{% block subtitle %}{% trans "Test the AI connection" %}{% endblock %}
+{% block pagename %}<a href="{% url "admin_set" "ai" %}">{% trans "AI assistance" %}</a> &gt; {% trans "Test the AI connection" %}{% endblock %}
+{% block description %}{{ result.connection }}{% endblock %}
+
+{% block admincontent %}
+    <div class="module admin-panel ai-test-result" role="status">
+        {% include "modules/ai/test_result.html" %}
+    </div>
+    <p><a href="{% url "admin_set" "ai" %}">{% trans "Back to AI assistance" %}</a></p>
+{% endblock %}
