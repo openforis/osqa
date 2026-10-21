@@ -22,7 +22,7 @@ groups:
       # Daily commands: no successful run for 26 hours.
       - alert: OSQACronNotRun
         expr: >
-          time() - osqa_cron_last_success_timestamp_seconds{command=~"send_email_alerts|cleanup_inactive_users|remind_unaccepted|refresh_tag_expertise|backup_site"}
+          time() - osqa_cron_last_success_timestamp_seconds{command=~"send_email_alerts|cleanup_inactive_users|clearsessions|remind_unaccepted|refresh_tag_expertise|backup_site"}
           > 26 * 3600
         for: 10m
         labels: {severity: warning}

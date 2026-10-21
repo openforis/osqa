@@ -139,6 +139,11 @@ class ReadyTest(OSQATestCase):
         response = self.client.get('/readyz', HTTP_HOST='osqa-web-5d8f7:8000')
         self.assertEqual((response.status_code, response.content), (200, b'ok\n'))
 
+    def test_probes_answer_with_a_trailing_slash(self):
+        for path in ('/healthz/', '/readyz/'):
+            response = self.client.get(path, HTTP_HOST='172.31.41.153')  # load balancer: instance IP as host
+            self.assertEqual((response.status_code, response.content), (200, b'ok\n'), path)
+
     def test_database_down(self):
         with mock.patch('forum.views.ops.connection') as connection, self.assertLogs('forum.views.ops', 'WARNING'):
             connection.cursor.side_effect = Exception('Access denied for user osqa@10.0.0.3')
@@ -257,6 +262,10 @@ class CronLastRunTest(OSQATestCase):
         self.assertNotIn('failure', run)
         self.assertGreaterEqual(run['duration'], 0)
         self.assertIn('remind_unaccepted', cron.last_runs())
+
+    def test_clearsessions_recorded(self):
+        self.run_command('clearsessions')
+        self.assertIn('success', KeyValue.objects.get(key='ops.cron.clearsessions').value)
 
     def test_dry_run_and_untracked_not_recorded(self):
         self.run_command('remind_unaccepted', dry_run=True)

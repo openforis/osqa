@@ -1,0 +1,6 @@
+#!/bin/sh
+# Daily: delete expired sessions (Django keeps database sessions until this runs).
+# Set OSQA_ROOT to the directory containing manage.py.
+OSQA_ROOT=${OSQA_ROOT:-/path/to/osqa}
+
+cd "$OSQA_ROOT" && python3 manage.py clearsessions

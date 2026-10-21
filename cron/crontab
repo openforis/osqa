@@ -7,6 +7,8 @@
 15 6 * * *  cd /app && python manage.py send_email_alerts
 # Dormant (bot) account clean-up
 45 6 * * *  cd /app && python manage.py cleanup_inactive_users
+# Expired sessions
+50 6 * * *  cd /app && python manage.py clearsessions
 # Accept reminders
 0 7 * * *   cd /app && python manage.py remind_unaccepted
 # Expertise per tag for "Questions for you" and expert routing
