@@ -19,7 +19,7 @@ from django.conf import settings as djsettings
 log = logging.getLogger(__name__)
 
 DEFAULT_COMMANDS = (
-    'send_email_alerts', 'remind_unaccepted', 'cleanup_inactive_users',
+    'send_email_alerts', 'remind_unaccepted', 'cleanup_inactive_users', 'clearsessions',
     'build_knowledge_index', 'suggest_answers', 'backup_site', 'rebuild_search_index', 'refresh_tag_expertise',
 )
 KEY_PREFIX = 'ops.cron.'

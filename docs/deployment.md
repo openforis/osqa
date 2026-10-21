@@ -303,6 +303,8 @@ PY=/srv/osqa/venv/bin/python
 # daily run: no separate weekly line), and clean-up of dormant (bot) and never-confirmed accounts
 0 7 * * *   cd $OSQA && $PY manage.py send_email_alerts
 45 6 * * *  cd $OSQA && $PY manage.py cleanup_inactive_users
+# Expired sessions (database sessions are kept until this runs)
+50 6 * * *  cd $OSQA && $PY manage.py clearsessions
 0 7 * * *   cd $OSQA && $PY manage.py remind_unaccepted
 # Expertise per tag (who is asked to answer new questions, "Questions for you")
 20 5 * * *  cd $OSQA && $PY manage.py refresh_tag_expertise
@@ -525,7 +527,7 @@ How it works (`forum/utils/metrics.py`):
   (`forum/utils/cron.py`; the commands themselves are not changed: a hook on
   Django's `BaseCommand.execute`, enabled from `forum/apps.py`, records the
   commands listed in `CRON_COMMANDS`; by default `send_email_alerts`,
-  `remind_unaccepted`, `cleanup_inactive_users`, `build_knowledge_index`,
+  `remind_unaccepted`, `cleanup_inactive_users`, `clearsessions`, `build_knowledge_index`,
   `suggest_answers`, `backup_site`, `rebuild_search_index` and
   `refresh_tag_expertise`; `--dry-run`
   runs aren't recorded).

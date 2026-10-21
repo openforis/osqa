@@ -67,6 +67,7 @@ Step-by-step guides:
 - Email digests and summaries: run `cron/send_email_alerts` once a day (e.g. at 07:00); it
   also sends the weekly summaries on their day, so weekly needs no cron line of its own.
 - Dormant (bot) accounts: run `cron/cleanup_inactive_users` daily (see "Spam sign-ups" below).
+- Expired sessions: run `cron/clearsessions` daily; Django never removes them from the database otherwise.
 - Accept reminders: run `cron/remind_unaccepted` daily (see "Notifications, community health and support dashboard" below).
 - Questions for experts: run `cron/refresh_tag_expertise` daily (see "Questions for you" below).
 - AI assistant (optional, `ai` module): run `cron/build_knowledge_index` nightly and

@@ -7,6 +7,7 @@ and new columns don't matter. Columns that only exist in the new schema get the 
 Python 2 pickled values are copied as they are: PickledObjectField reads them.
 """
 import importlib
+import os
 import re
 
 from django.apps import apps
@@ -24,6 +25,30 @@ SKIP_TABLES = {
 # Settings are saved with their default value the first time they are read (some while the
 # app loads), so a freshly migrated site may already have a few: the old ones replace them.
 SETTINGS_TABLE = 'forum_keyvalue'
+
+
+# Settings holding a folder of the old server (module settings only when the module is installed).
+FOLDER_SETTINGS = (('forum.settings', 'UPFILES_FOLDER'), ('forum_modules.exporter.settings', 'EXPORTER_BACKUP_STORAGE'))
+
+
+def reset_old_server_settings():
+    """Imported settings that only fit the old server: maintenance mode (the final dump is taken
+    in it) and folders that don't exist here go back to their defaults. Returns the names reset."""
+    from forum import settings
+
+    reset = []
+    if settings.MAINTAINANCE_MODE.value is not None:
+        settings.MAINTAINANCE_MODE.set_value(None)
+        reset.append('MAINTAINANCE_MODE')
+    for module, name in FOLDER_SETTINGS:
+        try:
+            setting = getattr(importlib.import_module(module), name)
+        except (ImportError, AttributeError):
+            continue
+        if not os.path.isdir(str(setting.value)):
+            setting.set_value(setting.default)
+            reset.append(name)
+    return reset
 
 
 def model_fields_by_column():
@@ -96,6 +121,9 @@ class Command(BaseCommand):
         importlib.import_module('forum.migrations.0007_remove_dead_sidebar_defaults').hide_old_default_blocks(
             apps, None)
         cache.clear()
+        reset = reset_old_server_settings()
+        if reset:
+            self.stdout.write("Reset to this server's defaults: %s." % ', '.join(reset))
         self.stdout.write(self.style.SUCCESS("Imported %d tables from %s." % (len(tables), source)))
         self.stdout.write("Next: manage.py rebuild_search_index, and copy the old forum/upfiles/.")
 
