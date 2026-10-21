@@ -7,7 +7,7 @@ nh3==0.3.7
 html2text==2025.4.15
 
 # Uploaded images are decoded, stripped of metadata and resized (forum/utils/images.py)
-Pillow==12.3.0
+Pillow==13.0.0
 
 # Google Gemini (Gemini API or Vertex AI), for the optional AI module (forum_modules/ai)
 google-genai==2.31.0
