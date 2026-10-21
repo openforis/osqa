@@ -240,7 +240,7 @@ class AdminGuidanceTest(E2ETestCase):
             page.click('#submit')
         self.check_page(page)
         self.assertEqual(dialogs, ['beforeunload'])
-        self.assertIn('Minimum reputation config saved: Minimum reputation to vote up changed.',
+        self.assertIn('Privileges saved: Minimum reputation to vote up changed.',
                       page.locator('.admin_message').all_inner_texts())
         settings.REP_TO_VOTE_UP._temp = None
         self.assertEqual(settings.REP_TO_VOTE_UP.value, 20)
@@ -312,3 +312,35 @@ class AdminGuidanceTest(E2ETestCase):
                 visitor = self.open(dark=style.theme == 'dark')
                 self.visit(visitor, question.get_absolute_url())
                 self.screenshot(visitor, 'style-%s' % style.key)
+
+    def test_menu_groups_fold_and_remember(self):
+        page = self.open(self.admin)
+        self.visit(page, '/admin/settings/minrep/')
+        members = page.locator('#members-menu')
+        self.assertTrue(members.evaluate('d => d.open'))  # holds the page being shown
+        self.assertFalse(page.locator('#look-menu').evaluate('d => d.open'))
+        self.assertFalse(page.get_by_role('link', name='Custom CSS').is_visible())
+        self.screenshot(page, 'menu')
+
+        # A group opened by hand stays open on the next page; the current one is always open.
+        page.click('#look-menu > summary')
+        self.assertTrue(page.get_by_role('link', name='Custom CSS').is_visible())
+        page.click('#members-menu > summary')
+        page.click('#content-menu > summary')
+        with page.expect_navigation():
+            page.get_by_role('link', name='Display', exact=True).click()
+        self.check_page(page)
+        self.assertTrue(page.locator('#look-menu').evaluate('d => d.open'))
+        self.assertTrue(page.locator('#content-menu').evaluate('d => d.open'))
+        self.assertFalse(page.locator('#members-menu').evaluate('d => d.open'))
+        self.assertEqual(page.locator('#admin-menu a[aria-current="page"]').inner_text(), 'Display')
+
+        # Keyboard: a group's name is a button that opens it.
+        page.locator('#integrations-menu > summary').focus()
+        page.keyboard.press('Enter')
+        self.assertTrue(page.locator('#integrations-menu').evaluate('d => d.open'))
+
+        phone = self.open(self.admin, device='mobile', dark=True)
+        self.visit(phone, '/admin/settings/minrep/')
+        phone.click('#admin-menu > summary')
+        self.screenshot(phone, 'menu')

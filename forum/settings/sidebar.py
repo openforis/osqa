@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 
 from .static import RENDER_CHOICES
 
-SIDEBAR_SET = SettingSet('sidebar', 'Sidebar content', "Enter contents to display in the sidebar. You can use markdown and some basic html tags.", 10, True)
+SIDEBAR_SET = SettingSet('sidebar', _('Sidebar'), _("Content shown in the sidebar of the public pages. You can use Markdown and some basic HTML tags."), 10, True)
 
 SHOW_WELCOME_BOX = Setting('SHOW_WELCOME_BOX', True, SIDEBAR_SET, dict(
 label = _("Show the Welcome box"),

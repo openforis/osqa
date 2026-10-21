@@ -296,3 +296,46 @@ class SetupChecklistTest(SettingMixin, OSQATestCase):
         self.assertNotContains(self.client.get('/admin/'), 'Getting started')
         self.client.post('/admin/', {'checklist': 'hide'})
         self.assertFalse(settings.SETUP_CHECKLIST_HIDDEN.value)
+
+
+class AdminMenuTest(OSQATestCase):
+    def setUp(self):
+        super().setUp()
+        self.admin = self.create_user('admin', is_superuser=True, is_staff=True)
+        self.login(self.admin)
+
+    def groups(self, path='/admin/'):
+        return self.client.get(path).context['admin_menu']
+
+    def test_every_settings_page_is_in_a_task_group(self):
+        from forum.settings.base import Setting
+        groups = self.groups()
+        titles = [str(g['title']) for g in groups]
+        self.assertEqual(titles, ['Moderation', 'Site', 'Members and permissions', 'Questions and answers',
+                                  'Look and feel', 'Pages', 'Integrations', 'Tools'])
+        urls = [i['url'] for g in groups for i in g['items']]
+        for name in Setting.sets:
+            self.assertIn('/admin/settings/%s/' % name, urls)
+        self.assertEqual(len(urls), len(set(urls)))
+
+    def test_open_group_and_folded_count(self):
+        from forum.actions import FlagAction
+        from forum.models import Question
+        question = Question(author=self.admin, title='Flag me please', body='<p>Body text</p>', tagnames='one')
+        question.save()
+        FlagAction(user=self.create_user('flagger', reputation=500), node=question, extra='spam',
+                   ip='127.0.0.1').save()
+        groups = dict((g['id'], g) for g in self.groups('/admin/settings/minrep/'))
+        self.assertTrue(groups['members-menu']['open'])
+        self.assertFalse(groups['moderation-menu']['open'])
+        self.assertEqual(groups['moderation-menu']['count'], 1)
+        # On the dashboard, where no group holds the page, the moderation one is open.
+        self.assertTrue(dict((g['id'], g) for g in self.groups())['moderation-menu']['open'])
+
+    def test_clearer_page_names(self):
+        labels = [str(i['label']) for g in self.groups() for i in g['items']]
+        for name in ('Members', 'Privileges', 'Reputation points', 'Badges', 'Asking and answering', 'Display',
+                     'File uploads', 'Custom pages'):
+            self.assertIn(name, labels)
+        for old in ('Users settings', 'Minimum reputation config', 'Reputation gains and losses config'):
+            self.assertNotIn(old, labels)

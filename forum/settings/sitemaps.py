@@ -1,7 +1,7 @@
 from .base import Setting, SettingSet
 from django.utils.translation import gettext_lazy as _
 
-SITEMAP_SET = SettingSet('sitemap', _('Sitemap settings'), _("Some settings connected with the Sitemaps."), 2000)
+SITEMAP_SET = SettingSet('sitemap', _('Sitemap'), _("The sitemap search engines read to find the questions."), 2000)
 
 QUESTIONS_SITEMAP_LIMIT = Setting('QUESTIONS_SITEMAP_LIMIT', 2500, SITEMAP_SET, dict(
 label = _("Questions Sitemap Limit"),

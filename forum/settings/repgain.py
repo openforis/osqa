@@ -1,7 +1,7 @@
 from .base import Setting, SettingSet
 from django.utils.translation import gettext_lazy as _
 
-REP_GAIN_SET = SettingSet('repgain', _('Reputation gains and losses config'), _("Configure the reputation points a user may gain or lose upon certain actions."), 200)
+REP_GAIN_SET = SettingSet('repgain', _('Reputation points'), _("How many reputation points members gain or lose for votes, accepted answers and other actions."), 200)
 
 INITIAL_REP = Setting('INITIAL_REP', 1, REP_GAIN_SET, dict(
 label = _("Initial reputation"),

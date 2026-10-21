@@ -2,7 +2,7 @@ import os.path
 from .base import Setting, SettingSet
 from django.utils.translation import gettext_lazy as _
 
-UPLOAD_SET = SettingSet('paths', _('File upload settings'), _("File uploads related settings."), 600)
+UPLOAD_SET = SettingSet('paths', _('File uploads'), _("Where uploaded files are kept, and their size limits."), 600)
 
 UPFILES_FOLDER = Setting('UPFILES_FOLDER', os.path.join(os.path.dirname(os.path.dirname(__file__)),'upfiles'), UPLOAD_SET, dict(
 label = _("Uploaded files folder"),

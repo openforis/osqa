@@ -4,6 +4,7 @@ settings, resolving automated moderation reports, XML backups, the Stack
 Exchange importer, and signing in with an OAuth 2.0 provider (GitHub,
 Google) and managing the providers linked to an account."""
 import os
+import re
 import shutil
 import tempfile
 import urllib.parse
@@ -26,6 +27,21 @@ class AdminTestCase(E2ETestCase):
             page.click(selector)
         self.check_page(page)
 
+    def menu(self, page, name):
+        """Follows a link of the administration menu on the dashboard (folded
+        into an "Admin menu" disclosure on a phone, so it is opened first, and
+        its group too when folded)."""
+        self.visit(page, '/admin/')
+        menu = page.locator('#admin-menu')
+        if not menu.evaluate('details => details.open'):
+            page.click('#admin-menu > summary')
+        link = menu.locator('a').filter(has_text=re.compile(r'^\s*%s\s*$' % re.escape(name)))
+        if not link.is_visible():  # in a folded group: open it
+            link.locator('xpath=ancestor::details[1]/summary').click()
+        with page.expect_navigation():
+            link.click()
+        self.check_page(page)
+
 
 class AdminToolsTest(AdminTestCase):
     def setUp(self):
@@ -34,20 +50,9 @@ class AdminToolsTest(AdminTestCase):
         self.alice = self.create_user('alice', reputation=100)
         self.question = self.create_question(self.alice, 'How do I export Collect survey data to CSV?')
 
-    def menu(self, page, name):
-        """Follows a link of the administration menu on the dashboard (folded
-        into an "Admin menu" disclosure on a phone, so it is opened first)."""
-        self.visit(page, '/admin/')
-        menu = page.locator('#admin-menu')
-        if not menu.evaluate('details => details.open'):
-            page.click('#admin-menu > summary')
-        with page.expect_navigation():
-            page.get_by_role('link', name=name, exact=True).click()
-        self.check_page(page)
-
     def test_static_pages(self):
         page = self.open(self.admin)
-        self.menu(page, 'Custom Pages')
+        self.menu(page, 'Custom pages')
         with page.expect_navigation():
             page.get_by_role('link', name='New page').click()
         self.check_page(page)
@@ -69,7 +74,7 @@ class AdminToolsTest(AdminTestCase):
         self.visit(visitor, '/pages/field-guide/')
         self.assertIn('Field guide for enumerators', visitor.content())
 
-        self.menu(page, 'Custom Pages')
+        self.menu(page, 'Custom pages')
         self.assertIn('Field guide for enumerators', page.content())
         self.submit(page, 'form[action="%s"] button' % reverse('admin_delete_page', kwargs={'id': created.id}))
         self.assertFalse(Page.objects.filter(id=created.id).exists())
@@ -282,10 +287,7 @@ class BackupTest(AdminTestCase):
 
     def test_export_and_download_a_backup(self):
         page = self.open(self.admin)
-        self.visit(page, '/admin/')
-        with page.expect_navigation():
-            page.get_by_role('link', name='XML data export').click()
-        self.check_page(page)
+        self.menu(page, 'XML data export')
         page.select_option('#id_file_format', 'zip')
         page.uncheck('#id_uplodaded_files')
         with page.expect_navigation():
@@ -305,10 +307,7 @@ class BackupTest(AdminTestCase):
 
     def test_stack_exchange_importer(self):
         page = self.open(self.admin)
-        self.visit(page, '/admin/')
-        with page.expect_navigation():
-            page.get_by_role('link', name='Stack Exchange import').click()
-        self.check_page(page)
+        self.menu(page, 'Stack Exchange import')
         self.assertEqual(page.url, self.url(reverse('sximporter')))
         self.assertIn('Stack Exchange dump importer', page.content())
         page.set_input_files('input[name=dump]', files=[
@@ -321,7 +320,6 @@ class ExternalSignInTest(AdminTestCase):
     """OAuth 2.0 sign-in. The provider's pages are answered by the browser
     (redirecting straight back with a code) and its API calls are mocked:
     the live server runs in this process."""
-
     PROFILES = {
         'github': ({'access_token': 'gh-token'}, {'id': 4242, 'login': 'octofield', 'name': 'Octo Field',
                                                    'email': None},
