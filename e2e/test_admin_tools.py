@@ -4,6 +4,7 @@ settings, resolving automated moderation reports, XML backups, the Stack
 Exchange importer, and signing in with an OAuth 2.0 provider (GitHub,
 Google) and managing the providers linked to an account."""
 import os
+import re
 import shutil
 import tempfile
 import urllib.parse
@@ -26,6 +27,21 @@ class AdminTestCase(E2ETestCase):
             page.click(selector)
         self.check_page(page)
 
+    def menu(self, page, name):
+        """Follows a link of the administration menu on the dashboard (folded
+        into an "Admin menu" disclosure on a phone, so it is opened first, and
+        its group too when folded)."""
+        self.visit(page, '/admin/')
+        menu = page.locator('#admin-menu')
+        if not menu.evaluate('details => details.open'):
+            page.click('#admin-menu > summary')
+        link = menu.locator('a').filter(has_text=re.compile(r'^\s*%s\s*$' % re.escape(name)))
+        if not link.is_visible():  # in a folded group: open it
+            link.locator('xpath=ancestor::details[1]/summary').click()
+        with page.expect_navigation():
+            link.click()
+        self.check_page(page)
+
 
 class AdminToolsTest(AdminTestCase):
     def setUp(self):
@@ -34,20 +50,9 @@ class AdminToolsTest(AdminTestCase):
         self.alice = self.create_user('alice', reputation=100)
         self.question = self.create_question(self.alice, 'How do I export Collect survey data to CSV?')
 
-    def menu(self, page, name):
-        """Follows a link of the administration menu on the dashboard (folded
-        into an "Admin menu" disclosure on a phone, so it is opened first)."""
-        self.visit(page, '/admin/')
-        menu = page.locator('#admin-menu')
-        if not menu.evaluate('details => details.open'):
-            page.click('#admin-menu > summary')
-        with page.expect_navigation():
-            page.get_by_role('link', name=name, exact=True).click()
-        self.check_page(page)
-
     def test_static_pages(self):
         page = self.open(self.admin)
-        self.menu(page, 'Custom Pages')
+        self.menu(page, 'Custom pages')
         with page.expect_navigation():
             page.get_by_role('link', name='New page').click()
         self.check_page(page)
@@ -69,7 +74,7 @@ class AdminToolsTest(AdminTestCase):
         self.visit(visitor, '/pages/field-guide/')
         self.assertIn('Field guide for enumerators', visitor.content())
 
-        self.menu(page, 'Custom Pages')
+        self.menu(page, 'Custom pages')
         self.assertIn('Field guide for enumerators', page.content())
         self.submit(page, 'form[action="%s"] button' % reverse('admin_delete_page', kwargs={'id': created.id}))
         self.assertFalse(Page.objects.filter(id=created.id).exists())
@@ -167,22 +172,34 @@ class AdminToolsTest(AdminTestCase):
         self.set_setting(settings.APP_TITLE, 'Open Foris Q&A')
         page = self.open(self.admin)
         self.visit(page, '/admin/settings/basic/')
+        row = page.locator('#setting-APP_TITLE')
         self.assertEqual(page.input_value('#id_APP_TITLE'), 'Open Foris Q&A')
-        # A text field is reset in place (AJAX)...
-        page.locator('tr', has=page.locator('#id_APP_TITLE')).locator('a.fieldtool.default').click()
-        self.wait_for_ajax(page)
-        self.check_page(page)
+        self.assertEqual(row.locator('.setting-changed').inner_text(), 'Changed')
+        self.assertIn(settings.APP_TITLE.default, row.locator('.setting-default').inner_text())
+        # Settings at their default offer no reset.
+        self.assertFalse(page.locator('#setting-APP_SHORT_NAME .setting-default').is_visible())
+
+        # "Use default" fills the field in; nothing is saved before Save.
+        row.locator('.setting-reset').click()
         self.assertEqual(page.input_value('#id_APP_TITLE'), settings.APP_TITLE.default)
+        self.assertIn('is-dirty', row.get_attribute('class'))
+        self.assertEqual(page.locator('.admin-unsaved-status').inner_text(), '1 unsaved change')
+        self.assertFalse(row.locator('.setting-default').is_visible())
+        settings.APP_TITLE._temp = None
+        self.assertEqual(settings.APP_TITLE.value, 'Open Foris Q&A')
+        self.submit(page, '#submit')
+        self.assertIn('Basic settings saved: Application title changed.', page.content())
         settings.APP_TITLE._temp = None
         self.assertEqual(settings.APP_TITLE.value, settings.APP_TITLE.default)
+        self.assertEqual(page.locator('#setting-APP_TITLE .setting-changed').count(), 0)
 
-        # ...a checkbox by following the link.
+        # A check box too.
         self.set_setting(settings.EMAIL_USE_TLS, True)
         self.visit(page, '/admin/settings/email/')
         self.assertTrue(page.is_checked('#id_EMAIL_USE_TLS'))
-        self.submit(page, 'tr:has(#id_EMAIL_USE_TLS) a.fieldtool.default')
-        self.assertEqual(page.url, self.url('/admin/settings/email/'))
+        page.locator('#setting-EMAIL_USE_TLS .setting-reset').click()
         self.assertFalse(page.is_checked('#id_EMAIL_USE_TLS'))
+        self.submit(page, '#submit')
         settings.EMAIL_USE_TLS._temp = None
         self.assertFalse(settings.EMAIL_USE_TLS.value)
 
@@ -270,10 +287,7 @@ class BackupTest(AdminTestCase):
 
     def test_export_and_download_a_backup(self):
         page = self.open(self.admin)
-        self.visit(page, '/admin/')
-        with page.expect_navigation():
-            page.get_by_role('link', name='XML data export').click()
-        self.check_page(page)
+        self.menu(page, 'XML data export')
         page.select_option('#id_file_format', 'zip')
         page.uncheck('#id_uplodaded_files')
         with page.expect_navigation():
@@ -293,10 +307,7 @@ class BackupTest(AdminTestCase):
 
     def test_stack_exchange_importer(self):
         page = self.open(self.admin)
-        self.visit(page, '/admin/')
-        with page.expect_navigation():
-            page.get_by_role('link', name='Stack Exchange import').click()
-        self.check_page(page)
+        self.menu(page, 'Stack Exchange import')
         self.assertEqual(page.url, self.url(reverse('sximporter')))
         self.assertIn('Stack Exchange dump importer', page.content())
         page.set_input_files('input[name=dump]', files=[
@@ -309,7 +320,6 @@ class ExternalSignInTest(AdminTestCase):
     """OAuth 2.0 sign-in. The provider's pages are answered by the browser
     (redirecting straight back with a code) and its API calls are mocked:
     the live server runs in this process."""
-
     PROFILES = {
         'github': ({'access_token': 'gh-token'}, {'id': 4242, 'login': 'octofield', 'name': 'Octo Field',
                                                    'email': None},

@@ -1,0 +1,40 @@
+{% load i18n admin_tags %}{% comment %}
+Admin > Public API (forum/settings/api.py): what the API is for and requests
+to try, with the site's address filled in.
+{% endcomment %}
+<section class="admin-guide" aria-labelledby="api-guide-title">
+    <div class="admin-guide-header">
+        <h2 id="api-guide-title">{% trans "Using the API" %}</h2>
+        {% if settings.API_ENABLED %}<span class="admin-status admin-status-on">{% trans "On" %}</span>{% else %}<span class="admin-status admin-status-off">{% trans "Off" %}</span>{% endif %}
+    </div>
+    <p class="admin-guide-summary">{% blocktrans %}Programs read public questions, answers, tags and members as JSON without signing in. To post, or to see what only a member may see, a member creates a <strong>personal access token</strong> on their account and sends it in the <code>Authorization</code> header. A token can only do what its member may do on the site, with the same reputation rules and limits.{% endblocktrans %}</p>
+    <ul class="admin-guide-links">
+        <li><a href="{% url "api_docs" %}">{% trans "API documentation" %}</a></li>
+        <li><a href="{{ app_url }}/api/v1/openapi.json">{% trans "OpenAPI description (for code generators)" %}</a></li>
+        <li><a href="{% url "user_api_tokens" id=request.user.id %}">{% trans "Your access tokens" %}</a></li>
+    </ul>
+    <details class="admin-guide-steps">
+        <summary>{% trans "Examples to try" %}</summary>
+        {% example "api-example-list" _("The five newest questions (no token needed)") %}
+            curl '{{ app_url }}/api/v1/questions?sort=newest&limit=5'
+        {% endexample %}
+        {% example "api-example-search" _("Search, with filters") %}
+            curl '{{ app_url }}/api/v1/search?q=export+csv&status=accepted'
+        {% endexample %}
+        {% example "api-example-me" _("Who a token belongs to (replace YOUR_TOKEN)") %}
+            curl -H 'Authorization: Bearer YOUR_TOKEN' '{{ app_url }}/api/v1/me'
+        {% endexample %}
+        {% example "api-example-ask" _("Ask a question (a token with the write scope)") %}
+            curl -X POST -H 'Authorization: Bearer YOUR_TOKEN' -H 'Content-Type: application/json' \
+              -d '{"title": "How do I export survey data to CSV?", "text": "Which menu exports it?", "tags": ["export"]}' \
+              '{{ app_url }}/api/v1/questions'
+        {% endexample %}
+        {% example "api-example-js" _("Reading from a web page of an allowed site (CORS)") %}
+            fetch('{{ app_url }}/api/v1/questions?tags=export&limit=10')
+              .then(response => response.json())
+              .then(page => console.log(page.data));
+        {% endexample %}
+        <p>{% blocktrans %}Lists come as <code>{"data": [...], "next": "..."}</code>: request the <code>next</code> address for the following page. Errors are JSON problem documents with a <code>type</code>, a <code>title</code> and, for invalid fields, <code>errors</code>. Going over a rate limit answers 429 with a <code>Retry-After</code> header.{% endblocktrans %}</p>
+        <p class="admin-visually-hidden" role="status"></p>
+    </details>
+</section>

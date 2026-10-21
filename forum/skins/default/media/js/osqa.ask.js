@@ -17,6 +17,29 @@ $(function () {
     });
 });
 
+// The title's length under the field, and whether it reaches the minimum (compose/title_length.html).
+$(function () {
+    var title = document.getElementById('id_title'), count = document.getElementById('title-metrics');
+    if (!title || !count) return;
+    var hint = document.getElementById('title-min-hint');
+    var min = hint ? parseInt(hint.getAttribute('data-min-length'), 10) || 0 : 0;
+    var messages = window.messages || {};
+    if (hint) {
+        var described = (title.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean);
+        if (described.indexOf(hint.id) < 0) title.setAttribute('aria-describedby', described.concat(hint.id).join(' '));
+    }
+    function update() {
+        var length = title.value.length;
+        count.textContent = length + ' ' + (length === 1 ? messages.character || 'character' : messages.characters || 'characters');
+        if (hint) {
+            hint.classList.toggle('is-met', length >= min);
+            hint.classList.toggle('is-short', length > 0 && length < min);
+        }
+    }
+    title.addEventListener('input', update);
+    update();
+});
+
 // "Similar questions" while the title is typed (the related_questions view):
 // a disclosure listing the matches, each marked accepted, answered or unanswered.
 $(function () {

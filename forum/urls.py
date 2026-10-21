@@ -211,11 +211,11 @@ core_urls = [
     re_path(r'^%s$' % 'admin/', app.admin.dashboard, name='admin_index'),
     # The admin used to have two layouts; old "switch" links go to the dashboard.
     re_path(r'^%s%s$' % ('admin/', 'switch_interface/'), app.admin.interface_switch, name='admin_switch_interface'),
+    re_path(r'^admin/search/$', app.admin.search, name='admin_search'),
     re_path(r'^%s%s$' % ('admin/', 'statistics/'), app.admin.statistics, name='admin_statistics'),
     re_path(r'^%s%s$' % ('admin/', 'denormalize/'), app.admin.recalculate_denormalized, name='admin_denormalize'),
     re_path(r'^%s%s$' % ('admin/', 'go_bootstrap/'), app.admin.go_bootstrap, name='admin_go_bootstrap'),
     re_path(r'^%s%s$' % ('admin/', 'go_defaults/'), app.admin.go_defaults, name='admin_go_defaults'),
-    re_path(r'^%s%s(?P<set_name>\w+)/(?P<var_name>\w+)/$' % ('admin/', 'settings/'), app.admin.get_default, name='admin_default'),
     re_path(r'^%s%s$' % ('admin/', 'maintenance/'), app.admin.maintenance, name='admin_maintenance'),
     # The old Flagged posts page shows the moderation inbox (links in old emails keep working).
     re_path(r'^%s%s$' % ('admin/', 'flagged_posts/'), app.moderation.inbox, name='admin_flagged_posts'),

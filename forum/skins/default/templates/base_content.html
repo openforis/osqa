@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!-- base_content.html -->
-{% load i18n extra_tags extra_filters ui_registry seo_tags sentry_tags pwa_tags display_tags account_tags %}
+{% load i18n extra_tags extra_filters ui_registry seo_tags sentry_tags pwa_tags display_tags account_tags appearance_tags %}
 <html lang="{{ LANGUAGE_CODE }}"{% display_attrs %}>
     <head>{% block after_head_js %}{% endblock %}
         <meta charset="utf-8" />
@@ -11,6 +11,7 @@
         {% sentry_browser %}
         {# Style sheets before any script: found and fetched first (render-blocking, so as early as possible). #}
         <link href="{% media "/media/style/osqa.css" %}" rel="stylesheet" type="text/css" />
+        {% appearance_style %}
         {% if settings.USE_CUSTOM_CSS|or_preview:request %}
         <link href="{% url "custom_css" %}" rel="stylesheet" type="text/css" />
         {% endif %}
@@ -150,16 +151,13 @@
         {% block endjs %}
         {% endblock %}
         {% if settings.GOOGLE_ANALYTICS_KEY %}
-            <script nonce="{{ csp_nonce }}" type="text/javascript">
-                var _gaq = _gaq || [];
-                _gaq.push(['_setAccount', '{{ settings.GOOGLE_ANALYTICS_KEY }}']);
-                _gaq.push(['_trackPageview']);
-
-                (function() {
-                    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-                    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-                    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-                })();
+            {# Google Analytics 4 (gtag.js); the measurement ID is set under Admin > External Keys. #}
+            <script async src="https://www.googletagmanager.com/gtag/js?id={{ settings.GOOGLE_ANALYTICS_KEY|urlencode }}"></script>
+            <script nonce="{{ csp_nonce }}">
+                window.dataLayer = window.dataLayer || [];
+                function gtag() { dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', '{{ settings.GOOGLE_ANALYTICS_KEY|escapejs }}');
             </script>
         {% endif %}
         </div>

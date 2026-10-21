@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OSQA (Open Foris edition)\n"
 "Report-Msgid-Bugs-To: https://github.com/openforis/osqa/issues\n"
-"POT-Creation-Date: 2026-10-14 10:57-0400\n"
+"POT-Creation-Date: 2026-10-20 16:57-0400\n"
 "PO-Revision-Date: 2026-10-14 12:00+0000\n"
 "Last-Translator: Open Foris <https://github.com/openforis/osqa>\n"
 "Language-Team: French <https://github.com/openforis/osqa>\n"
@@ -1029,11 +1029,11 @@ msgstr "retirer le statut de super-utilisateur"
 msgid "grant super user status"
 msgstr "accorder le statut de super-utilisateur"
 
-msgid "Badges config"
-msgstr "Configuration des badges"
+msgid "Badges"
+msgstr "Badges"
 
-msgid "Configure badges on your OSQA site."
-msgstr "Configurez les badges de votre site OSQA."
+msgid "When members earn each badge."
+msgstr "Quand les membres obtiennent chaque badge."
 
 msgid "Accepting answers"
 msgstr "Acceptation des réponses"
@@ -1106,6 +1106,135 @@ msgstr "Sites web autorisés à lire l'API depuis un navigateur"
 
 msgid "Origins allowed to read the API with JavaScript (CORS), separated by spaces, e.g. https://example.org. * allows every site; empty allows none. Only reading is allowed this way, and never with cookies."
 msgstr "Origines autorisées à lire l'API en JavaScript (CORS), séparées par des espaces, par ex. https://example.org. * autorise tous les sites ; vide n'en autorise aucun. Seule la lecture est permise de cette façon, et jamais avec les cookies."
+
+msgid "Look and feel"
+msgstr "Apparence"
+
+msgid "Colours, font and page width of the public pages, and the colour theme visitors get. Pick a ready-made style or your own colours, check them in the sample, then press Preview to see the whole site with them before you save. For anything else, use Custom CSS."
+msgstr "Couleurs, police et largeur des pages publiques, et thème de couleurs proposé aux visiteurs. Choisissez un style prêt à l'emploi ou vos propres couleurs, vérifiez-les dans l'exemple, puis appuyez sur Aperçu pour voir tout le site avec elles avant d'enregistrer. Pour tout le reste, utilisez le CSS personnalisé."
+
+msgid "Enter a colour as # and six hexadecimal digits, e.g. #2c5aa0."
+msgstr "Saisissez une couleur sous la forme # suivi de six chiffres hexadécimaux, par ex. #2c5aa0."
+
+msgid "None: only the values below"
+msgstr "Aucun : seulement les valeurs ci-dessous"
+
+msgid "Style"
+msgstr "Style"
+
+msgid "A ready-made style also changes a few shapes: corners, a stripe on the header, the headings' font. Picking one above fills in the values below as well; change any of them afterwards."
+msgstr "Un style prêt à l'emploi change aussi quelques formes : les coins, une bande dans l'en-tête, la police des titres. En choisir un ci-dessus remplit aussi les valeurs ci-dessous ; vous pouvez ensuite modifier n'importe laquelle."
+
+msgid "theme style preset template skin design"
+msgstr "thème style préréglage modèle habillage design"
+
+msgid "Brand colour"
+msgstr "Couleur principale"
+
+msgid "Links, buttons, the selected tab and highlights. If it is too light for white text or for links, the site uses a darker shade of it; dark mode gets a lighter one for links."
+msgstr "Liens, boutons, onglet sélectionné et mises en évidence. Si elle est trop claire pour du texte blanc ou pour des liens, le site en utilise une nuance plus foncée ; le mode sombre en reçoit une plus claire pour les liens."
+
+msgid "color colour theme brand primary links buttons palette"
+msgstr "couleur thème marque principale liens boutons palette"
+
+msgid "Accent colour"
+msgstr "Couleur d'accent"
+
+msgid "The \"Ask a question\" button and other calls to action. It always has white text, so it is darkened if needed."
+msgstr "Le bouton « Poser une question » et les autres incitations à l'action. Son texte est toujours blanc, elle est donc assombrie si nécessaire."
+
+msgid "color colour theme secondary ask button palette"
+msgstr "couleur thème secondaire bouton poser question palette"
+
+msgid "Page background"
+msgstr "Arrière-plan de la page"
+
+msgid "Behind the content boxes, in the light theme."
+msgstr "Derrière les blocs de contenu, dans le thème clair."
+
+msgid "Light grey"
+msgstr "Gris clair"
+
+msgid "White"
+msgstr "Blanc"
+
+msgid "A tint of the brand colour"
+msgstr "Une teinte de la couleur principale"
+
+msgid "color colour background"
+msgstr "couleur arrière-plan fond"
+
+msgid "Font"
+msgstr "Police"
+
+msgid "Fonts that come with visitors' devices, so nothing is downloaded; each device uses the first one of the family it has."
+msgstr "Polices déjà présentes sur les appareils des visiteurs, donc rien n'est téléchargé ; chaque appareil utilise la première police de la famille dont il dispose."
+
+msgid "System (each device's interface font)"
+msgstr "Système (la police d'interface de chaque appareil)"
+
+msgid "Humanist sans-serif (Calibri, Ubuntu, Gill Sans…)"
+msgstr "Sans empattement humaniste (Calibri, Ubuntu, Gill Sans…)"
+
+msgid "Geometric sans-serif (Avenir, Montserrat, Corbel…)"
+msgstr "Sans empattement géométrique (Avenir, Montserrat, Corbel…)"
+
+msgid "Rounded (SF Rounded, Quicksand, Comfortaa…)"
+msgstr "Arrondie (SF Rounded, Quicksand, Comfortaa…)"
+
+msgid "Serif (Charter, Cambria, Georgia…)"
+msgstr "Avec empattement (Charter, Cambria, Georgia…)"
+
+msgid "typeface typography font family text"
+msgstr "police caractères typographie famille texte"
+
+msgid "Page width"
+msgstr "Largeur de la page"
+
+msgid "The widest the content gets on large screens. Phones always use their whole width."
+msgstr "La largeur maximale du contenu sur les grands écrans. Les téléphones utilisent toujours toute leur largeur."
+
+msgid "Narrow (960 px)"
+msgstr "Étroite (960 px)"
+
+msgid "Standard (1140 px)"
+msgstr "Standard (1140 px)"
+
+msgid "Wide (1320 px)"
+msgstr "Large (1320 px)"
+
+msgid "Full width of the window"
+msgstr "Toute la largeur de la fenêtre"
+
+msgid "layout width wide narrow container"
+msgstr "mise en page largeur large étroite conteneur"
+
+msgid "Dark mode"
+msgstr "Mode sombre"
+
+msgid "Use a dark colour scheme for visitors who choose it or whose device is set to dark mode. Turn it off if your custom CSS assumes a light background."
+msgstr "Utiliser un jeu de couleurs sombre pour les visiteurs qui le choisissent ou dont l'appareil est en mode sombre. Désactivez-le si votre CSS personnalisé suppose un arrière-plan clair."
+
+msgid "theme dark night colour scheme"
+msgstr "thème sombre nuit jeu de couleurs"
+
+msgid "Theme for new visitors"
+msgstr "Thème pour les nouveaux visiteurs"
+
+msgid "What visitors get until they choose a theme with the theme switch. Only applies while dark mode is on."
+msgstr "Ce que voient les visiteurs tant qu'ils n'ont pas choisi de thème avec le sélecteur de thème. Ne s'applique que si le mode sombre est activé."
+
+msgid "System: follow the device's setting"
+msgstr "Système : suivre le réglage de l'appareil"
+
+msgid "Light"
+msgstr "Clair"
+
+msgid "Dark"
+msgstr "Sombre"
+
+msgid "theme dark light default colour scheme"
+msgstr "thème sombre clair par défaut jeu de couleurs"
 
 msgid "Basic settings"
 msgstr "Paramètres de base"
@@ -1290,26 +1419,92 @@ msgstr "Le jour où send_email_alerts envoie le résumé hebdomadaire aux membre
 msgid "External Keys"
 msgstr "Clés externes"
 
-msgid "Keys for various external providers that your application may optionally use."
-msgstr "Clés de divers fournisseurs externes que votre application peut utiliser en option."
+msgid "Keys and IDs from outside services the site can use: sign-in with Google, GitHub or Facebook, spam protection, AI assistance and statistics. Each service below says whether it is set up, what it does and how to get its keys; leave a service empty to keep it off."
+msgstr "Clés et identifiants de services externes que le site peut utiliser : connexion avec Google, GitHub ou Facebook, protection contre le spam, assistance IA et statistiques. Chaque service ci-dessous indique s'il est configuré, ce qu'il fait et comment obtenir ses clés ; laissez un service vide pour qu'il reste désactivé."
 
-msgid "Google sitemap code"
-msgstr "Code de sitemap Google"
+msgid "Google Search Console verification code"
+msgstr "Code de validation Google Search Console"
 
-msgid "This is the code you get when you register your site at <a href='https://www.google.com/webmasters/tools/'>Google webmaster central</a>."
-msgstr "Il s'agit du code obtenu lors de l'enregistrement de votre site sur <a href='https://www.google.com/webmasters/tools/'>Google webmaster central</a>."
+msgid "The content of the HTML tag Google Search Console gives you to prove you own the site, without the rest of the tag."
+msgstr "Le contenu de la balise HTML que Google Search Console vous donne pour prouver que le site vous appartient, sans le reste de la balise."
 
-msgid "Google analytics key"
-msgstr "Clé Google Analytics"
+msgid "sitemap site verification webmaster seo google-site-verification"
+msgstr "sitemap plan du site validation vérification webmaster seo référencement google-site-verification"
 
-msgid "Your Google analytics key. You can get one at the <a href='http://www.google.com/analytics/'>Google analytics official website</a>"
-msgstr "Votre clé Google Analytics. Vous pouvez en obtenir une sur le <a href='http://www.google.com/analytics/'>site officiel de Google Analytics</a>"
+msgid "Google Analytics measurement ID"
+msgstr "ID de mesure Google Analytics"
+
+msgid "The measurement ID of a Google Analytics 4 web data stream. Leave empty for no Analytics."
+msgstr "L'ID de mesure d'un flux de données Web Google Analytics 4. Laissez vide pour ne pas utiliser Analytics."
+
+msgid "statistics tracking visitors gtag ga4"
+msgstr "statistiques suivi visiteurs audience gtag ga4"
 
 msgid "Google custom search engine ID"
 msgstr "ID du moteur de recherche personnalisé Google"
 
 msgid "No longer used: the search box in the header always uses the site's own search."
 msgstr "N'est plus utilisé : le champ de recherche de l'en-tête utilise toujours la recherche propre au site."
+
+msgid "UA- IDs belong to Universal Analytics, which stopped collecting data in 2023. Create a Google Analytics 4 property and enter its measurement ID, which starts with G-."
+msgstr "Les ID UA- appartiennent à Universal Analytics, qui a cessé de collecter des données en 2023. Créez une propriété Google Analytics 4 et saisissez son ID de mesure, qui commence par G-."
+
+msgid "This doesn't look like a measurement ID, which starts with G- (for example G-ABC123XYZ9)."
+msgstr "Cela ne ressemble pas à un ID de mesure, qui commence par G- (par exemple G-ABC123XYZ9)."
+
+msgid "Every public page loads Google Analytics."
+msgstr "Chaque page publique charge Google Analytics."
+
+msgid "Enter only the value of content=\"...\" from the tag, not the whole tag."
+msgstr "Saisissez uniquement la valeur de content=\"...\" de la balise, pas la balise entière."
+
+#, python-brace-format
+msgid "Pages carry the google-site-verification tag. Submit {app_url}/sitemap.xml in Search Console."
+msgstr "Les pages portent la balise google-site-verification. Soumettez {app_url}/sitemap.xml dans Search Console."
+
+msgid "Google Search Console"
+msgstr "Google Search Console"
+
+msgid "Proves to Google that you own the site, so you can see how it does in Google Search and submit its sitemap."
+msgstr "Prouve à Google que le site vous appartient, pour que vous puissiez suivre ses performances dans la recherche Google et soumettre son sitemap."
+
+#, python-brace-format
+msgid "Open <a href=\"https://search.google.com/search-console\">Google Search Console</a> and add a <strong>URL prefix</strong> property for <code>{app_url}</code>."
+msgstr "Ouvrez <a href=\"https://search.google.com/search-console\">Google Search Console</a> et ajoutez une propriété de type <strong>URL prefix</strong> pour <code>{app_url}</code>."
+
+msgid "Choose the <strong>HTML tag</strong> verification method. Google shows a tag like <code>&lt;meta name=\"google-site-verification\" content=\"<strong>yN3aBcD4…</strong>\" /&gt;</code>."
+msgstr "Choisissez la méthode de validation <strong>HTML tag</strong>. Google affiche une balise comme <code>&lt;meta name=\"google-site-verification\" content=\"<strong>yN3aBcD4…</strong>\" /&gt;</code>."
+
+msgid "Copy only the <code>content</code> value into the field below, save, then press <strong>Verify</strong> in Search Console."
+msgstr "Copiez uniquement la valeur de <code>content</code> dans le champ ci-dessous, enregistrez, puis appuyez sur <strong>Verify</strong> dans Search Console."
+
+msgid "Under <strong>Sitemaps</strong>, submit the site's sitemap address."
+msgstr "Sous <strong>Sitemaps</strong>, soumettez l'adresse du sitemap du site."
+
+msgid "Sitemap"
+msgstr "Sitemap"
+
+msgid "seo sitemap google webmaster verification"
+msgstr "seo référencement sitemap plan du site google webmaster vérification"
+
+msgid "Google Analytics"
+msgstr "Google Analytics"
+
+msgid "Counts visits and shows where visitors come from. Analytics sets cookies, which may need visitors' consent where you operate."
+msgstr "Compte les visites et montre d'où viennent les visiteurs. Analytics dépose des cookies, ce qui peut nécessiter le consentement des visiteurs selon le pays où vous exercez."
+
+#, python-brace-format
+msgid "In <a href=\"https://analytics.google.com/\">Google Analytics</a>, go to <strong>Admin &gt; Data streams</strong> and add a <strong>Web</strong> stream for <code>{app_url}</code> (or open the one you have)."
+msgstr "Dans <a href=\"https://analytics.google.com/\">Google Analytics</a>, allez dans <strong>Admin &gt; Data streams</strong> et ajoutez un flux <strong>Web</strong> pour <code>{app_url}</code> (ou ouvrez celui que vous avez déjà)."
+
+msgid "Copy its <strong>Measurement ID</strong>, which starts with <code>G-</code>, into the field below and save."
+msgstr "Copiez son <strong>Measurement ID</strong>, qui commence par <code>G-</code>, dans le champ ci-dessous et enregistrez."
+
+msgid "Open the site in another browser tab and check that the visit appears in the <strong>Realtime</strong> report."
+msgstr "Ouvrez le site dans un autre onglet du navigateur et vérifiez que la visite apparaît dans le rapport <strong>Realtime</strong>."
+
+msgid "statistics tracking gtag ga4 visitors"
+msgstr "statistiques suivi gtag ga4 visiteurs audience"
 
 msgid "FAQ page"
 msgstr "Page FAQ"
@@ -1323,11 +1518,11 @@ msgstr "Texte de la page FAQ"
 msgid "The faq page."
 msgstr "La page FAQ."
 
-msgid "Form settings"
-msgstr "Paramètres des formulaires"
+msgid "Asking and answering"
+msgstr "Poser et répondre"
 
-msgid "General settings for the OSQA forms."
-msgstr "Paramètres généraux des formulaires OSQA."
+msgid "Lengths, tags and other rules of the ask, answer and comment forms."
+msgstr "Longueurs, étiquettes et autres règles des formulaires de question, de réponse et de commentaire."
 
 msgid "Enable community wiki"
 msgstr "Activer le wiki communautaire"
@@ -1407,11 +1602,30 @@ msgstr "Afficher le Gravatar de l'auteur dans les commentaires"
 msgid "Show the gravatar image of a comment author."
 msgstr "Afficher l'image Gravatar de l'auteur d'un commentaire."
 
-msgid "context"
-msgstr "contexte"
+msgid "Example:"
+msgstr "Exemple :"
 
-msgid "default"
-msgstr "par défaut"
+#, python-format
+msgid "Name of the setting, e.g. for templates: {{ settings.%s }}"
+msgstr "Nom du paramètre, p. ex. pour les modèles : {{ settings.%s }}"
+
+msgid "Changed"
+msgstr "Modifié"
+
+msgid "Default:"
+msgstr "Par défaut :"
+
+msgid "Use default"
+msgstr "Utiliser la valeur par défaut"
+
+msgid "On"
+msgstr "Activée"
+
+msgid "Off"
+msgstr "Désactivée"
+
+msgid "(empty)"
+msgstr "(vide)"
 
 msgid "Current image"
 msgstr "Image actuelle"
@@ -1431,11 +1645,11 @@ msgstr "Tester"
 msgid "Testing your current e-mail settings. Please, wait."
 msgstr "Test de vos paramètres e-mail actuels. Veuillez patienter."
 
-msgid "Minimum reputation config"
-msgstr "Configuration de la réputation minimale"
+msgid "Privileges"
+msgstr "Privilèges"
 
-msgid "Configure the minimum reputation required to perform certain actions on your site."
-msgstr "Configurez la réputation minimale requise pour effectuer certaines actions sur votre site."
+msgid "The reputation members need before they may vote, comment, edit, close and so on."
+msgstr "La réputation dont les membres ont besoin pour voter, commenter, modifier, fermer, etc."
 
 msgid "Show captcha if user with less reputation than"
 msgstr "Afficher un captcha si l'utilisateur a une réputation inférieure à"
@@ -1652,11 +1866,11 @@ msgstr "Modifications suggérées par membre et par jour"
 msgid "How many edits a member may suggest in 24 hours. 0 for no limit."
 msgstr "Nombre de modifications qu'un membre peut suggérer en 24 heures. 0 pour aucune limite."
 
-msgid "Reputation gains and losses config"
-msgstr "Configuration des gains et pertes de réputation"
+msgid "Reputation points"
+msgstr "Points de réputation"
 
-msgid "Configure the reputation points a user may gain or lose upon certain actions."
-msgstr "Configurez les points de réputation qu'un utilisateur peut gagner ou perdre lors de certaines actions."
+msgid "How many reputation points members gain or lose for votes, accepted answers and other actions."
+msgstr "Combien de points de réputation les membres gagnent ou perdent pour les votes, les réponses acceptées et d'autres actions."
 
 msgid "Initial reputation"
 msgstr "Réputation initiale"
@@ -1838,6 +2052,12 @@ msgstr "Confirmer l'identité après (minutes)"
 msgid "Changing the email address, adding a passkey, setting up two-step verification, creating an API token or removing the last way to sign in asks members to confirm it's them (password, code, passkey or an emailed link) when they signed in or confirmed longer ago than this."
 msgstr "Changer l'adresse e-mail, ajouter une clé d'accès, configurer la validation en deux étapes, créer un jeton d'API ou retirer le dernier moyen de connexion demande aux membres de confirmer leur identité (mot de passe, code, clé d'accès ou lien par e-mail) s'ils se sont connectés ou l'ont confirmée il y a plus longtemps que cela."
 
+msgid "Sidebar"
+msgstr "Barre latérale"
+
+msgid "Content shown in the sidebar of the public pages. You can use Markdown and some basic HTML tags."
+msgstr "Contenu affiché dans la barre latérale des pages publiques. Vous pouvez utiliser Markdown et quelques balises HTML de base."
+
 msgid "Show the Welcome box"
 msgstr "Afficher la boîte de bienvenue"
 
@@ -1868,11 +2088,8 @@ msgstr "Mode de rendu du bloc inférieur"
 msgid "How to render your lower block code."
 msgstr "Comment effectuer le rendu du code de votre bloc inférieur."
 
-msgid "Sitemap settings"
-msgstr "Paramètres du sitemap"
-
-msgid "Some settings connected with the Sitemaps."
-msgstr "Quelques paramètres liés aux sitemaps."
+msgid "The sitemap search engines read to find the questions."
+msgstr "Le plan du site que lisent les moteurs de recherche pour trouver les questions."
 
 msgid "Questions Sitemap Limit"
 msgstr "Limite du sitemap des questions"
@@ -1886,17 +2103,26 @@ msgstr "Fréquence de modification du sitemap des questions"
 msgid "Used in the Questions Sitemap <changefreq> tag and specifies the content change frequency."
 msgstr "Utilisée dans la balise <changefreq> du sitemap des questions ; indique la fréquence de modification du contenu."
 
+msgid "Custom CSS"
+msgstr "CSS personnalisé"
+
+msgid "Define some custom css you can use to override the default css."
+msgstr "Définissez votre propre CSS pour remplacer le CSS par défaut."
+
 msgid "Use custom CSS"
 msgstr "Utiliser un CSS personnalisé"
 
 msgid "Do you want to use custom CSS."
 msgstr "Voulez-vous utiliser un CSS personnalisé."
 
-msgid "Custom CSS"
-msgstr "CSS personnalisé"
-
 msgid "Your custom CSS."
 msgstr "Votre CSS personnalisé."
+
+msgid "Header and Footer"
+msgstr "En-tête et pied de page"
+
+msgid "Adds a custom header and/or footer to your page"
+msgstr "Ajoute un en-tête ou un pied de page personnalisé à vos pages"
 
 msgid "Use custom header"
 msgstr "Utiliser un en-tête personnalisé"
@@ -1967,6 +2193,9 @@ msgstr "Mode du pied de page personnalisé"
 msgid "How your custom footer will appear."
 msgstr "Comment votre pied de page personnalisé apparaîtra."
 
+msgid "Define some custom elements to include in the head section of every page."
+msgstr "Définissez des éléments personnalisés à inclure dans la section head de chaque page."
+
 msgid "Use custom Head elements"
 msgstr "Utiliser des éléments Head personnalisés"
 
@@ -2003,11 +2232,11 @@ msgstr "Rappeler aux auteurs d'accepter une réponse après (jours)"
 msgid "manage.py remind_unaccepted (run daily) reminds the asker once, by notification and email, when their question has had an answer for this many days but none is accepted. Only questions asked in the last 60 days are considered. 0 turns reminders off."
 msgstr "manage.py remind_unaccepted (exécuté chaque jour) envoie un rappel unique à l'auteur, par notification et par e-mail, lorsque sa question a reçu une réponse depuis ce nombre de jours sans qu'aucune ne soit acceptée. Seules les questions posées au cours des 60 derniers jours sont prises en compte. 0 désactive les rappels."
 
-msgid "File upload settings"
-msgstr "Paramètres de téléversement de fichiers"
+msgid "File uploads"
+msgstr "Fichiers téléversés"
 
-msgid "File uploads related settings."
-msgstr "Paramètres liés au téléversement de fichiers."
+msgid "Where uploaded files are kept, and their size limits."
+msgstr "Où sont conservés les fichiers téléversés, et leurs limites de taille."
 
 msgid "Uploaded files folder"
 msgstr "Dossier des fichiers téléversés"
@@ -2060,11 +2289,11 @@ msgstr "Forcer une URL unique"
 msgid "Redirect the request in case there is a mismatch between the slug in the url and the actual slug"
 msgstr "Rediriger la requête en cas de différence entre le slug de l'URL et le slug réel"
 
-msgid "Users settings"
-msgstr "Paramètres des utilisateurs"
+msgid "Members"
+msgstr "Membres"
 
-msgid "General settings for the OSQA users."
-msgstr "Paramètres généraux des utilisateurs OSQA."
+msgid "Sign-up, accounts, profiles and what members may change about themselves."
+msgstr "Inscription, comptes, profils et ce que les membres peuvent modifier eux-mêmes."
 
 msgid "Allow negative reputation"
 msgstr "Autoriser la réputation négative"
@@ -2297,23 +2526,17 @@ msgstr "Supprimer les comptes inactifs après (jours)"
 msgid "The cleanup_inactive_users command (run daily from cron) deletes accounts older than this that never confirmed their email, never posted, voted or did anything else, and haven't logged in during that time. Staff accounts are never deleted. 0 turns it off."
 msgstr "La commande cleanup_inactive_users (exécutée chaque jour par cron) supprime les comptes plus anciens que ce délai qui n'ont jamais confirmé leur adresse e-mail, jamais publié, voté ni rien fait d'autre, et qui ne se sont pas connectés pendant cette période. Les comptes de l'équipe ne sont jamais supprimés. 0 désactive cette fonction."
 
-msgid "View settings"
-msgstr "Paramètres d'affichage"
+msgid "Display"
+msgstr "Affichage"
 
-msgid "Set up how certain parts of the site are displayed."
-msgstr "Définissez la manière dont certaines parties du site sont affichées."
+msgid "How lists, summaries, tags and other parts of the public pages are shown."
+msgstr "Comment s'affichent les listes, résumés, étiquettes et autres parties des pages publiques."
 
 msgid "Embed YouTube Videos"
 msgstr "Intégrer les vidéos YouTube"
 
 msgid "If you check this YouTube videos will be embedded"
 msgstr "Si vous cochez cette case, les vidéos YouTube seront intégrées"
-
-msgid "Dark mode"
-msgstr "Mode sombre"
-
-msgid "Use a dark colour scheme for visitors whose device is set to dark mode. Turn it off if your custom CSS assumes a light background."
-msgstr "Utiliser un jeu de couleurs sombre pour les visiteurs dont l'appareil est en mode sombre. Désactivez-le si votre CSS personnalisé suppose un arrière-plan clair."
 
 msgid "Show latest comments first"
 msgstr "Afficher les commentaires les plus récents en premier"
@@ -3554,9 +3777,6 @@ msgid "Your username is %(name)s. The link works once, for %(hours)s hour."
 msgid_plural "Your username is %(name)s. The link works once, for %(hours)s hours."
 msgstr[0] "Votre nom d'utilisateur est %(name)s. Le lien ne fonctionne qu'une fois, pendant %(hours)s heure."
 msgstr[1] "Votre nom d'utilisateur est %(name)s. Le lien ne fonctionne qu'une fois, pendant %(hours)s heures."
-
-msgid "Badges"
-msgstr "Badges"
 
 msgid "gold"
 msgstr "or"
@@ -5162,6 +5382,12 @@ msgstr "Tableau de bord"
 msgid "Administration menu"
 msgstr "Menu d'administration"
 
+msgid "Search settings and pages"
+msgstr "Rechercher des paramètres et des pages"
+
+msgid "Search settings…"
+msgstr "Rechercher un paramètre…"
+
 msgid "Admin menu"
 msgstr "Menu d'administration"
 
@@ -5182,6 +5408,22 @@ msgstr "Enregistrer"
 
 msgid "How the community is doing: activity, answers, members and moderation, compared with the period before."
 msgstr "L'état de la communauté : activité, réponses, membres et modération, comparés à la période précédente."
+
+msgid "Getting started"
+msgstr "Premiers pas"
+
+#, python-format
+msgid "%(done)s of %(total)s done"
+msgstr "%(done)s sur %(total)s terminés"
+
+msgid "done"
+msgstr "terminé"
+
+msgid "to do"
+msgstr "à faire"
+
+msgid "Hide this list"
+msgstr "Masquer cette liste"
 
 msgid "Quick statistics"
 msgstr "Statistiques rapides"
@@ -5210,14 +5452,14 @@ msgstr "Votre site fonctionne avec certains paramètres personnalisés, cliquez 
 msgid "Are you sure you want to revert to the defaults?"
 msgstr "Voulez-vous vraiment revenir aux valeurs par défaut ?"
 
-msgid "revert to defaults"
-msgstr "revenir aux valeurs par défaut"
+msgid "Revert to defaults"
+msgstr "Revenir aux valeurs par défaut"
 
 msgid "Are you sure you want to run bootstrap mode?"
 msgstr "Voulez-vous vraiment passer en mode démarrage ?"
 
-msgid "go bootstrap"
-msgstr "passer en mode démarrage"
+msgid "Go bootstrap"
+msgstr "Passer en mode démarrage"
 
 msgid "\"Bootstrap mode\" relaxes the minimum required reputation to perform actions like voting and commenting. This is useful to help new communities get started."
 msgstr "Le « mode démarrage » abaisse la réputation minimale requise pour des actions comme voter ou commenter. C'est utile pour aider les nouvelles communautés à démarrer."
@@ -5230,6 +5472,9 @@ msgstr "Cette opération est lourde, voulez-vous vraiment continuer ?"
 
 msgid "Recalculate"
 msgstr "Recalculer"
+
+msgid "Show the Getting started list"
+msgstr "Afficher la liste des premiers pas"
 
 msgid "Recent activity"
 msgstr "Activité récente"
@@ -5299,6 +5544,157 @@ msgstr "Version texte"
 
 msgid "Every email the site sends, with sample posts and people, as you would receive it. Nothing is sent."
 msgstr "Tous les e-mails envoyés par le site, avec des messages et des personnes d'exemple, tels que vous les recevriez. Rien n'est envoyé."
+
+msgid "Copied"
+msgstr "Copié"
+
+msgid "Copy"
+msgstr "Copier"
+
+msgid "Using the API"
+msgstr "Utiliser l'API"
+
+msgid "Programs read public questions, answers, tags and members as JSON without signing in. To post, or to see what only a member may see, a member creates a <strong>personal access token</strong> on their account and sends it in the <code>Authorization</code> header. A token can only do what its member may do on the site, with the same reputation rules and limits."
+msgstr "Les programmes lisent les questions, réponses, étiquettes et membres publics en JSON sans se connecter. Pour publier, ou pour voir ce que seul un membre peut voir, un membre crée un <strong>jeton d'accès personnel</strong> sur son compte et l'envoie dans l'en-tête <code>Authorization</code>. Un jeton ne peut faire que ce que son membre peut faire sur le site, avec les mêmes règles de réputation et les mêmes limites."
+
+msgid "OpenAPI description (for code generators)"
+msgstr "Description OpenAPI (pour les générateurs de code)"
+
+msgid "Your access tokens"
+msgstr "Vos jetons d'accès"
+
+msgid "Examples to try"
+msgstr "Exemples à essayer"
+
+msgid "The five newest questions (no token needed)"
+msgstr "Les cinq questions les plus récentes (sans jeton)"
+
+msgid "Search, with filters"
+msgstr "Recherche, avec filtres"
+
+msgid "Who a token belongs to (replace YOUR_TOKEN)"
+msgstr "À qui appartient un jeton (remplacez YOUR_TOKEN)"
+
+msgid "Ask a question (a token with the write scope)"
+msgstr "Poser une question (un jeton avec la portée write)"
+
+msgid "Reading from a web page of an allowed site (CORS)"
+msgstr "Lecture depuis une page web d'un site autorisé (CORS)"
+
+msgid "Lists come as <code>{\"data\": [...], \"next\": \"...\"}</code>: request the <code>next</code> address for the following page. Errors are JSON problem documents with a <code>type</code>, a <code>title</code> and, for invalid fields, <code>errors</code>. Going over a rate limit answers 429 with a <code>Retry-After</code> header."
+msgstr "Les listes ont la forme <code>{\"data\": [...], \"next\": \"...\"}</code> : demandez l'adresse <code>next</code> pour la page suivante. Les erreurs sont des documents de problème JSON avec un <code>type</code>, un <code>title</code> et, pour les champs non valides, <code>errors</code>. Un dépassement de limite de débit répond 429 avec un en-tête <code>Retry-After</code>."
+
+msgid "Ready-made styles"
+msgstr "Styles prêts à l'emploi"
+
+msgid "Each style sets the colours, background, font and page width below, and adds a few touches of its own (corners, a header stripe, heading font). Choose one, adjust anything below, then press Preview or Save. Nothing changes for visitors until you save."
+msgstr "Chaque style définit les couleurs, le fond, la police et la largeur de page ci-dessous, et ajoute quelques touches qui lui sont propres (coins, bande dans l'en-tête, police des titres). Choisissez-en un, ajustez ce que vous voulez ci-dessous, puis cliquez sur Aperçu ou Enregistrer. Rien ne change pour les visiteurs avant l'enregistrement."
+
+msgid "Use this style"
+msgstr "Utiliser ce style"
+
+msgid "Sample"
+msgstr "Exemple"
+
+msgid "How the colours and font look on the site's light and dark themes. Press Preview below the settings to browse the whole site with them."
+msgstr "L'aspect des couleurs et de la police dans les thèmes clair et sombre du site. Appuyez sur Aperçu sous les paramètres pour parcourir tout le site avec eux."
+
+msgid "votes"
+msgstr "votes"
+
+msgid "How do I export survey data to CSV?"
+msgstr "Comment exporter les données d'une enquête en CSV ?"
+
+msgid "Plain text looks like this, with a highlighted"
+msgstr "Le texte normal ressemble à ceci, avec une"
+
+msgid "notice"
+msgstr "remarque mise en évidence"
+
+msgid "Post your answer"
+msgstr "Publier votre réponse"
+
+msgid "readable"
+msgstr "lisible"
+
+#, python-format
+msgid "Brand colour: links and white button text %%(ratio)s:1."
+msgstr "Couleur principale : liens et texte blanc des boutons %%(ratio)s:1."
+
+#, python-format
+msgid "Accent colour: white text %%(ratio)s:1."
+msgstr "Couleur d'accent : texte blanc %%(ratio)s:1."
+
+#, python-format
+msgid "Too light for 4.5:1, so the site uses the darker %%(color)s instead."
+msgstr "Trop claire pour 4.5:1, le site utilise donc à la place la teinte plus foncée %%(color)s."
+
+#, python-format
+msgid "Brand colour %(picked)s is too light for 4.5:1 contrast; the site uses %(used)s."
+msgstr "La couleur principale %(picked)s est trop claire pour un contraste de 4.5:1 ; le site utilise %(used)s."
+
+#, python-format
+msgid "Accent colour %(picked)s is too light for 4.5:1 contrast; the site uses %(used)s."
+msgstr "La couleur d'accent %(picked)s est trop claire pour un contraste de 4.5:1 ; le site utilise %(used)s."
+
+msgid "Before writing CSS"
+msgstr "Avant d'écrire du CSS"
+
+#, python-format
+msgid "Colours, the font and the page width are easier to change under <a href=\"%(look_url)s\">Look and feel</a>, which also keeps text readable and works out dark mode for you. Custom CSS is loaded after it and after the skin's style sheet, so its rules win. Use Preview to try it on the site before visitors see it."
+msgstr "Les couleurs, la police et la largeur des pages se modifient plus facilement sous <a href=\"%(look_url)s\">Apparence</a>, qui garde aussi le texte lisible et s'occupe du mode sombre pour vous. Le CSS personnalisé est chargé après ces réglages et après la feuille de style du thème graphique, donc ses règles l'emportent. Utilisez Aperçu pour l'essayer sur le site avant que les visiteurs ne le voient."
+
+msgid "Variables and examples"
+msgstr "Variables et exemples"
+
+msgid "The skin draws with CSS variables; changing one changes it everywhere. The main ones: <code>--brand</code> (links, buttons), <code>--brand-dark</code> (hover), <code>--brand-soft</code> (light highlights), <code>--accent</code> (the Ask button), <code>--text</code>, <code>--muted</code>, <code>--border</code>, <code>--surface</code> (boxes), <code>--background</code> (page), <code>--radius</code>, <code>--font</code> and <code>--content-width</code>."
+msgstr "Le thème graphique utilise des variables CSS ; en modifier une la change partout. Les principales : <code>--brand</code> (liens, boutons), <code>--brand-dark</code> (survol), <code>--brand-soft</code> (mises en évidence claires), <code>--accent</code> (le bouton Poser une question), <code>--text</code>, <code>--muted</code>, <code>--border</code>, <code>--surface</code> (blocs), <code>--background</code> (page), <code>--radius</code>, <code>--font</code> et <code>--content-width</code>."
+
+msgid "Colours for both themes"
+msgstr "Couleurs pour les deux thèmes"
+
+msgid "A bigger, rounded logo"
+msgstr "Un logo plus grand et arrondi"
+
+msgid "Square corners on boxes and buttons"
+msgstr "Coins carrés pour les blocs et les boutons"
+
+msgid "Style the custom header (Admin > Header and Footer)"
+msgstr "Mettre en forme l'en-tête personnalisé (Admin > En-tête et pied de page)"
+
+msgid "Check your changes on a phone-sized window and in the dark theme as well (the theme switch is in the footer). If your CSS assumes a light background, turn off dark mode under Look and feel."
+msgstr "Vérifiez aussi vos modifications dans une fenêtre de la taille d'un téléphone et dans le thème sombre (le sélecteur de thème est dans le pied de page). Si votre CSS suppose un arrière-plan clair, désactivez le mode sombre sous Apparence."
+
+msgid "What to put here"
+msgstr "Que mettre ici"
+
+#, python-format
+msgid "Tags added to the &lt;head&gt; of every public page: site verification tags, web analytics other than Google Analytics (which has its own field under <a href=\"%(keys_url)s\">External Keys</a>), fonts or widgets. Inline scripts get the page's security nonce automatically; scripts, styles and frames from other sites need their origin in <a href=\"%(security_url)s\">Extra script sources</a>, or browsers block them."
+msgstr "Balises ajoutées au &lt;head&gt; de chaque page publique : balises de validation du site, outils d'analyse d'audience autres que Google Analytics (qui a son propre champ sous <a href=\"%(keys_url)s\">Clés externes</a>), polices ou widgets. Les scripts en ligne reçoivent automatiquement le nonce de sécurité de la page ; les scripts, styles et cadres d'autres sites doivent avoir leur origine dans <a href=\"%(security_url)s\">Sources de scripts supplémentaires</a>, sinon les navigateurs les bloquent."
+
+msgid "Examples"
+msgstr "Exemples"
+
+msgid "Privacy-friendly analytics (add https://plausible.io to the extra script sources)"
+msgstr "Analyse d'audience respectueuse de la vie privée (ajoutez https://plausible.io aux sources de scripts supplémentaires)"
+
+msgid "A verification tag (Bing, Pinterest…)"
+msgstr "Une balise de validation (Bing, Pinterest…)"
+
+msgid "Header, announcement and footer"
+msgstr "En-tête, annonce et pied de page"
+
+msgid "The custom header goes above the site's own header, the announcement bar under the search bar on every page, and the custom footer replaces the site's footer or goes above or below it. Each can be written in Markdown, HTML or plain text (Escaped). Scripts are not run here: put them under &lt;head&gt;."
+msgstr "L'en-tête personnalisé se place au-dessus de l'en-tête du site, la barre d'annonce sous la barre de recherche sur chaque page, et le pied de page personnalisé remplace celui du site ou se place au-dessus ou en dessous. Chacun peut être écrit en Markdown, en HTML ou en texte brut (Échappé). Les scripts ne sont pas exécutés ici : placez-les sous &lt;head&gt;."
+
+msgid "Announcement bar (Markdown)"
+msgstr "Barre d'annonce (Markdown)"
+
+msgid "A link back to your main web site (HTML header)"
+msgstr "Un lien vers votre site web principal (en-tête HTML)"
+
+msgid "Footer links (HTML, above the default footer)"
+msgstr "Liens de pied de page (HTML, au-dessus du pied de page par défaut)"
 
 msgid "Community health"
 msgstr "Santé de la communauté"
@@ -5407,9 +5803,6 @@ msgstr "Questions en attente de réponse"
 
 msgid "Open questions (not closed) of any age without an answer from someone else; the previous figure is the backlog when the period began."
 msgstr "Questions ouvertes (non fermées) de tout âge sans réponse d'une autre personne ; le chiffre précédent correspond au nombre en attente au début de la période."
-
-msgid "Members"
-msgstr "Membres"
 
 msgid "Accounts that joined in the period and are not suspended. “Confirmed their email” is as of now; “posted within 7 days” counts a question, answer or comment within a week of joining and only looks at members who joined at least 7 days ago."
 msgstr "Comptes inscrits pendant la période et non suspendus. « Ont confirmé leur e-mail » est évalué à l'instant présent ; « ont publié dans les 7 jours » compte une question, une réponse ou un commentaire dans la semaine suivant l'inscription, et ne porte que sur les membres inscrits depuis au moins 7 jours."
@@ -5756,8 +6149,68 @@ msgstr "Nom du filtre..."
 msgid "Click to save the current filter"
 msgstr "Cliquez pour enregistrer le filtre actuel"
 
-msgid "Reset Changes"
-msgstr "Annuler les modifications"
+#, python-format
+msgid "Search: %(query)s"
+msgstr "Recherche : %(query)s"
+
+msgid "Search the administration"
+msgstr "Rechercher dans l'administration"
+
+msgid "Find a setting or an admin page by its name, by what it does or by a word from its help, e.g. logo, colour, captcha, Google, reputation or email."
+msgstr "Trouvez un paramètre ou une page d'administration par son nom, par ce qu'il fait ou par un mot de son aide, par ex. logo, couleur, captcha, Google, réputation ou e-mail."
+
+#, python-format
+msgid "%(counter)s result"
+msgid_plural "%(counter)s results"
+msgstr[0] "%(counter)s résultat"
+msgstr[1] "%(counter)s résultats"
+
+msgid "Admin page"
+msgstr "Page d'administration"
+
+msgid "Nothing matches every word. Try fewer or other words, such as the name of the service or what the setting changes."
+msgstr "Rien ne correspond à tous les mots. Essayez moins de mots ou d'autres mots, comme le nom du service ou ce que le paramètre modifie."
+
+msgid "Find a setting on this page"
+msgstr "Trouver un paramètre sur cette page"
+
+msgid "No setting on this page matches. Try the admin search in the menu."
+msgstr "Aucun paramètre de cette page ne correspond. Essayez la recherche de l'administration dans le menu."
+
+#, python-format
+msgid "Settings shown: %%(count)s"
+msgstr "Paramètres affichés : %%(count)s"
+
+msgid "Hide"
+msgstr "Masquer"
+
+msgid "opens in a new tab"
+msgstr "s'ouvre dans un nouvel onglet"
+
+msgid "1 unsaved change"
+msgstr "1 modification non enregistrée"
+
+#, python-format
+msgid "%%(count)s unsaved changes"
+msgstr "%%(count)s modifications non enregistrées"
+
+msgid "How it was set up"
+msgstr "Comment il a été configuré"
+
+msgid "How to set it up"
+msgstr "Comment le configurer"
+
+msgid "Other settings"
+msgstr "Autres paramètres"
+
+msgid "Discard preview"
+msgstr "Abandonner l'aperçu"
+
+msgid "Undo my changes"
+msgstr "Annuler mes modifications"
+
+msgid "Preview opens the site in a new tab with these values, for you only, until you save them or discard the preview."
+msgstr "Aperçu ouvre le site dans un nouvel onglet avec ces valeurs, pour vous seul, jusqu'à ce que vous les enregistriez ou abandonniez l'aperçu."
 
 msgid "Static pages"
 msgstr "Pages statiques"
@@ -6036,14 +6489,8 @@ msgstr "Cette page n'a pas pu être chargée car il n'y a pas de connexion. Ces 
 msgid "No pages have been saved on this device yet. Questions you read while online are kept here for offline reading."
 msgstr "Aucune page n'a encore été enregistrée sur cet appareil. Les questions que vous lisez en ligne sont conservées ici pour être lues hors ligne."
 
-msgid "Copy"
-msgstr "Copier"
-
 msgid "Copy code to the clipboard"
 msgstr "Copier le code dans le presse-papiers"
-
-msgid "Copied"
-msgstr "Copié"
 
 msgid "Press Ctrl+C to copy"
 msgstr "Appuyez sur Ctrl+C pour copier"
@@ -6148,9 +6595,6 @@ msgid "vote"
 msgid_plural "votes"
 msgstr[0] "vote"
 msgstr[1] "votes"
-
-msgid "votes"
-msgstr "votes"
 
 msgid "this question has an accepted answer"
 msgstr "cette question a une réponse acceptée"
@@ -7255,12 +7699,6 @@ msgstr "Ajouter une clé d'accès"
 msgid "This browser can't create passkeys. Try a current version of Chrome, Edge, Firefox or Safari."
 msgstr "Ce navigateur ne peut pas créer de clés d'accès. Essayez une version récente de Chrome, Edge, Firefox ou Safari."
 
-msgid "On"
-msgstr "Activée"
-
-msgid "Off"
-msgstr "Désactivée"
-
 msgid "After your password (or another sign-in service), you enter a code from your authenticator app."
 msgstr "Après votre mot de passe (ou un autre service de connexion), vous saisissez un code de votre application d'authentification."
 
@@ -7686,6 +8124,12 @@ msgstr "Votez pour les questions et réponses qui vous aident : elles remontent 
 msgid "No votes yet."
 msgstr "Pas encore de votes."
 
+msgid "Light theme"
+msgstr "Thème clair"
+
+msgid "Dark theme"
+msgstr "Thème sombre"
+
 msgctxt "theme"
 msgid "System"
 msgstr "Système"
@@ -7882,6 +8326,66 @@ msgstr "Vous avez publié le nombre maximal de réponses pour une heure. Veuille
 
 msgid "You have posted the maximum number of comments for one hour. Please wait a while."
 msgstr "Vous avez publié le nombre maximal de commentaires pour une heure. Veuillez patienter un moment."
+
+msgid "Classic"
+msgstr "Classique"
+
+msgid "The skin as it comes: blue links and buttons, an orange Ask button."
+msgstr "L'habillage d'origine : liens et boutons bleus, bouton Poser une question orange."
+
+msgid "Open Foris"
+msgstr "Open Foris"
+
+msgid "Muted red-brown from the Open Foris Support site, with a teal accent and a brand stripe on the header."
+msgstr "Le brun-rouge sourd du site Open Foris Support, avec un accent bleu canard et une bande de couleur dans l'en-tête."
+
+msgid "Forest"
+msgstr "Forêt"
+
+msgid "Deep green and amber on a green-tinted page, in a friendly sans-serif."
+msgstr "Vert profond et ambre sur une page teintée de vert, dans une sans-serif chaleureuse."
+
+msgid "Ocean"
+msgstr "Océan"
+
+msgid "Teal and orange on white, in a geometric sans-serif."
+msgstr "Bleu canard et orange sur blanc, dans une sans-serif géométrique."
+
+msgid "Editorial"
+msgstr "Éditorial"
+
+msgid "Ink and red on white, serif text, a narrow column and square corners: reads like a newspaper."
+msgstr "Encre et rouge sur blanc, texte à empattements, colonne étroite et coins carrés : se lit comme un journal."
+
+msgid "Plum"
+msgstr "Prune"
+
+msgid "Purple and pink with a rounded font and pill-shaped buttons and tags."
+msgstr "Violet et rose avec une police arrondie et des boutons et étiquettes en forme de pilule."
+
+msgid "Midnight"
+msgstr "Minuit"
+
+msgid "Navy and green; new visitors get the dark theme."
+msgstr "Bleu marine et vert ; les nouveaux visiteurs ont le thème sombre."
+
+msgid "Minimal"
+msgstr "Minimaliste"
+
+msgid "Greys only, white page, no shadows and square corners: the content comes first."
+msgstr "Uniquement des gris, page blanche, sans ombres et coins carrés : le contenu d'abord."
+
+msgid "Crimson"
+msgstr "Cramoisi"
+
+msgid "A university look: crimson with a blue accent and serif headings."
+msgstr "Un air universitaire : cramoisi avec un accent bleu et des titres à empattements."
+
+msgid "Earth"
+msgstr "Terre"
+
+msgid "Clay brown and teal on a warm tinted page, with rounded buttons."
+msgstr "Brun argile et bleu canard sur une page aux tons chauds, avec des boutons arrondis."
 
 #, python-format
 msgid "%d min"
@@ -8405,6 +8909,48 @@ msgstr "Nouvelle notification"
 msgid "Thanks! Your post will appear once a moderator has reviewed it."
 msgstr "Merci ! Votre message apparaîtra après la vérification d'un modérateur."
 
+msgid "Name the site"
+msgstr "Nommer le site"
+
+msgid "Its title and short name appear in the header, the browser tab and emails."
+msgstr "Son titre et son nom court apparaissent dans l'en-tête, l'onglet du navigateur et les e-mails."
+
+msgid "Set up sending email"
+msgstr "Configurer l'envoi d'e-mails"
+
+msgid "Sign-up confirmations, password resets and notifications need it. Test it from the same page."
+msgstr "Les confirmations d'inscription, les réinitialisations de mot de passe et les notifications en ont besoin. Testez-le depuis la même page."
+
+msgid "Upload your logo"
+msgstr "Téléverser votre logo"
+
+msgid "And the small icon browsers show in tabs."
+msgstr "Et la petite icône que les navigateurs affichent dans les onglets."
+
+msgid "Choose the colours"
+msgstr "Choisir les couleurs"
+
+msgid "Pick a preset or your own colours under Look and feel."
+msgstr "Choisissez une palette prédéfinie ou vos propres couleurs dans Apparence."
+
+msgid "Write the About page"
+msgstr "Rédiger la page À propos"
+
+msgid "Say what the site is for and who answers."
+msgstr "Expliquez à quoi sert le site et qui répond."
+
+msgid "Turn on spam protection"
+msgstr "Activer la protection contre le spam"
+
+msgid "reCAPTCHA, Akismet or AI review under External Keys, or reviewing new members' first posts under Moderation settings."
+msgstr "reCAPTCHA, Akismet ou la vérification par IA dans Clés externes, ou la relecture des premières publications des nouveaux membres dans les paramètres de modération."
+
+msgid "Let members sign in with Google, GitHub or Facebook"
+msgstr "Permettre aux membres de se connecter avec Google, GitHub ou Facebook"
+
+msgid "Optional: fewer passwords to remember, and confirmed email addresses."
+msgstr "Facultatif : moins de mots de passe à retenir et des adresses e-mail confirmées."
+
 msgid "Please confirm it's you first."
 msgstr "Veuillez d'abord confirmer qu'il s'agit bien de vous."
 
@@ -8600,20 +9146,20 @@ msgstr "Votre compte et vos messages ont été supprimés. Nous vous avons envoy
 msgid "Your account has been deleted. Your posts remain, without your name. We sent a last email to confirm it."
 msgstr "Votre compte a été supprimé. Vos messages restent, sans votre nom. Nous vous avons envoyé un dernier e-mail de confirmation."
 
-msgid "Workflow settings"
-msgstr "Paramètres du flux de travail"
+msgid "Site"
+msgstr "Site"
 
-msgid "Forum settings"
-msgstr "Paramètres du forum"
+msgid "Members and permissions"
+msgstr "Membres et permissions"
 
-msgid "Static content"
-msgstr "Contenu statique"
+msgid "Questions and answers"
+msgstr "Questions et réponses"
 
-msgid "Custom Pages"
+msgid "Integrations"
+msgstr "Intégrations"
+
+msgid "Custom pages"
 msgstr "Pages personnalisées"
-
-msgid "Other settings"
-msgstr "Autres paramètres"
 
 msgid "Tools"
 msgstr "Outils"
@@ -8625,8 +9171,26 @@ msgid "Users Graph"
 msgstr "Graphique des utilisateurs"
 
 #, python-format
-msgid "'%s' settings saved succesfully"
-msgstr "Paramètres « %s » enregistrés avec succès"
+msgid "%(page)s saved: %(settings)s changed."
+msgid_plural "%(page)s saved: %(count)d settings changed (%(settings)s)."
+msgstr[0] "%(page)s enregistré : %(settings)s modifié."
+msgstr[1] "%(page)s enregistré : %(count)d paramètres modifiés (%(settings)s)."
+
+#, python-format
+msgid "%(page)s: nothing to save, no setting was changed."
+msgstr "%(page)s : rien à enregistrer, aucun paramètre n'a été modifié."
+
+msgid "Set up"
+msgstr "Configuré"
+
+msgid "Partly set up"
+msgstr "Partiellement configuré"
+
+msgid "Not set up"
+msgstr "Non configuré"
+
+msgid "Check this"
+msgstr "À vérifier"
 
 msgid "Bootstrap mode enabled"
 msgstr "Mode démarrage activé"
@@ -9605,6 +10169,9 @@ msgstr "Clé API Gemini"
 msgid "Turns on the AI features (Admin > AI assistance) through the Gemini API. Get a key at <a href='https://aistudio.google.com/apikey'>Google AI Studio</a>. Not needed when a Vertex AI project is set under Admin > AI assistance. If empty, the server's GEMINI_API_KEY or GOOGLE_API_KEY environment variable is used."
 msgstr "Active les fonctionnalités d'IA (Admin > Assistance IA) via l'API Gemini. Obtenez une clé sur <a href='https://aistudio.google.com/apikey'>Google AI Studio</a>. Inutile lorsqu'un projet Vertex AI est défini sous Admin > Assistance IA. Si ce champ est vide, la variable d'environnement GEMINI_API_KEY ou GOOGLE_API_KEY du serveur est utilisée."
 
+msgid "ai gemini google llm artificial intelligence"
+msgstr "ia gemini google llm intelligence artificielle"
+
 msgid "Vertex AI project"
 msgstr "Projet Vertex AI"
 
@@ -9695,17 +10262,75 @@ msgstr "manage.py suggest_answers (exécuté toutes les heures) ajoute une sugge
 msgid "Suggest an answer after (hours)"
 msgstr "Suggérer une réponse après (heures)"
 
-msgid "WordPress API key"
-msgstr "Clé API WordPress"
+#, python-format
+msgid "AI features run through Vertex AI in the Google Cloud project %s (Admin > AI assistance); the key is not used."
+msgstr "Les fonctions d'IA passent par Vertex AI dans le projet Google Cloud %s (Admin > Assistance IA) ; la clé n'est pas utilisée."
 
-msgid "Your WordPress API key. You can get one at <a href='http://wordpress.com/'>http://wordpress.com/</a>"
-msgstr "Votre clé API WordPress. Vous pouvez en obtenir une sur <a href='http://wordpress.com/'>http://wordpress.com/</a>"
+msgid "Gemini API keys start with AIza; check that you copied the key itself."
+msgstr "Les clés API Gemini commencent par AIza ; vérifiez que vous avez copié la clé elle-même."
+
+msgid "AI features are on; choose which ones under Admin > AI assistance."
+msgstr "Les fonctions d'IA sont activées ; choisissez lesquelles sous Admin > Assistance IA."
+
+msgid "Using the key in the server's GEMINI_API_KEY or GOOGLE_API_KEY environment variable."
+msgstr "Utilise la clé de la variable d'environnement GEMINI_API_KEY ou GOOGLE_API_KEY du serveur."
+
+msgid "Google Gemini (AI assistance)"
+msgstr "Google Gemini (assistance IA)"
+
+msgid "Turns on duplicate detection, spam and abuse review, and the answer assistant. The text of new public posts is sent to Google; see Admin > AI assistance for what each feature does."
+msgstr "Active la détection des doublons, l'examen du spam et des abus, et l'assistant de réponse. Le texte des nouvelles publications publiques est envoyé à Google ; voir Admin > Assistance IA pour le rôle de chaque fonction."
+
+msgid "Sign in to <a href=\"https://aistudio.google.com/apikey\">Google AI Studio</a> and choose <strong>Create API key</strong> (in a Google Cloud project with billing for more than the free tier's limits)."
+msgstr "Connectez-vous à <a href=\"https://aistudio.google.com/apikey\">Google AI Studio</a> et choisissez <strong>Create API key</strong> (dans un projet Google Cloud avec facturation pour dépasser les limites de l'offre gratuite)."
+
+msgid "Paste the key, which starts with <code>AIza</code>, below and save."
+msgstr "Collez la clé, qui commence par <code>AIza</code>, ci-dessous et enregistrez."
+
+msgid "Choose the features and the model under Admin &gt; AI assistance. On Google Cloud you can use a Vertex AI project there instead of a key."
+msgstr "Choisissez les fonctions et le modèle sous Admin &gt; Assistance IA. Sur Google Cloud, vous pouvez y utiliser un projet Vertex AI au lieu d'une clé."
+
+msgid "Google: using Gemini API keys"
+msgstr "Google : utiliser les clés API Gemini"
+
+msgid "ai gemini llm vertex artificial intelligence duplicates moderation assistant"
+msgstr "ia gemini llm vertex intelligence artificielle doublons modération assistant"
+
+msgid "Akismet API key"
+msgstr "Clé API Akismet"
+
+msgid "Your Akismet API key (it used to be called the WordPress API key)."
+msgstr "Votre clé API Akismet (anciennement appelée clé API WordPress)."
+
+msgid "spam filter wordpress"
+msgstr "spam filtre anti-spam wordpress"
 
 msgid "Minimum reputation to not have your posts checked"
 msgstr "Réputation minimale pour que vos publications ne soient pas vérifiées"
 
 msgid "The minimum reputation a user must have so that when they post a question, answer or comment it is not checked for spam."
 msgstr "La réputation minimale qu'un utilisateur doit avoir pour que ses questions, réponses ou commentaires ne soient pas vérifiés pour détecter le spam."
+
+msgid "Akismet spam filter"
+msgstr "Filtre anti-spam Akismet"
+
+msgid "Sends new questions, answers and comments of members with little reputation to Akismet, which refuses the ones it knows as spam. If Akismet can't be reached, posts are accepted."
+msgstr "Envoie les nouvelles questions, réponses et commentaires des membres ayant peu de réputation à Akismet, qui refuse ceux qu'il reconnaît comme spam. Si Akismet est injoignable, les publications sont acceptées."
+
+msgid "Get a key on <a href=\"https://akismet.com/pricing/\">akismet.com</a>: the free personal plan is for non-commercial sites, other sites need a paid plan."
+msgstr "Obtenez une clé sur <a href=\"https://akismet.com/pricing/\">akismet.com</a> : l'offre personnelle gratuite est réservée aux sites non commerciaux, les autres sites ont besoin d'une offre payante."
+
+msgid "Find the key under <strong>Account &gt; API keys</strong> (or in the welcome email), paste it below and save."
+msgstr "Trouvez la clé sous <strong>Account &gt; API keys</strong> (ou dans l'e-mail de bienvenue), collez-la ci-dessous et enregistrez."
+
+msgid "Choose who is checked with \"Minimum reputation to not have your posts checked\" in the minimum reputation settings; staff are never checked."
+msgstr "Choisissez qui est vérifié avec « Réputation minimale pour que vos publications ne soient pas vérifiées » dans la configuration de la réputation minimale ; l'équipe n'est jamais vérifiée."
+
+msgid "Akismet developer documentation"
+msgstr "Documentation développeur d'Akismet"
+
+msgid "Posts of members below the reputation threshold are checked."
+msgstr "Les publications des membres sous le seuil de réputation sont vérifiées."
 
 #, python-format
 msgid "Sorry, but akismet thinks your %s is spam."
@@ -10455,29 +11080,144 @@ msgstr "Le fournisseur de connexion n'a pas renvoyé d'identifiant d'utilisateur
 msgid "Google client ID"
 msgstr "ID client Google"
 
-msgid "OAuth client ID from the Google Cloud console (APIs & Services > Credentials). Authorized redirect URI: <APP_URL>/account/google/done/"
-msgstr "ID client OAuth provenant de la console Google Cloud (API et services > Identifiants). URI de redirection autorisé : <APP_URL>/account/google/done/"
+msgid "OAuth client ID from the Google Cloud console (APIs & Services > Credentials)."
+msgstr "ID client OAuth provenant de la console Google Cloud (API et services > Identifiants)."
+
+msgid "oauth login sign-in social"
+msgstr "oauth connexion identification réseaux sociaux"
 
 msgid "Google client secret"
 msgstr "Code secret du client Google"
 
+msgid "Shown next to the client ID in the Google Cloud console. Keep it secret."
+msgstr "Affiché à côté de l'ID client dans la console Google Cloud. Gardez-le secret."
+
+msgid "oauth login sign-in social password"
+msgstr "oauth connexion identification réseaux sociaux mot de passe"
+
 msgid "GitHub client ID"
 msgstr "ID client GitHub"
 
-msgid "From a GitHub OAuth app (Settings > Developer settings > OAuth Apps). Authorization callback URL: <APP_URL>/account/github/done/"
-msgstr "Provenant d'une application OAuth GitHub (Settings > Developer settings > OAuth Apps). URL de rappel d'autorisation : <APP_URL>/account/github/done/"
+msgid "From a GitHub OAuth app (Settings > Developer settings > OAuth Apps)."
+msgstr "Provenant d'une application OAuth GitHub (Settings > Developer settings > OAuth Apps)."
 
 msgid "GitHub client secret"
 msgstr "Code secret du client GitHub"
 
+msgid "Generated on the OAuth app's page; GitHub shows it only once."
+msgstr "Généré sur la page de l'application OAuth ; GitHub ne l'affiche qu'une seule fois."
+
 msgid "Facebook app ID"
 msgstr "ID d'application Facebook"
 
-msgid "From developers.facebook.com (Facebook Login product). Valid OAuth redirect URI: <APP_URL>/account/facebook/done/"
-msgstr "Provenant de developers.facebook.com (produit Facebook Login). URI de redirection OAuth valide : <APP_URL>/account/facebook/done/"
+msgid "From developers.facebook.com (App settings > Basic)."
+msgstr "Provenant de developers.facebook.com (App settings > Basic)."
+
+msgid "oauth login sign-in social meta"
+msgstr "oauth connexion identification réseaux sociaux meta"
 
 msgid "Facebook app secret"
 msgstr "Clé secrète de l'application Facebook"
+
+msgid "App settings > Basic, next to the app ID. Keep it secret."
+msgstr "App settings > Basic, à côté de l'ID d'application. Gardez-la secrète."
+
+msgid "oauth login sign-in social meta password"
+msgstr "oauth connexion identification réseaux sociaux meta mot de passe"
+
+msgid "The site's address (APP_URL in settings_local.py) starts with http://; sign-in providers only accept https:// redirect addresses."
+msgstr "L'adresse du site (APP_URL dans settings_local.py) commence par http:// ; les fournisseurs de connexion n'acceptent que des adresses de redirection en https://."
+
+msgid "Fill in both the ID and the secret; until then the button stays hidden."
+msgstr "Renseignez l'ID et le secret ; d'ici là, le bouton reste masqué."
+
+msgid "The sign-in page shows this provider."
+msgstr "La page de connexion affiche ce fournisseur."
+
+msgid "A Google client ID ends in .apps.googleusercontent.com; check that you copied the client ID, not the project ID or the secret."
+msgstr "Un ID client Google se termine par .apps.googleusercontent.com ; vérifiez que vous avez copié l'ID client, et non l'ID du projet ou le secret."
+
+msgid "A Facebook app ID is a number, such as 1234567890123456."
+msgstr "Un ID d'application Facebook est un nombre, comme 1234567890123456."
+
+msgid "Sign in with Google"
+msgstr "Se connecter avec Google"
+
+msgid "Members sign in with their Google account; their email address arrives already confirmed."
+msgstr "Les membres se connectent avec leur compte Google ; leur adresse e-mail arrive déjà confirmée."
+
+msgid "Open the <a href=\"https://console.cloud.google.com/auth/overview\">Google Auth Platform</a> in the Google Cloud console (create a project first if you have none) and fill in the <strong>Branding</strong> page: app name, support email and your site's domain."
+msgstr "Ouvrez <a href=\"https://console.cloud.google.com/auth/overview\">Google Auth Platform</a> dans la console Google Cloud (créez d'abord un projet si vous n'en avez pas) et remplissez la page <strong>Branding</strong> : nom de l'application, e-mail d'assistance et domaine de votre site."
+
+msgid "Under <strong>Audience</strong>, choose <strong>External</strong> and <strong>publish</strong> the app; while it is in testing only the test users you list can sign in."
+msgstr "Sous <strong>Audience</strong>, choisissez <strong>External</strong> et <strong>publiez</strong> l'application ; tant qu'elle est en test, seuls les utilisateurs de test que vous indiquez peuvent se connecter."
+
+msgid "Under <strong>Clients</strong>, create a client of type <strong>Web application</strong> and add the redirect URI below to its <strong>Authorized redirect URIs</strong>."
+msgstr "Sous <strong>Clients</strong>, créez un client de type <strong>Web application</strong> et ajoutez l'URI de redirection ci-dessous à ses <strong>Authorized redirect URIs</strong>."
+
+msgid "Copy the <strong>Client ID</strong> and <strong>Client secret</strong> into the fields below and save. Then sign out and try the Google button on the sign-in page."
+msgstr "Copiez le <strong>Client ID</strong> et le <strong>Client secret</strong> dans les champs ci-dessous et enregistrez. Déconnectez-vous ensuite et essayez le bouton Google sur la page de connexion."
+
+msgid "Authorized redirect URI"
+msgstr "URI de redirection autorisé"
+
+msgid "Google Cloud console: OAuth clients"
+msgstr "Console Google Cloud : clients OAuth"
+
+msgid "oauth openid login sign-in social google account"
+msgstr "oauth openid connexion identification réseaux sociaux compte google"
+
+msgid "Sign in with GitHub"
+msgstr "Se connecter avec GitHub"
+
+msgid "Members sign in with their GitHub account, handy for developer communities."
+msgstr "Les membres se connectent avec leur compte GitHub, pratique pour les communautés de développeurs."
+
+msgid "On GitHub, open <a href=\"https://github.com/settings/developers\">Settings &gt; Developer settings &gt; OAuth Apps</a> (or your organization's settings, so the app doesn't depend on one person) and choose <strong>New OAuth app</strong>."
+msgstr "Sur GitHub, ouvrez <a href=\"https://github.com/settings/developers\">Settings &gt; Developer settings &gt; OAuth Apps</a> (ou les paramètres de votre organisation, pour que l'application ne dépende pas d'une seule personne) et choisissez <strong>New OAuth app</strong>."
+
+#, python-brace-format
+msgid "Enter the site's name, <code>{app_url}</code> as the <strong>Homepage URL</strong> and the callback URL below as the <strong>Authorization callback URL</strong>, then register the app."
+msgstr "Saisissez le nom du site, <code>{app_url}</code> comme <strong>Homepage URL</strong> et l'URL de rappel ci-dessous comme <strong>Authorization callback URL</strong>, puis enregistrez l'application."
+
+msgid "Copy the <strong>Client ID</strong>, then choose <strong>Generate a new client secret</strong> and copy the secret right away: GitHub shows it only once."
+msgstr "Copiez le <strong>Client ID</strong>, puis choisissez <strong>Generate a new client secret</strong> et copiez le secret immédiatement : GitHub ne l'affiche qu'une seule fois."
+
+msgid "Paste both into the fields below and save."
+msgstr "Collez-les tous les deux dans les champs ci-dessous et enregistrez."
+
+msgid "Authorization callback URL"
+msgstr "URL de rappel d'autorisation"
+
+msgid "GitHub: creating an OAuth app"
+msgstr "GitHub : créer une application OAuth"
+
+msgid "oauth login sign-in social developer"
+msgstr "oauth connexion identification réseaux sociaux développeur"
+
+msgid "Sign in with Facebook"
+msgstr "Se connecter avec Facebook"
+
+msgid "Members sign in with their Facebook account."
+msgstr "Les membres se connectent avec leur compte Facebook."
+
+msgid "On <a href=\"https://developers.facebook.com/apps/\">Meta for Developers</a>, create an app with the use case <strong>Authenticate and request data from users with Facebook Login</strong>."
+msgstr "Sur <a href=\"https://developers.facebook.com/apps/\">Meta for Developers</a>, créez une application avec le cas d'usage <strong>Authenticate and request data from users with Facebook Login</strong>."
+
+msgid "In the Facebook Login settings, add the redirect URI below to <strong>Valid OAuth Redirect URIs</strong>."
+msgstr "Dans les paramètres de Facebook Login, ajoutez l'URI de redirection ci-dessous à <strong>Valid OAuth Redirect URIs</strong>."
+
+msgid "Under <strong>App settings &gt; Basic</strong>, fill in the privacy policy address, then copy the <strong>App ID</strong> and <strong>App secret</strong> into the fields below and save."
+msgstr "Sous <strong>App settings &gt; Basic</strong>, renseignez l'adresse de la politique de confidentialité, puis copiez l'<strong>App ID</strong> et l'<strong>App secret</strong> dans les champs ci-dessous et enregistrez."
+
+msgid "Switch the app to <strong>Live</strong>; in development mode only the app's own roles can sign in."
+msgstr "Passez l'application en mode <strong>Live</strong> ; en mode développement, seuls les rôles de l'application peuvent se connecter."
+
+msgid "Valid OAuth Redirect URI"
+msgstr "URI de redirection OAuth valide"
+
+msgid "Meta: Facebook Login for the web"
+msgstr "Meta : Facebook Login pour le web"
 
 msgid "Bug Buster"
 msgstr "Chasseur de bugs"
@@ -10488,6 +11228,64 @@ msgstr "A obtenu %s votes pour sur une question étiquetée « bug »"
 
 msgid "Invalid captcha, please try again."
 msgstr "Captcha non valide, veuillez réessayer."
+
+msgid "reCAPTCHA site key"
+msgstr "Clé du site reCAPTCHA"
+
+msgid "The public key of a reCAPTCHA v2 \"I'm not a robot\" checkbox key pair."
+msgstr "La clé publique d'une paire de clés reCAPTCHA v2 avec case à cocher « Je ne suis pas un robot »."
+
+msgid "captcha robot spam bot google"
+msgstr "captcha robot spam bot google"
+
+msgid "reCAPTCHA secret key"
+msgstr "Clé secrète reCAPTCHA"
+
+msgid "The secret key of the same pair. Keep it secret."
+msgstr "La clé secrète de la même paire. Gardez-la secrète."
+
+msgid "captcha robot spam bot google password"
+msgstr "captcha robot spam bot google mot de passe"
+
+msgid "Fill in both keys: with only one the check fails for everybody."
+msgstr "Renseignez les deux clés : avec une seule, la vérification échoue pour tout le monde."
+
+msgid "New members and members with little reputation tick \"I'm not a robot\" when they post."
+msgstr "Les nouveaux membres et ceux qui ont peu de réputation cochent « Je ne suis pas un robot » quand ils publient."
+
+msgid "The site key and the secret key are the same; the secret key is the second one Google shows."
+msgstr "La clé du site et la clé secrète sont identiques ; la clé secrète est la seconde que Google affiche."
+
+msgid "reCAPTCHA"
+msgstr "reCAPTCHA"
+
+msgid "Stops spam bots: posting asks members with little reputation to prove they are human."
+msgstr "Bloque les robots de spam : pour publier, les membres ayant peu de réputation doivent prouver qu'ils sont humains."
+
+msgid "Open the <a href=\"https://www.google.com/recaptcha/admin/create\">reCAPTCHA admin console</a> and register a new site."
+msgstr "Ouvrez la <a href=\"https://www.google.com/recaptcha/admin/create\">console d'administration reCAPTCHA</a> et enregistrez un nouveau site."
+
+msgid "Choose <strong>Challenge (v2)</strong> and <strong>\"I'm not a robot\" Checkbox</strong>; v3 and invisible keys don't work here."
+msgstr "Choisissez <strong>Challenge (v2)</strong> et <strong>\"I'm not a robot\" Checkbox</strong> ; les clés v3 et invisibles ne fonctionnent pas ici."
+
+#, python-brace-format
+msgid "Add your site's domain (the host name of <code>{app_url}</code>, without https://), and <code>localhost</code> if you also test on your own computer."
+msgstr "Ajoutez le domaine de votre site (le nom d'hôte de <code>{app_url}</code>, sans https://), et <code>localhost</code> si vous testez aussi sur votre propre ordinateur."
+
+msgid "Copy the <strong>site key</strong> and the <strong>secret key</strong> into the fields below and save."
+msgstr "Copiez la <strong>site key</strong> et la <strong>secret key</strong> dans les champs ci-dessous et enregistrez."
+
+msgid "Google: reCAPTCHA v2 checkbox"
+msgstr "Google : case à cocher reCAPTCHA v2"
+
+msgid "captcha robot spam bot"
+msgstr "captcha robot spam bot"
+
+msgid "robots.txt"
+msgstr "robots.txt"
+
+msgid "What the robots.txt file tells search engines and other crawlers."
+msgstr "Ce que le fichier robots.txt indique aux moteurs de recherche et autres robots."
 
 #, python-format
 msgid "The dump has no %s.xml file."

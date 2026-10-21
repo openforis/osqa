@@ -90,7 +90,8 @@ class AdministrationTest(E2ETestCase):
     def settings_pages(self, page):
         self.visit(page, '/admin/')
         links = page.eval_on_selector_all('a[href^="/admin/settings/"]', 'els => els.map(e => e.getAttribute("href"))')
-        return sorted(set(links))
+        # The "Getting started" list links to settings on these pages (#setting-...).
+        return sorted(set(link.split('#')[0] for link in links))
 
     def test_every_settings_page_loads_and_saves(self):
         page = self.open(self.admin)

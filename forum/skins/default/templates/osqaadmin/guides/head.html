@@ -1,0 +1,18 @@
+{% load i18n admin_tags %}{% comment %}
+Admin > <head> (forum/settings/static.py): what may go there and how scripts
+pass the Content-Security-Policy.
+{% endcomment %}
+<section class="admin-guide" aria-labelledby="head-guide-title">
+    <div class="admin-guide-header"><h2 id="head-guide-title">{% trans "What to put here" %}</h2></div>
+    <p class="admin-guide-summary">{% url "admin_set" "security" as security_url %}{% url "admin_set" "extkeys" as keys_url %}{% blocktrans %}Tags added to the &lt;head&gt; of every public page: site verification tags, web analytics other than Google Analytics (which has its own field under <a href="{{ keys_url }}">External Keys</a>), fonts or widgets. Inline scripts get the page's security nonce automatically; scripts, styles and frames from other sites need their origin in <a href="{{ security_url }}">Extra script sources</a>, or browsers block them.{% endblocktrans %}</p>
+    <details class="admin-guide-steps">
+        <summary>{% trans "Examples" %}</summary>
+        {% example "head-example-analytics" _("Privacy-friendly analytics (add https://plausible.io to the extra script sources)") %}
+            <script defer data-domain="example.org" src="https://plausible.io/js/script.js"></script>
+        {% endexample %}
+        {% example "head-example-verify" _("A verification tag (Bing, Pinterest…)") %}
+            <meta name="msvalidate.01" content="0123456789ABCDEF0123456789ABCDEF" />
+        {% endexample %}
+        <p class="admin-visually-hidden" role="status"></p>
+    </details>
+</section>

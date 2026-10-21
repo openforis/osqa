@@ -1,4 +1,5 @@
 from django.urls import reverse
+from forum import settings
 from forum.models import Question
 from forum.models.node import normalize_fences
 from forum.utils.html import html2text, sanitize_html
@@ -83,6 +84,18 @@ class EditorPreviewTest(OSQATestCase):
         response = self.client.get(reverse('ask'))
         self.assertContains(response, 'data-preview-url="%s"' % reverse('markdown_preview'))
         self.assertNotContains(response, 'showdown.js')
+
+    def test_title_shows_its_minimum_length_on_ask_and_edit_pages(self):
+        settings.FORM_MIN_QUESTION_TITLE.set_value(15)
+        self.addCleanup(setattr, settings.FORM_MIN_QUESTION_TITLE, '_temp', None)
+        hint = ('<span id="title-min-hint" class="editor-min-hint" data-min-length="15">'
+                'At least 15 characters</span><span id="title-metrics"')
+        self.assertContains(self.client.get(reverse('ask')), hint)
+        bob = self.create_user('bob')
+        question = Question(author=bob, title='A question title long enough', tagnames='gis', body='Body text.')
+        question.save()
+        self.login(bob)
+        self.assertContains(self.client.get(reverse('edit_question', args=[question.id])), hint)
 
     def test_editor_toolbar_is_rendered(self):
         response = self.client.get(reverse('ask'))

@@ -8,7 +8,7 @@
    "Dark mode"). Django's own CSS follows the same attribute.
 
    Sections: palette, layout (header, breadcrumbs, menu, content), messages,
-   buttons and forms, then one per page (dashboard, community health, statistics, static pages,
+   buttons and forms, settings guides and search, then one per page (dashboard, community health, statistics, static pages,
    node manager, moderation inbox, support), then phones. */
 
 /* :root[data-theme]: above Django's html[data-theme="light"/"dark"] palettes;
@@ -324,16 +324,84 @@ nav.breadcrumbs a:link, nav.breadcrumbs a:visited {
     box-shadow: none;
 }
 
-#content-related .admin-menu .module h2 {
-    margin: 12px 0 4px;
-    padding: 0 10px;
-    border: 0;
-    background: transparent;
+/* A group: a disclosure with an icon, the group's name, a count (the
+   moderation inbox's) when there is one, and a chevron. */
+#content-related .admin-menu .admin-menu-group {
+    margin: 2px 0 0;
+}
+
+.admin-menu-group > summary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 36px;
+    padding: 4px 8px 4px 10px;
+    border-radius: 6px;
+    color: var(--body-loud-color);
+    font-weight: 600;
+    line-height: 1.25;
+    list-style: none;
+    cursor: pointer;
+}
+
+.admin-menu-group > summary::-webkit-details-marker {
+    display: none;
+}
+
+.admin-menu-group > summary::after {
+    content: "";
+    flex: 0 0 auto;
+    width: 7px;
+    height: 7px;
+    margin: 0 4px 3px auto;
+    border-right: 2px solid var(--body-quiet-color);
+    border-bottom: 2px solid var(--body-quiet-color);
+    transform: rotate(45deg);
+    transition: transform .15s;
+}
+
+.admin-menu-group[open] > summary::after {
+    margin-bottom: -3px;
+    transform: rotate(-135deg);
+}
+
+.admin-menu-group > summary:hover {
+    background: var(--body-bg);
+}
+
+/* The group holding the page being shown. */
+.admin-menu-group.has-current > summary {
+    color: var(--osqa-menu-current-fg);
+}
+
+.admin-menu-group-title {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.admin-menu-group .admin-group-count {
+    flex: 0 0 auto;
+}
+
+/* Shown on the group while it is folded; then on the inbox link. */
+.admin-menu-group[open] .admin-group-count {
+    display: none;
+}
+
+.admin-menu-icon {
+    flex: 0 0 auto;
     color: var(--body-quiet-color);
-    font-size: 0.6875rem;
-    font-weight: 700;
-    letter-spacing: .06em;
-    text-transform: uppercase;
+}
+
+.admin-menu-group.has-current > summary .admin-menu-icon, .admin-menu-home a[aria-current="page"] .admin-menu-icon {
+    color: currentColor;
+}
+
+/* The pages of a group, indented under its name. */
+.admin-menu-group > ul {
+    margin: 2px 0 6px 19px !important;
+    padding-left: 8px !important;
+    border-left: 1px solid var(--hairline-color);
 }
 
 .admin-menu li a {
@@ -367,7 +435,14 @@ nav.breadcrumbs a:link, nav.breadcrumbs a:visited {
 }
 
 .admin-menu-home li a {
+    gap: 8px;
     font-weight: 600;
+}
+
+.admin-menu-home {
+    margin-bottom: 4px !important;
+    padding-bottom: 4px !important;
+    border-bottom: 1px solid var(--hairline-color);
 }
 
 /* Page heading and description. */
@@ -434,7 +509,8 @@ input.longstring {
 }
 
 /* Links within text are underlined, so they don't rely on colour alone (WCAG 1.4.1). */
-.breadcrumbs a, .admin_message a, #footer a, .mod-note a {
+.breadcrumbs a, .admin_message a, #footer a, .mod-note a, .admin-guide p a, .admin-guide li a,
+.admin-settings-table td a, .admin-search-help a {
     text-decoration: underline;
 }
 
@@ -557,26 +633,126 @@ input[type="file"]::file-selector-button:hover {
     color: var(--body-quiet-color);
 }
 
-#admin_form tr th {
+#admin_form tr th, .admin-settings-table tr th {
     white-space: nowrap;
 }
 
-#admin_form tr td:first-of-type {
+#admin_form tr td:first-of-type, .admin-settings-table tr td:first-of-type {
     width: 100%;
 }
 
-/* "context | default" tools under each setting's label. */
-#admin_form tr th .fieldtool {
-    display: inline-block;
-    padding: 4px 2px;
-    font-size: 0.8125rem;
+/* Under each setting's label: its name, "Changed" when the saved value isn't
+   the default; under the field, the default and "Use default". */
+.setting-name {
+    display: block;
+    margin-top: 2px;
+    color: var(--body-quiet-color);
+    font-family: var(--font-family-monospace, monospace);
+    font-size: 0.75rem;
     font-weight: 400;
+    overflow-wrap: anywhere;
 }
 
-#admin_form tr th .sep {
-    margin: 0 6px;
+.setting-changed {
+    display: inline-block;
+    margin-left: 4px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: var(--osqa-menu-current-bg);
+    color: var(--osqa-menu-current-fg);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    line-height: 1.6;
+    vertical-align: middle;
+}
+
+.setting-default {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 8px;
+    margin-top: 6px;
     color: var(--body-quiet-color);
-    font-weight: 400;
+    font-size: 0.8125rem;
+}
+
+.setting-default[hidden] {
+    display: none;
+}
+
+.setting-default-value {
+    padding: 0 4px;
+    border-radius: 3px;
+    background: var(--darkened-bg);
+    color: var(--body-fg);
+    font-family: var(--font-family-monospace, monospace);
+    overflow-wrap: anywhere;
+}
+
+#content-main .setting-reset {
+    min-height: 28px;
+    padding: 2px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--osqa-control-bg);
+    color: var(--link-fg);
+    font-size: 0.8125rem;
+    font-weight: 600;
+}
+
+#content-main .setting-reset:hover {
+    border-color: var(--link-fg);
+}
+
+/* Changed since the page was loaded, not saved yet. */
+.setting-row.is-dirty > th, .setting-row.is-dirty > td {
+    background: var(--osqa-notice-bg);
+}
+
+.setting-row.is-dirty > th {
+    box-shadow: inset 3px 0 0 var(--osqa-notice-border);
+}
+
+/* The save bar stays at the bottom of the window on long pages; Tab never
+   ends under it (WCAG 2.4.11). */
+html:has(.admin-savebar) {
+    scroll-padding-bottom: 96px;
+}
+
+#content-main .admin-savebar {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 -1px 0 var(--hairline-color);
+}
+
+.admin-settings-form.has-unsaved .admin-savebar {
+    background: var(--osqa-notice-bg);
+    box-shadow: 0 -2px 0 var(--osqa-notice-border), 0 -6px 12px rgba(0, 0, 0, .08);
+}
+
+#content-main .admin-savebar .admin-discard {
+    min-height: 35px;
+    margin: 0;
+    padding: 6px 14px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-weight: 600;
+    background: var(--osqa-control-bg);
+    color: var(--body-fg);
+}
+
+#content-main .admin-savebar .admin-discard[hidden] {
+    display: none;
+}
+
+.admin-unsaved-status {
+    color: var(--osqa-notice-fg);
+    font-weight: 600;
 }
 
 /* Stacked form used where there is no Django form (Stack Exchange importer). */
@@ -598,6 +774,746 @@ input[type="file"]::file-selector-button:hover {
     align-items: center;
     gap: 8px;
     font-weight: 400;
+}
+
+/* ---- Settings guides and search ------------------------------------------ */
+
+/* Text for screen readers only. */
+.admin-visually-hidden {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* The search box at the top of the menu (admin.search). */
+.admin-menu-search {
+    display: flex;
+    gap: 4px;
+    margin: 0 0 8px;
+}
+
+.admin-menu-search input[type="search"], .admin-search-page input[type="search"] {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: var(--osqa-tap);
+    padding: 4px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--osqa-control-bg);
+    color: var(--body-fg);
+    box-sizing: border-box;
+}
+
+.admin-menu-search button {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: var(--osqa-tap);
+    min-height: var(--osqa-tap);
+    padding: 0;
+}
+
+.admin-search-page {
+    display: flex;
+    gap: 8px;
+    max-width: 640px;
+    margin: 0 0 12px;
+}
+
+.admin-search-count {
+    margin: 0 0 12px;
+    color: var(--body-quiet-color);
+}
+
+.admin-search-results {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.admin-search-results li.admin-search-result {
+    margin: 0 0 8px;
+    padding: 10px 14px;
+    border: 1px solid var(--hairline-color);
+    border-radius: var(--osqa-radius);
+    list-style: none;
+}
+
+.admin-search-title {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.admin-search-where {
+    display: block;
+    margin-top: 2px;
+    color: var(--body-quiet-color);
+    font-size: 0.8125rem;
+}
+
+.admin-search-help {
+    margin: 4px 0 0;
+    padding: 0;
+}
+
+.admin-search-results mark {
+    padding: 0 1px;
+    border-radius: 2px;
+    background: var(--osqa-notice-bg);
+    color: inherit;
+    box-shadow: inset 0 -2px 0 var(--osqa-notice-border);
+}
+
+/* "Find a setting on this page" (osqa.admin.js). */
+.admin-filter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 10px;
+    margin: 0 0 16px;
+}
+
+.admin-filter label {
+    font-weight: 600;
+}
+
+.admin-filter-input {
+    flex: 1 1 260px;
+    max-width: 420px;
+    min-height: var(--osqa-tap);
+    box-sizing: border-box;
+}
+
+.admin-filter-status {
+    flex-basis: 100%;
+    margin: 0;
+    color: var(--body-quiet-color);
+}
+
+.admin-filter-status:empty {
+    display: none;
+}
+
+.admin-settings-table tr[hidden], .admin-guide[hidden] {
+    display: none !important;
+}
+
+/* A setting the search linked to. */
+.setting-row {
+    scroll-margin-top: 16px;
+}
+
+.setting-row:target > th, .setting-row:target > td {
+    background: var(--osqa-notice-bg);
+}
+
+.setting-example {
+    display: block;
+    margin-top: 4px;
+    color: var(--body-quiet-color);
+    font-size: 0.8125rem;
+    overflow-wrap: anywhere;
+}
+
+/* A settings page's sections (forum/settings/guides.py). */
+.admin-guide {
+    margin: 0 0 16px;
+    padding: 14px 16px 6px;
+    border: 1px solid var(--hairline-color);
+    border-radius: var(--osqa-radius);
+}
+
+.admin-guide-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 12px;
+    margin: 0 0 6px;
+}
+
+#content-main .admin-guide-header h2 {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--body-loud-color);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+.admin-status {
+    display: inline-block;
+    padding: 2px 10px;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+.admin-status-on {
+    background: var(--osqa-accepted-bg);
+    color: var(--osqa-good-fg);
+}
+
+.admin-status-partial {
+    border-color: var(--osqa-notice-border);
+    background: var(--osqa-notice-bg);
+    color: var(--osqa-notice-fg);
+}
+
+.admin-status-off {
+    border-color: var(--hairline-color);
+    background: var(--darkened-bg);
+    color: var(--body-quiet-color);
+}
+
+.admin-status-warning {
+    background: var(--osqa-verdict-bg);
+    color: var(--osqa-verdict-fg);
+}
+
+.admin-guide-summary, .admin-guide-message {
+    max-width: 75ch;
+    margin: 0 0 8px;
+    padding: 0;
+}
+
+.admin-guide-message {
+    padding: 8px 12px;
+    border-radius: 6px;
+    background: var(--darkened-bg);
+}
+
+.admin-guide-warning .admin-guide-message {
+    background: var(--osqa-verdict-bg);
+    color: var(--osqa-verdict-fg);
+}
+
+.admin-guide-partial .admin-guide-message {
+    background: var(--osqa-notice-bg);
+    color: var(--osqa-notice-fg);
+}
+
+.admin-guide-steps {
+    margin: 0 0 10px;
+}
+
+.admin-guide-steps > summary {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--osqa-tap);
+    color: var(--link-fg);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.admin-guide-steps ol {
+    max-width: 75ch;
+    margin: 4px 0 10px;
+    padding-left: 22px;
+}
+
+/* Django's code strong is brown, too dark on the dark theme. */
+.admin-guide code strong {
+    color: inherit;
+}
+
+.admin-guide-steps ol li {
+    margin: 0 0 6px;
+    padding-left: 2px;
+    list-style: decimal;
+    line-height: 1.5;
+}
+
+.admin-guide-links {
+    margin: 4px 0 8px;
+    padding: 0;
+}
+
+.admin-guide-links li {
+    display: inline-block;
+    margin: 0 16px 4px 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* A value to copy (a redirect URI) with its button. */
+.admin-copy {
+    max-width: 640px;
+    margin: 0 0 10px;
+}
+
+.admin-copy label {
+    display: block;
+    margin: 0 0 4px;
+    font-weight: 600;
+}
+
+.admin-copy-row, .secret-field {
+    display: flex;
+    gap: 6px;
+    align-items: stretch;
+}
+
+.admin-copy-row input {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: var(--osqa-tap);
+    font-family: var(--font-family-monospace);
+    box-sizing: border-box;
+}
+
+.admin-copy-row .button, .secret-toggle {
+    flex: 0 0 auto;
+    min-height: var(--osqa-tap);
+    min-width: 64px;
+}
+
+.secret-field input.secret-input {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.admin-preview-note {
+    max-width: 75ch;
+    color: var(--body-quiet-color);
+}
+
+/* Code examples with a copy button (the {% example %} tag, admin_tags.py). */
+.admin-example {
+    max-width: 760px;
+    margin: 0 0 12px;
+}
+
+.admin-example-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px 12px;
+    margin: 0 0 4px;
+}
+
+.admin-example-title {
+    font-weight: 600;
+}
+
+.admin-example-copy {
+    min-height: var(--osqa-tap);
+    min-width: 64px;
+}
+
+.admin-example-code {
+    margin: 0;
+    padding: 10px 12px;
+    overflow-x: auto;
+    border: 1px solid var(--hairline-color);
+    border-radius: 6px;
+    background: var(--darkened-bg);
+    color: var(--body-fg);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    white-space: pre;
+}
+
+/* The dashboard's "Getting started" list (forum/utils/setup_checklist.py). */
+.admin-checklist-items {
+    margin: 4px 0 8px;
+    padding: 0;
+}
+
+.admin-checklist-items li {
+    display: flex;
+    gap: 10px;
+    margin: 0 0 10px;
+    padding: 0;
+    list-style: none;
+}
+
+.admin-checklist-mark {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    margin-top: 1px;
+    border: 2px solid var(--border-color);
+    border-radius: 50%;
+    color: var(--osqa-good-fg);
+    font-weight: 700;
+}
+
+.admin-checklist-items li.is-done .admin-checklist-mark {
+    border-color: var(--osqa-good-fg);
+    background: var(--osqa-accepted-bg);
+}
+
+.admin-checklist-items a {
+    font-weight: 600;
+}
+
+.admin-checklist-items li.is-done a {
+    color: var(--body-quiet-color);
+}
+
+.admin-checklist-items p {
+    margin: 2px 0 0;
+    padding: 0;
+    color: var(--body-quiet-color);
+}
+
+.admin-checklist-hide {
+    margin: 0 0 8px;
+}
+
+/* ---- Look and feel (osqaadmin/guides/appearance.html) ------------------- */
+
+input.color-input {
+    width: 72px;
+    height: 40px;
+    padding: 2px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--osqa-control-bg);
+    cursor: pointer;
+}
+
+/* Ready-made styles: one card each, with a small drawing of a page in its
+   colours and font. */
+.appearance-styles {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 140px), 1fr));
+    gap: 12px;
+    margin: 0 0 12px;
+    padding: 0;
+}
+
+.appearance-styles li.appearance-style-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 0;
+    padding: 10px;
+    border: 1px solid var(--hairline-color);
+    border-radius: var(--osqa-radius);
+    list-style: none;
+}
+
+.appearance-style-card:has([aria-pressed="true"]) {
+    border-color: var(--link-fg);
+    box-shadow: inset 0 0 0 1px var(--link-fg);
+}
+
+#content-main .appearance-style-card h3 {
+    margin: 2px 0 0;
+    padding: 0;
+    background: none;
+    color: var(--body-loud-color);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+.appearance-style-card p {
+    flex: 1 1 auto;
+    margin: 0;
+    padding: 0;
+    color: var(--body-quiet-color);
+    font-size: 0.8125rem;
+}
+
+#content-main .appearance-style-use, .admin-menu-search button {
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--osqa-control-bg);
+    color: var(--link-fg);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+#content-main .appearance-style-use {
+    align-self: flex-start;
+    min-height: var(--osqa-tap);
+    padding: 4px 12px;
+}
+
+#content-main .appearance-style-use:hover, .admin-menu-search button:hover {
+    border-color: var(--link-fg);
+}
+
+#content-main .appearance-style-use[aria-pressed="true"] {
+    background: var(--osqa-accepted-bg);
+    color: var(--osqa-good-fg);
+    border: 1px solid var(--osqa-good-fg);
+}
+
+#content-main .appearance-style-use[aria-pressed="true"]::before {
+    content: "\2713  ";
+}
+
+.appearance-style-preview {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 92px;
+    border: 1px solid var(--hairline-color);
+    border-radius: 6px;
+    background: var(--p-bg);
+    font-family: var(--p-font, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif);
+}
+
+.appearance-style-preview .p-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 24px;
+    padding: 0 8px;
+    border-bottom: 1px solid #dfe3e8;
+    background: #fff;
+}
+
+.appearance-style-preview .p-logo {
+    width: 18px;
+    height: 10px;
+    border-radius: 2px;
+    background: var(--p-brand);
+}
+
+.appearance-style-preview .p-tab {
+    width: 28px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--p-brand);
+    opacity: .6;
+}
+
+.appearance-style-preview .p-ask {
+    width: 30px;
+    height: 12px;
+    margin-left: auto;
+    border-radius: 3px;
+    background: var(--p-accent);
+}
+
+.appearance-style-preview .p-body {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin: 8px;
+    padding: 6px 8px;
+    border-radius: 4px;
+    background: #fff;
+}
+
+.appearance-style-preview .p-title {
+    color: var(--p-brand);
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.appearance-style-preview .p-line {
+    height: 4px;
+    border-radius: 2px;
+    background: #c9ced6;
+}
+
+.appearance-style-preview .p-short {
+    width: 60%;
+}
+
+.appearance-style-preview .p-button {
+    width: 36px;
+    height: 8px;
+    border-radius: 2px;
+    background: var(--p-brand);
+}
+
+/* The styles' own touches, in miniature. */
+.appearance-style-openforis .p-header, .appearance-style-forest .p-header,
+.appearance-style-midnight .p-header, .appearance-style-crimson .p-header {
+    box-shadow: inset 0 3px 0 var(--p-brand);
+}
+
+.appearance-style-plum .p-ask, .appearance-style-plum .p-button,
+.appearance-style-earth .p-ask, .appearance-style-earth .p-button {
+    border-radius: 999px;
+}
+
+.appearance-style-editorial .p-title, .appearance-style-crimson .p-title {
+    font-family: Charter, "Bitstream Charter", Cambria, Georgia, serif;
+}
+
+.appearance-style-editorial .p-body, .appearance-style-minimal .p-body,
+.appearance-style-editorial .p-ask, .appearance-style-minimal .p-ask {
+    border-radius: 0;
+}
+
+.appearance-style-midnight {
+    background: #0d1117;  /* new visitors get the dark theme */
+}
+
+.appearance-style-midnight .p-header, .appearance-style-midnight .p-body {
+    border-color: #30363d;
+    background: #161b22;
+}
+
+.appearance-style-midnight .p-title {
+    color: #8fa9ef;
+}
+
+.appearance-samples {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: 12px;
+    margin: 0 0 10px;
+}
+
+.appearance-sample {
+    --sample-brand: #2c5aa0;
+    --sample-button: #2c5aa0;
+    --sample-accent: #c2410c;
+    --sample-soft: #eaf1fb;
+    --sample-background: #f5f7fa;
+    --sample-surface: #fff;
+    --sample-text: #1f2328;
+    --sample-muted: #5f6b7a;
+    --sample-border: #dfe3e8;
+    overflow: hidden;
+    border: 1px solid var(--hairline-color);
+    border-radius: var(--osqa-radius);
+    background: var(--sample-background);
+    color: var(--sample-text);
+    font-family: var(--sample-font, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+    font-size: 14px;
+    line-height: 1.45;
+}
+
+.appearance-sample-dark {
+    --sample-brand: #79b0ff;
+    --sample-button: #2f6fd6;
+    --sample-accent: #cf430c;
+    --sample-soft: #1a2a42;
+    --sample-background: #0d1117;
+    --sample-surface: #161b22;
+    --sample-text: #e6edf3;
+    --sample-muted: #9ba7b4;
+    --sample-border: #30363d;
+}
+
+.sample-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 12px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--sample-border);
+    background: var(--sample-surface);
+}
+
+.sample-site {
+    font-weight: 700;
+}
+
+.sample-tab {
+    padding: 2px 0;
+    color: var(--sample-muted);
+}
+
+.sample-tab-current {
+    color: var(--sample-brand);
+    font-weight: 600;
+    box-shadow: inset 0 -2px 0 var(--sample-brand);
+}
+
+.sample-ask, .sample-button {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 6px;
+    background: var(--sample-accent);
+    color: #fff;
+    font-weight: 600;
+}
+
+.sample-ask {
+    margin-left: auto;
+}
+
+.sample-button {
+    margin-top: 10px;
+    background: var(--sample-button);
+}
+
+.sample-body {
+    padding: 12px;
+}
+
+.sample-card {
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    border: 1px solid var(--sample-border);
+    border-radius: 8px;
+    background: var(--sample-surface);
+}
+
+.sample-score {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 44px;
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.sample-score small {
+    color: var(--sample-muted);
+    font-size: 0.75rem;
+    font-weight: 400;
+}
+
+.sample-link {
+    color: var(--sample-brand);
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+.sample-text {
+    margin: 4px 0 8px;
+    padding: 0;
+    font-size: 13px;
+}
+
+.sample-soft, .sample-tag {
+    padding: 1px 6px;
+    border-radius: 4px;
+    background: var(--sample-soft);
+}
+
+.sample-tag {
+    color: var(--sample-brand);
+    font-size: 12px;
+}
+
+.appearance-contrast {
+    margin: 0 0 8px;
+    padding-left: 20px;
+}
+
+.appearance-contrast li {
+    list-style: disc;
 }
 
 /* ---- String list setting (one text box per item, remove/add buttons) ---- */
@@ -1808,20 +2724,8 @@ input[type="file"]::file-selector-button:hover {
         padding-bottom: 2px;
     }
 
-    #admin_form tr th {
+    #admin_form tr th, .admin-settings-table tr th {
         white-space: normal;
-    }
-
-    #admin_form tr th .fieldtool {
-        display: inline-flex;
-        align-items: center;
-        min-height: 44px;
-        padding: 0 8px;
-        font-size: 0.875rem;
-    }
-
-    #admin_form tr th .fieldtool.context {
-        padding-left: 0;
     }
 
     .admin-form-table input[type="text"], .admin-form-table input[type="email"],

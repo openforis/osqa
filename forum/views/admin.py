@@ -6,9 +6,14 @@ from django.views.decorators.http import require_POST, require_http_methods
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.http import HttpResponseRedirect, HttpResponse, Http404
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext as _, ngettext
 from django.utils.translation import gettext_lazy as _lazy
 from django.db import models
+from django.template import TemplateDoesNotExist
+from django.template.loader import get_template
+from django.utils.html import escape
+from django.utils.text import Truncator
+from django.utils.safestring import mark_safe
 
 from django.contrib import messages
 
@@ -16,6 +21,7 @@ from forum.http_responses import HttpResponseUnauthorized
 from forum.settings.base import Setting
 from forum.forms import MaintenanceModeForm, PageForm, CreateUserForm
 from forum.settings.forms import SettingsSetForm
+from forum.settings import guides
 from forum.utils import pagination, html
 from forum.utils import security_log
 from forum.utils import review
@@ -51,14 +57,18 @@ def staff_user_required(fn):
 
     return wrapper
 
-# The admin menu's fixed groups of settings pages (SettingSet names); every
-# other set is listed under "Other settings", so a module's new set shows up
-# without changes here.
+# The admin menu's groups of settings pages, by task: (id, title, icon,
+# SettingSet names). Sets no group names (a module's new one) are listed
+# under "Other settings", so they show up without changes here. Icons are
+# drawn by osqaadmin/menu_icon.html.
 MENU_SETTINGS = (
-    ('basic-sets-menu', _lazy("Basic settings"), ('basic', 'users', 'email', 'paths', 'urls', 'extkeys')),
-    ('workflow-sets-menu', _lazy("Workflow settings"), ('repgain', 'minrep', 'voting', 'accept', 'badges')),
-    ('forum-sets-menu', _lazy("Forum settings"), ('form', 'view', 'moderation')),
-    ('pages-sets-menu', _lazy("Static content"), ('about', 'faq', 'sidebar', 'css', 'headandfoot', 'head')),
+    ('site-menu', _lazy("Site"), 'site', ('basic', 'email', 'urls', 'paths', 'sitemap', 'robots')),
+    ('members-menu', _lazy("Members and permissions"), 'members',
+     ('users', 'security', 'minrep', 'repgain', 'voting', 'accept', 'badges', 'ldap')),
+    ('content-menu', _lazy("Questions and answers"), 'content', ('form', 'view', 'moderation', 'routing', 'support', 'ai')),
+    ('look-menu', _lazy("Look and feel"), 'look', ('appearance', 'css', 'headandfoot', 'head', 'sidebar')),
+    ('pages-menu', _lazy("Pages"), 'pages', ('about', 'faq')),
+    ('integrations-menu', _lazy("Integrations"), 'integrations', ('extkeys', 'api', 'exporter')),
 )
 
 
@@ -67,17 +77,24 @@ def _menu_item(request, url, label, **extra):
     return dict(extra, url=url, label=label, current=current)
 
 
+def _menu_group(group_id, title, icon, items):
+    """A group of the menu: open while it holds the page being shown; its
+    count adds up its items' (the moderation inbox's), shown when folded."""
+    return {'id': group_id, 'title': title, 'icon': icon, 'items': items,
+            'open': any(i['current'] for i in items), 'count': sum(i.get('count') or 0 for i in items)}
+
+
 def admin_menu(request, unsaved, counts=None):
-    """The admin menu as data: [{'id', 'title', 'items': [{'url', 'label',
-    'current', 'unsaved', 'count'}]}]. Moderators (staff) get the moderation
-    pages only; superusers every settings page and tool, including the tools
-    modules register (admin_tools_page, TOOL_LINKS)."""
+    """The admin menu as data: [{'id', 'title', 'icon', 'open', 'count',
+    'items': [{'url', 'label', 'current', 'unsaved', 'count'}]}]. Moderators
+    (staff) get the moderation pages only; superusers every settings page and
+    tool, including the tools modules register (admin_tools_page, TOOL_LINKS)."""
     item = lambda url, label, **extra: _menu_item(request, url, label, **extra)
-    groups = [{'id': 'moderation-menu', 'title': _("Moderation"), 'items': [
+    groups = [_menu_group('moderation-menu', _("Moderation"), 'moderation', [
         item(reverse('admin_moderation'), _("Moderation inbox"), count=(counts or {}).get('total')),
         item(reverse('admin_support'), _("Support dashboard")),
         item(reverse('admin_email_previews'), _("Email previews")),
-    ]}]
+    ])]
     if not request.user.is_superuser:
         return groups
 
@@ -85,19 +102,22 @@ def admin_menu(request, unsaved, counts=None):
         return item(reverse('admin_set', args=[s.name]), s.title, unsaved=s.name in unsaved)
 
     fixed = set()
-    for group_id, title, names in MENU_SETTINGS:
+    for group_id, title, icon, names in MENU_SETTINGS:
         fixed.update(names)
         items = [set_item(Setting.sets[name]) for name in names if name in Setting.sets]
-        if group_id == 'pages-sets-menu':
-            items.insert(0, item(reverse('admin_static_pages'), _("Custom Pages")))
-        groups.append({'id': group_id, 'title': title, 'items': items})
+        if group_id == 'pages-menu':
+            items.insert(0, item(reverse('admin_static_pages'), _("Custom pages")))
+        groups.append(_menu_group(group_id, title, icon, items))
     others = sorted([s for s in Setting.sets.values() if s.name not in fixed], key=lambda s: s.weight)
-    groups.append({'id': 'other-sets-menu', 'title': _("Other settings"), 'items': [set_item(s) for s in others]})
-    groups.append({'id': 'tools-menu', 'title': _("Tools"), 'items': [
+    groups.append(_menu_group('other-sets-menu', _("Other settings"), 'other', [set_item(s) for s in others]))
+    groups.append(_menu_group('tools-menu', _("Tools"), 'tools', [
         item(reverse('admin_maintenance'), _("Maintenance mode")),
         item(reverse('admin_statistics'), _("Statistics")),
-    ] + [item(url, label) for url, label in admin_tools()]})
-    return [g for g in groups if g['items']]
+    ] + [item(url, label) for url, label in admin_tools()]))
+    groups = [g for g in groups if g['items']]
+    if not any(g['open'] for g in groups):  # the dashboard: the moderation pages
+        groups[0]['open'] = True
+    return groups
 
 
 def admin_tools():
@@ -117,7 +137,7 @@ def admin_page_wrapper(fn, request, *args, **kwargs):
     context['allsets'] = Setting.sets
     context['othersets'] = sorted(
             [s for s in Setting.sets.values() if s.name not in
-             {name for _id, _title, names in MENU_SETTINGS for name in names}],
+             {name for _id, _title, _icon, names in MENU_SETTINGS for name in names}],
             key=lambda s: s.weight)
     context['tools'] = admin_tools()
 
@@ -169,6 +189,9 @@ def dashboard(request):
     if request.method == 'POST' and 'refresh' in request.POST:
         health.figures(days, refresh=True)
         return HttpResponseRedirect('%s?days=%d' % (reverse('admin_index'), days))
+    if request.method == 'POST' and request.user.is_superuser and 'checklist' in request.POST:
+        settings.SETUP_CHECKLIST_HIDDEN.set_value(request.POST['checklist'] == 'hide')
+        return HttpResponseRedirect(reverse('admin_index'))
 
     data = health.figures(days)
     groups = health.tiles(data, review.inbox_counts())
@@ -190,9 +213,23 @@ def dashboard(request):
         'recent_activity': get_recent_activity(),
     }
     if request.user.is_superuser:
-        context.update(settings_pack=str(settings.SETTINGS_PACK), statistics=get_statistics())
+        from forum.utils.setup_checklist import checklist
+        context.update(settings_pack=str(settings.SETTINGS_PACK), statistics=get_statistics(),
+                       checklist=checklist(), checklist_hidden=bool(settings.SETUP_CHECKLIST_HIDDEN))
     return ('osqaadmin/dashboard.html', pagination.paginated(
         request, ("recent_activity", ActivityPaginatorContext()), context))
+
+@admin_page
+def search(request):
+    """Settings and admin pages matching ?q= (forum/utils/admin_search.py)."""
+    from forum.utils import admin_search
+    query = request.GET.get('q', '').strip()[:100]
+    menu = admin_menu(request, set())
+    results = admin_search.search(query, menu) if query else []
+    for result in results:
+        result['label_html'] = admin_search.mark(result['label'], query)
+        result['help_html'] = admin_search.mark(Truncator(result['help']).chars(220), query) if result['help'] else ''
+    return 'osqaadmin/search.html', {'query': query, 'results': results}
 
 def interface_switch(request):
     """The old "switch admin layout" link (there is one layout now): bookmarks
@@ -271,9 +308,17 @@ def settings_set(request, set_name):
 
                 if not 'reset' in request.POST:
                     changed = [name for name in form.changed_data if name in form.fields]
+                    labels = form.changed_labels()
                     form.save()
                     security_log.event('settings_changed', request, set=set_name, fields=','.join(changed))
-                    messages.info(request, _("'%s' settings saved succesfully") % set_name)
+                    # Flash messages are shown unescaped.
+                    if labels:
+                        messages.info(request, escape(ngettext(
+                            "%(page)s saved: %(settings)s changed.", "%(page)s saved: %(count)d settings changed (%(settings)s).",
+                            len(labels)) % {'page': set.title, 'count': len(labels), 'settings': ', '.join(labels)}))
+                    else:
+                        messages.info(request, escape(_("%(page)s: nothing to save, no setting was changed.") % {
+                            'page': set.title}))
 
                     if set_name in ('minrep', 'badges', 'repgain'):
                         settings.SETTINGS_PACK.set_value("custom")
@@ -282,26 +327,63 @@ def settings_set(request, set_name):
     else:
         form = SettingsSetForm(set, unsaved=current_preview)
 
+    sections, others = guide_sections(set, form)
     return 'osqaadmin/set.html', {
     'form': form,
     'markdown': set.markdown,
+    'sections': sections,
+    'other_rows': form.as_table(others) if sections else None,
+    'guide_template': guide_template(set.name),
+    'app_url': str(settings.APP_URL).rstrip('/'),
     }
 
-@super_user_required
-def get_default(request, set_name, var_name):
-    set = Setting.sets.get(set_name, None)
-    if set is None: raise Http404
 
-    setting = dict([(s.name, s) for s in set]).get(var_name, None)
-    if setting is None: raise Http404
+STATUS_LABELS = {
+    guides.ON: _lazy("Set up"),
+    guides.PARTIAL: _lazy("Partly set up"),
+    guides.OFF: _lazy("Not set up"),
+    guides.WARNING: _lazy("Check this"),
+}
 
-    setting.to_default()
 
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        return HttpResponse(setting.default)
-    else:
-        return HttpResponseRedirect(reverse('admin_set', kwargs={'set_name': set_name}))
+def with_app_url(text):
+    """A guide's HTML text (forum/settings/guides.py) with {app_url} filled in."""
+    return mark_safe(str(text).replace('{app_url}', escape(str(settings.APP_URL).rstrip('/'))))
 
+
+def guide_sections(setting_set, form):
+    """The sections of a settings page, ready for osqaadmin/set.html, and the
+    names of the settings no section lists."""
+    values = dict((s.name, s.value) for s in setting_set)
+    sections, listed = [], set()
+    for section in guides.sections_for(setting_set.name):
+        names = [n for n in section.settings if n in form.fields and n not in listed]
+        if not names:
+            continue
+        listed.update(names)
+        state, message = section.status(values) if section.status else (None, '')
+        sections.append({
+            'key': section.key, 'title': section.title, 'summary': with_app_url(section.summary),
+            'state': state, 'state_label': STATUS_LABELS.get(state, ''),
+            # Plain text (it may quote a setting's value).
+            'message': with_app_url(escape(str(message))) if message else '',
+            'steps': [with_app_url(step) for step in section.steps],
+            'copy': [(label, str(value).replace('{app_url}', str(settings.APP_URL).rstrip('/')))
+                     for label, value in section.copy],
+            'links': section.links,
+            'rows': form.as_table(names),
+        })
+    return sections, [n for n in form.fields if n not in listed]
+
+
+def guide_template(set_name):
+    """osqaadmin/guides/<set name>.html when there is one."""
+    name = 'osqaadmin/guides/%s.html' % set_name
+    try:
+        get_template(name)
+    except TemplateDoesNotExist:
+        return None
+    return name
 
 def get_recent_activity():
     return Action.objects.order_by('-action_date')

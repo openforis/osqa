@@ -232,7 +232,7 @@ class AskPageTest(E2ETestCase):
         title = page.locator('#id_title')
         self.assertIn('title must be at least', page.inner_text('#id_title-error'))
         self.assertEqual(title.get_attribute('aria-invalid'), 'true')
-        self.assertEqual(title.get_attribute('aria-describedby'), 'id_title-error id_title-help')
+        self.assertEqual(title.get_attribute('aria-describedby'), 'id_title-error id_title-help title-min-hint')
         self.assertIn('content must be at least', page.inner_text('#id_text-error'))
         # what was typed is kept
         self.assertEqual(title.input_value(), 'Help')

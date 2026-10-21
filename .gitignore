@@ -11,7 +11,7 @@ settings_local.py
 /venv/
 /cache/
 .claude/settings.local.json
-# Production data dumps and local databases used by scripts/data_import
+# Production data dumps (never commit them)
 importData/
 /*.sql
 /*.db

@@ -109,6 +109,51 @@ manifests are in `docs/k8s/`. See [docs/deployment.md](docs/deployment.md).
   header (database time and number of queries, template rendering, total),
   shown by the browser's developer tools; with `DEBUG` every page has it.
 
+## Administration
+
+The admin menu groups the pages by task: Moderation, Site, Members and
+permissions, Questions and answers, Look and feel, Pages, Integrations and
+Tools (settings pages of modules that no group names go under "Other
+settings"). Each group folds away; the group of the page being shown is
+open and the others stay as they were last left in this browser, and the
+moderation inbox's count shows on its group while it is folded.
+
+Administrators find every setting with the search box at the top of the
+admin menu (`/admin/search/`): it matches the setting's label, help text,
+name and keywords, the page and section titles, and a few synonyms (colour
+and color, login and sign-in...), and links to the setting's row on its page,
+highlighted. Settings pages with many settings also have a "Find a setting on
+this page" filter.
+
+Every setting shows its name (as used in templates, `{{ settings.NAME }}`), a
+"Changed" mark when its saved value isn't the default, and the default with a
+"Use default" button, which only fills the field in: nothing is saved before
+Save. Fields edited since the page was opened are highlighted and counted in
+a save bar that stays at the bottom of the window ("Undo my changes" puts the
+page back), and leaving the page with unsaved changes asks first. `/` goes to
+the admin search. The dashboard starts with a "Getting started" list for new
+sites (name, email, logo, colours, About page, spam protection, and
+optionally sign-in with Google, GitHub or Facebook), which can be hidden and
+goes away once everything is done.
+
+Pages that need outside accounts explain how to get them. External Keys has
+one card per service (sign-in with Google, GitHub and Facebook, reCAPTCHA,
+Akismet, Gemini, Google Analytics, Google Search Console) saying whether it is
+set up, partly set up or needs checking (for example a Google client ID that
+doesn't end in `.apps.googleusercontent.com`, an old `UA-` Analytics ID or a
+plain `http://` site address), what it does, the steps on the provider's
+site, the redirect address to register with a copy button, and an example of
+each value. Secrets are shown as dots until "Show" is pressed. The Public API,
+Custom CSS, Header and Footer and `<head>` pages have examples to copy, with
+the site's address filled in.
+
+For developers: a page's guidance is data. Register sections with
+`forum.settings.guides.register(set_name, Section(...))` (title, settings,
+summary, steps, values to copy, links, keywords, a status function, weight),
+give a setting `example=` and `keywords=` in its field context, and add
+free-form help as the template `osqaadmin/guides/<set name>.html` (code
+examples with `{% example %}` from `admin_tags`).
+
 ## Languages
 
 The interface is available in English, Spanish, French and Portuguese.
@@ -573,7 +618,7 @@ for a new one.
 ### Accounts
 
 What members can do with their account, and the settings for it (Admin >
-Users settings and Admin > Security). The code is in `forum/utils/accounts.py`.
+Members and Admin > Security). The code is in `forum/utils/accounts.py`.
 
 - **Signing up (double opt-in):** after signing up with an email address and
   password, the member gets a welcome email with a button that confirms the
@@ -714,22 +759,19 @@ The whole procedure (freeze, dump, import, checks, transfer to MySQL, files,
 go-live) is in [docs/upgrading-from-original-osqa.md](docs/upgrading-from-original-osqa.md).
 In short:
 
-The scripts in `scripts/data_import/` load a MySQL dump of the old site into a
-fresh SQLite database (`osqa.db`). Run them from the repository root:
+Load the old site's mysqldump into its own database on the new site's
+MySQL/MariaDB server, then copy it into the freshly migrated, empty database:
 
 ```bash
-mkdir importData        # place the dump here (git-ignored, never commit it)
-python scripts/data_import/split_insert_statements.py importData/<dump>.sql   # -> importData/osqa-split.sql
-python manage.py migrate                                 # with DATABASES pointing at osqa.db
-python scripts/data_import/import_original_data.py
+mysql -e "CREATE DATABASE osqa_old" && mysql --default-character-set=utf8mb4 osqa_old < <dump>.sql
+python manage.py migrate
+python manage.py import_original_osqa --from osqa_old   # copies every table by column name
+python manage.py rebuild_search_index
 ```
 
 The import clears the cache when it finishes; clear it yourself (`rm -rf cache/*`
 for the default file cache) whenever you replace or edit the database outside
-the site, since posts and users are served from the cache. After importing,
-run Admin > Recalculate scores and reputation. To move the result into
-MySQL/MariaDB or PostgreSQL, use `dumpdata --all` / `loaddata` as described
-in the guide. `docs/data-migration-guide.md` describes other approaches (MySQL to
+the site, since posts and users are served from the cache. `docs/data-migration-guide.md` describes other approaches (MySQL to
 MySQL/PostgreSQL) and how to verify the result; `docs/database-tables.md` lists
 the tables.
 
@@ -800,7 +842,7 @@ All modules below except the (switched-off) full-text search ones are covered by
 
 Bots that register and never post (often only to put links in their profile)
 are handled without any external service; the thresholds are under Admin >
-Users settings:
+Members:
 
 - The sign-up forms have a hidden honeypot field and a signed time stamp:
   forms filled in faster than "Minimum time to fill in the sign-up form"
@@ -936,18 +978,46 @@ authentication settings.
 ## Look and feel
 
 The default skin is responsive (phones, tablets, desktops). Its styles live
-in one file, `forum/skins/default/media/style/osqa.css`; the colour tokens at
-the start of its section 2 (`--brand`, `--accent`, ...) are the quickest way
-to re-brand the site. Admin > Custom CSS is loaded
-last and can override them, e.g. `:root { --brand: #00704a; }`.
+in one file, `forum/skins/default/media/style/osqa.css`, drawn with colour
+variables (`--brand`, `--accent`, ... at the start of its section 2).
+
+Admin > Look and feel changes the common things without writing CSS:
+- **Ready-made styles:** ten complete looks, each shown as a card with a
+  small drawing: Classic (the skin as it comes), Open Foris (the palette of
+  the Open Foris Support site: muted red-brown links with a teal accent),
+  Forest, Ocean, Editorial (serif, narrow, square corners), Plum (rounded,
+  pill-shaped buttons), Midnight (new visitors get the dark theme), Minimal
+  (greys, no shadows), Crimson and Earth. "Use this style" (or the Style
+  list) fills in the fields below, which can still be changed; while a
+  style is chosen its own touches (corners, a stripe on the header, the
+  headings' font) are added too. Styles are data, `STYLES` in
+  `forum/utils/appearance.py`.
+- **Colours:** a brand colour (links, buttons,
+  the current tab) and an accent colour (the Ask button). A sample of a
+  page in the light and dark themes follows the fields as they change.
+  Text stays readable whatever is picked: a colour too light for white
+  text or for links (less than 4.5:1, WCAG AA) is darkened, keeping its
+  hue, and the page says which shade the site uses; dark mode gets a
+  lighter shade for links and a darker one for buttons.
+- **Page background** (light grey, white or a tint of the brand colour),
+  **font** (system font stacks: nothing is downloaded) and **page width**.
+- **Dark mode** on or off, and the **theme for new visitors** (System,
+  Light or Dark) until they pick one.
+
+Preview shows the whole site with the new values, to the administrator only,
+before saving. The values become a small `<style>` after `osqa.css`
+(`{% appearance_style %}`, `forum/utils/appearance.py`); nothing is added
+while they are the defaults. For anything else, Admin > Custom CSS is loaded
+last and can override any rule or variable, e.g. `:root { --brand: #00704a; }`;
+its page lists the variables and examples to copy.
 
 Visitors choose a theme, Light, Dark or System (the default: it follows the
 device's dark mode setting), in the footer, and members also from the header.
 The choice applies at once, without a flash of the other theme on the next
 page, and is kept in an `osqa_theme` cookie and, for members, with their
-preferences; the admin pages follow it. Turn dark mode off under Admin > View
-settings > "Dark mode" if your custom CSS assumes a light background (the
-switch then disappears). In custom CSS, write dark rules as
+preferences; the admin pages follow it. Turn dark mode off under Admin > Look
+and feel if your custom CSS assumes a light background (the switch then
+disappears). In custom CSS, write dark rules as
 `:root[data-theme="dark"] .my-class { ... }`: `data-theme` on `<html>` is
 always the resolved theme, "light" or "dark". (Rules written for the old
 `@media (prefers-color-scheme: dark) { :root[data-color-scheme="auto"] ... }`
@@ -1047,7 +1117,7 @@ changes them; HTTPS (or localhost) is required.
 - `forum/` - the application: models, views, actions, templates (`skins/`),
   settings stored in the database (`forum/settings/`), tests (`forum/tests/`)
 - `forum_modules/` - optional modules
-- `scripts/` - data import (`data_import/`) and development helpers (`dev/`)
+- `scripts/` - development helpers (`dev/`)
 - `docs/` - database reference and migration guide; `docs/upgrade-history/`
   holds the notes from the Django 1.6 to 4.2 port
 

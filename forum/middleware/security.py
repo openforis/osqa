@@ -32,7 +32,9 @@ from django.urls import reverse
 
 # reCAPTCHA (forum_modules/recaptcha) loads from these.
 GOOGLE = 'https://www.google.com https://www.gstatic.com'
-ANALYTICS = 'https://ssl.google-analytics.com https://www.google-analytics.com'
+# Google Analytics 4 (gtag.js): the script, and where it sends hits.
+ANALYTICS = ('https://www.googletagmanager.com https://*.google-analytics.com '
+             'https://*.analytics.google.com')
 
 PERMISSIONS_POLICY = 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()'
 

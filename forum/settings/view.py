@@ -2,16 +2,11 @@ from .base import Setting, SettingSet
 from django.utils.translation import gettext_lazy as _
 
 """ view settings """
-VIEW_SET = SettingSet('view', _('View settings'), _("Set up how certain parts of the site are displayed."), 20)
+VIEW_SET = SettingSet('view', _('Display'), _("How lists, summaries, tags and other parts of the public pages are shown."), 20)
 
 EMBED_YOUTUBE_VIDEOS = Setting('EMBED_YOUTUBE_VIDEOS', True, VIEW_SET, dict(
 label = _("Embed YouTube Videos"),
 help_text = _("If you check this YouTube videos will be embedded"),
-required=False))
-
-DARK_MODE = Setting('DARK_MODE', True, VIEW_SET, dict(
-label = _("Dark mode"),
-help_text = _("Use a dark colour scheme for visitors whose device is set to dark mode. Turn it off if your custom CSS assumes a light background."),
 required=False))
 
 SHOW_LATEST_COMMENTS_FIRST = Setting('SHOW_LATEST_COMMENTS_FIRST', False, VIEW_SET, dict(

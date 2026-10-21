@@ -49,3 +49,6 @@ help_text = _("The URL provided for users to contact you. It can be http: or mai
 required=False))
 
 
+
+# The dashboard's "Getting started" list was hidden (forum/utils/setup_checklist.py).
+SETUP_CHECKLIST_HIDDEN = Setting('SETUP_CHECKLIST_HIDDEN', False)

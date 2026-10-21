@@ -271,7 +271,8 @@ class Wcag22Test(E2ETestCase):
 
     def staff_pages(self):
         return [reverse('admin_index'), reverse('admin_moderation'), reverse('suggested_edits'),
-                reverse('admin_support'), '/admin/settings/basic/', reverse('tag_edit', kwargs={'tag': 'collect'})]
+                reverse('admin_support'), '/admin/settings/basic/', '/admin/settings/extkeys/',
+                '/admin/settings/appearance/', '/admin/search/?q=logo', reverse('tag_edit', kwargs={'tag': 'collect'})]
 
     def all_pages(self):
         return ([(None, p) for p in self.public_pages()] + [(self.alice, p) for p in self.member_pages(self.alice)] +

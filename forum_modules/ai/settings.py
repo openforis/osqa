@@ -1,8 +1,10 @@
-from django.forms.widgets import PasswordInput, Textarea
+from django.forms.widgets import Textarea
 from django.utils.translation import gettext_lazy as _
 
 from forum.settings.base import Setting, SettingSet
 from forum.settings.extkeys import EXT_KEYS_SET
+from forum.settings.forms import SecretInput
+from forum.settings.guides import Section, register, ON, OFF, WARNING
 
 AI_SET = SettingSet('ai', _('AI assistance'), _(
     "Duplicate detection and spam moderation with Google Gemini. Enabled features send the text of new public "
@@ -15,7 +17,8 @@ help_text = _("Turns on the AI features (Admin > AI assistance) through the Gemi
               "<a href='https://aistudio.google.com/apikey'>Google AI Studio</a>. Not needed when a Vertex AI "
               "project is set under Admin > AI assistance. If empty, the server's GEMINI_API_KEY or "
               "GOOGLE_API_KEY environment variable is used."),
-widget=PasswordInput(render_value=True),
+widget=SecretInput(),
+keywords = _("ai gemini google llm artificial intelligence"),
 required=False))
 
 AI_VERTEX_PROJECT = Setting('AI_VERTEX_PROJECT', '', AI_SET, dict(
@@ -104,3 +107,36 @@ required=False))
 
 AI_SUGGEST_AFTER_HOURS = Setting('AI_SUGGEST_AFTER_HOURS', 24, AI_SET, dict(
 label = _("Suggest an answer after (hours)")))
+
+
+def gemini_status(values):
+    import os
+    key = str(values.get('GEMINI_API_KEY') or '').strip()
+    project = str(AI_VERTEX_PROJECT).strip() or os.environ.get('GOOGLE_CLOUD_PROJECT', '').strip()
+    if project:
+        return ON, _("AI features run through Vertex AI in the Google Cloud project %s (Admin > AI assistance); "
+                     "the key is not used.") % project
+    if key and not key.startswith('AIza'):
+        return WARNING, _("Gemini API keys start with AIza; check that you copied the key itself.")
+    if key:
+        return ON, _("AI features are on; choose which ones under Admin > AI assistance.")
+    if os.environ.get('GEMINI_API_KEY', '').strip() or os.environ.get('GOOGLE_API_KEY', '').strip():
+        return ON, _("Using the key in the server's GEMINI_API_KEY or GOOGLE_API_KEY environment variable.")
+    return OFF, ''
+
+
+register('extkeys', Section(
+    'gemini', _("Google Gemini (AI assistance)"), ('GEMINI_API_KEY',),
+    summary=_("Turns on duplicate detection, spam and abuse review, and the answer assistant. The text of new "
+              "public posts is sent to Google; see Admin > AI assistance for what each feature does."),
+    steps=(
+        _("Sign in to <a href=\"https://aistudio.google.com/apikey\">Google AI Studio</a> and choose "
+          "<strong>Create API key</strong> (in a Google Cloud project with billing for more than the free "
+          "tier's limits)."),
+        _("Paste the key, which starts with <code>AIza</code>, below and save."),
+        _("Choose the features and the model under Admin &gt; AI assistance. On Google Cloud you can use a "
+          "Vertex AI project there instead of a key."),
+    ),
+    links=(("https://ai.google.dev/gemini-api/docs/api-key", _("Google: using Gemini API keys")),),
+    keywords=_("ai gemini llm vertex artificial intelligence duplicates moderation assistant"),
+    status=gemini_status, weight=30))

@@ -1,7 +1,7 @@
 from .base import Setting, SettingSet
 from django.utils.translation import gettext_lazy as _
 
-MIN_REP_SET = SettingSet('minrep', _('Minimum reputation config'), _("Configure the minimum reputation required to perform certain actions on your site."), 300)
+MIN_REP_SET = SettingSet('minrep', _('Privileges'), _("The reputation members need before they may vote, comment, edit, close and so on."), 300)
 
 CAPTCHA_IF_REP_LESS_THAN = Setting('CAPTCHA_IF_REP_LESS_THAN', 0, MIN_REP_SET, dict(
 label = _("Show captcha if user with less reputation than"),
