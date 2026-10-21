@@ -17,6 +17,29 @@
 {% endblock %}
 
 {% block admincontent %}
+    {% if checklist %}
+    <section class="admin-guide admin-checklist" aria-labelledby="checklist-title">
+        <div class="admin-guide-header">
+            <h2 id="checklist-title">{% trans "Getting started" %}</h2>
+            <span class="admin-status admin-status-partial">{% blocktrans with done=checklist.done total=checklist.total %}{{ done }} of {{ total }} done{% endblocktrans %}</span>
+        </div>
+        <ol class="admin-checklist-items">
+            {% for item in checklist.items %}
+            <li class="{% if item.done %}is-done{% endif %}">
+                <span class="admin-checklist-mark" aria-hidden="true">{% if item.done %}✓{% endif %}</span>
+                <div>
+                    <a href="{{ item.url }}">{{ item.title }}</a>
+                    <span class="admin-visually-hidden">{% if item.done %}({% trans "done" %}){% else %}({% trans "to do" %}){% endif %}</span>
+                    <p>{{ item.hint }}</p>
+                </div>
+            </li>
+            {% endfor %}
+        </ol>
+        <form method="post" action="{% url "admin_index" %}" class="admin-checklist-hide">{% csrf_token %}
+            <button type="submit" name="checklist" value="hide" class="setting-reset">{% trans "Hide this list" %}</button>
+        </form>
+    </section>
+    {% endif %}
     {% include "osqaadmin/health.html" %}
     {% if user.is_superuser %}
     <div class="dashboard-grid">
@@ -58,10 +81,10 @@
                     </p>
                     <div class="admin-actions">
                     {% if settings_pack != "default" %}
-                        <form method="post" action="{% url "admin_go_defaults" %}" data-confirm="{% trans "Are you sure you want to revert to the defaults?" %}">{% csrf_token %}<button type="submit" class="button">{% trans "revert to defaults" %}</button></form>
+                        <form method="post" action="{% url "admin_go_defaults" %}" data-confirm="{% trans "Are you sure you want to revert to the defaults?" %}">{% csrf_token %}<button type="submit" class="button">{% trans "Revert to defaults" %}</button></form>
                     {% endif %}
                     {% if settings_pack != "bootstrap" %}
-                        <form method="post" action="{% url "admin_go_bootstrap" %}" data-confirm="{% trans "Are you sure you want to run bootstrap mode?" %}">{% csrf_token %}<button type="submit" class="button">{% trans "go bootstrap" %}</button></form>
+                        <form method="post" action="{% url "admin_go_bootstrap" %}" data-confirm="{% trans "Are you sure you want to run bootstrap mode?" %}">{% csrf_token %}<button type="submit" class="button">{% trans "Go bootstrap" %}</button></form>
                     {% endif %}
                     </div>
                 </td>
@@ -77,6 +100,13 @@
                     <form method="post" action="{% url "admin_denormalize" %}" class="admin-actions" data-confirm="{% trans "This is a heavy operation, are you sure?" %}">{% csrf_token %}<button type="submit" class="button">{% trans "Recalculate" %}</button></form>
                 </td>
             </tr>
+            {% if checklist_hidden %}
+            <tr>
+                <td>
+                    <form method="post" action="{% url "admin_index" %}" class="admin-actions">{% csrf_token %}<button type="submit" name="checklist" value="show" class="button">{% trans "Show the Getting started list" %}</button></form>
+                </td>
+            </tr>
+            {% endif %}
         </table>
     </div>
     </div>

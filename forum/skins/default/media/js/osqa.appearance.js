@@ -1,6 +1,6 @@
-/* Admin > Look and feel (osqaadmin/guides/appearance.html): the presets fill
-   in the colour fields, and the light and dark samples and the contrast lines
-   follow the fields as they change. The colours are worked out as
+/* Admin > Look and feel (osqaadmin/guides/appearance.html): a ready-made
+   style's button (or the Style list) fills in the fields, and the light and
+   dark samples and the contrast lines follow the fields as they change. The colours are worked out as
    forum/utils/appearance.py does for the site (keep the two in step):
    lightness moved, hue kept, until text has 4.5:1 contrast. */
 (function () {
@@ -103,7 +103,10 @@
         var backgroundField = document.getElementById('id_THEME_BACKGROUND');
         var fontField = document.getElementById('id_THEME_FONT');
         var report = document.getElementById('appearance-contrast');
-        var presets = document.querySelectorAll('.appearance-preset');
+        var styleButtons = document.querySelectorAll('.appearance-style-use');
+        var styleField = document.getElementById('id_THEME_STYLE');
+        var widthField = document.getElementById('id_THEME_PAGE_WIDTH');
+        var themeField = document.getElementById('id_DEFAULT_THEME');
         var defaults = {brand: samples.getAttribute('data-default-brand'), accent: samples.getAttribute('data-default-accent')};
         var fonts = {};
         try {
@@ -143,8 +146,8 @@
                 else sample.style.removeProperty('--sample-font');
             });
 
-            Array.prototype.forEach.call(presets, function (button) {
-                var on = button.getAttribute('data-brand') === brand && button.getAttribute('data-accent') === accent;
+            Array.prototype.forEach.call(styleButtons, function (button) {
+                var on = !!styleField && button.getAttribute('data-style') === styleField.value;
                 button.setAttribute('aria-pressed', on ? 'true' : 'false');
             });
 
@@ -169,13 +172,33 @@
             }
         }
 
-        Array.prototype.forEach.call(presets, function (button) {
-            button.addEventListener('click', function () {
-                brandField.value = button.getAttribute('data-brand');
-                accentField.value = button.getAttribute('data-accent');
+        // Fills the fields in from a style's button, as if typed (the
+        // admin page counts them as unsaved changes).
+        function set(field, value) {
+            if (!field || !value || field.value === value) return;
+            field.value = value;
+            field.dispatchEvent(new Event('change', {bubbles: true}));
+        }
+        function applyStyle(button) {
+            set(styleField, button.getAttribute('data-style'));
+            set(brandField, button.getAttribute('data-brand'));
+            set(accentField, button.getAttribute('data-accent'));
+            set(backgroundField, button.getAttribute('data-background'));
+            set(fontField, button.getAttribute('data-font'));
+            set(widthField, button.getAttribute('data-width'));
+            set(themeField, button.getAttribute('data-theme'));
+            update();
+        }
+        Array.prototype.forEach.call(styleButtons, function (button) {
+            button.addEventListener('click', function () { applyStyle(button); });
+        });
+        if (styleField) {
+            styleField.addEventListener('change', function () {
+                var button = document.querySelector('.appearance-style-use[data-style="' + styleField.value + '"]');
+                if (button) applyStyle(button);
                 update();
             });
-        });
+        }
         [brandField, accentField, backgroundField, fontField].forEach(function (field) {
             if (!field) return;
             field.addEventListener('input', update);

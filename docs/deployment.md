@@ -651,7 +651,7 @@ python manage.py restore_site backups/osqa-backup-20261015-033000.tar.gz --confi
    or another analytics tool in the custom `<head>` or footer, list their
    origins under "Extra script sources", or the Content-Security-Policy blocks
    them (Google Analytics needs nothing there: see the next step).
-5. **Admin > Users settings:** sign-up protections and dormant-account
+5. **Admin > Members:** sign-up protections and dormant-account
    clean-up (defaults are fine for most sites).
 6. **Optional:**
    - Admin > External Keys: Google/GitHub/Facebook sign-in (callback URLs in

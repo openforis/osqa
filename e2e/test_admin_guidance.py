@@ -1,6 +1,6 @@
 """The admin's guidance: the admin search, the filter of a settings page, the
 External Keys page's per-service setup guides and Admin > Look and feel
-(presets, sample, contrast, what the public pages get).
+(ready-made styles, sample, contrast, what the public pages get).
 
 E2E_SCREENSHOTS=<folder> saves screenshots of the pages, on a desktop and on
 a phone in dark mode, for a look by eye."""
@@ -133,9 +133,13 @@ class AdminGuidanceTest(E2ETestCase):
         page = self.open(self.admin)
         self.visit(page, '/admin/settings/appearance/')
         self.screenshot(page, 'appearance')
-        page.get_by_role('button', name='Forest green').click()
+        page.click('.appearance-style-use[data-style="forest"]')
         self.assertEqual(page.input_value('#id_THEME_BRAND_COLOR'), '#2d6a3e')
-        self.assertEqual(page.locator('.appearance-preset[aria-pressed="true"]').inner_text().strip(), 'Forest green')
+        self.assertEqual(page.input_value('#id_THEME_STYLE'), 'forest')
+        self.assertEqual(page.input_value('#id_THEME_FONT'), 'humanist')
+        self.assertEqual(page.input_value('#id_THEME_BACKGROUND'), 'tinted')
+        self.assertEqual(page.get_attribute('.appearance-style-use[data-style="forest"]', 'aria-pressed'), 'true')
+        self.assertIn('unsaved changes', page.locator('.admin-unsaved-status').inner_text())
         sample = page.locator('.appearance-sample-light')
         self.assertEqual(sample.evaluate('s => s.style.getPropertyValue("--sample-brand")'), '#2d6a3e')
         page.select_option('#id_THEME_FONT', 'serif')
@@ -149,6 +153,7 @@ class AdminGuidanceTest(E2ETestCase):
         style = visitor.locator('#appearance-style').inner_text()
         self.assertIn('--brand:#2d6a3e', style)
         self.assertIn('--content-width:1320px', style)
+        self.assertIn('#roof{box-shadow:inset 0 4px 0 var(--brand)}', style)  # the style's own rule
         self.assertEqual(visitor.evaluate('getComputedStyle(document.documentElement).getPropertyValue("--brand").trim()'),
                          '#2d6a3e')
         self.assertIn('Charter', visitor.evaluate('getComputedStyle(document.body).fontFamily'))
@@ -188,7 +193,7 @@ class AdminGuidanceTest(E2ETestCase):
     def test_preview_look_and_feel_before_saving(self):
         page = self.open(self.admin)
         self.visit(page, '/admin/settings/appearance/')
-        page.get_by_role('button', name='Plum').click()
+        page.click('.appearance-style-use[data-style="plum"]')
         with page.expect_popup() as popup:
             page.click('#preview')
         preview = popup.value
@@ -199,3 +204,143 @@ class AdminGuidanceTest(E2ETestCase):
         visitor = self.open()
         self.visit(visitor, '/')
         self.assertEqual(visitor.locator('#appearance-style').count(), 0)
+
+    def test_unsaved_changes(self):
+        page = self.open(self.admin)
+        self.visit(page, '/admin/settings/minrep/')
+        bar = page.locator('.admin-savebar')
+        self.assertFalse(page.locator('.admin-discard').is_visible())
+        page.fill('#id_REP_TO_VOTE_UP', '20')
+        page.fill('#id_REP_TO_COMMENT', '60')
+        self.assertEqual(page.locator('.admin-unsaved-status').inner_text(), '2 unsaved changes')
+        self.assertEqual(page.locator('.setting-row.is-dirty').count(), 2)
+        # The save bar stays in view at the bottom of the window.
+        box = bar.bounding_box()
+        self.assertLessEqual(box['y'] + box['height'], page.viewport_size['height'] + 1)
+        self.screenshot(page, 'unsaved')
+
+        # Leaving asks first (the test browser accepts).
+        dialogs = []
+        page.on('dialog', lambda dialog: dialogs.append(dialog.type))
+        self.visit(page, '/admin/')
+        self.assertEqual(dialogs, ['beforeunload'])
+        self.assertEqual(settings.REP_TO_VOTE_UP.value, settings.REP_TO_VOTE_UP.default)
+
+        # "Undo my changes" puts the page back as loaded.
+        self.visit(page, '/admin/settings/minrep/')
+        page.fill('#id_REP_TO_VOTE_UP', '20')
+        page.click('.admin-discard')
+        page.wait_for_selector('.admin-discard', state='hidden')
+        self.assertEqual(page.input_value('#id_REP_TO_VOTE_UP'), str(settings.REP_TO_VOTE_UP.default))
+        self.assertEqual(page.locator('.setting-row.is-dirty').count(), 0)
+
+        # Saving doesn't ask.
+        page.fill('#id_REP_TO_VOTE_UP', '20')
+        with page.expect_navigation():
+            page.click('#submit')
+        self.check_page(page)
+        self.assertEqual(dialogs, ['beforeunload'])
+        self.assertIn('Privileges saved: Minimum reputation to vote up changed.',
+                      page.locator('.admin_message').all_inner_texts())
+        settings.REP_TO_VOTE_UP._temp = None
+        self.assertEqual(settings.REP_TO_VOTE_UP.value, 20)
+
+        phone = self.open(self.admin, device='mobile', dark=True)
+        self.visit(phone, '/admin/settings/minrep/')
+        phone.fill('#id_REP_TO_COMMENT', '60')
+        self.screenshot(phone, 'unsaved')
+
+    def test_getting_started_list(self):
+        page = self.open(self.admin)
+        self.visit(page, '/admin/')
+        checklist = page.locator('.admin-checklist')
+        self.assertIn('0 of 6 done', checklist.inner_text())
+        self.screenshot(page, 'checklist')
+        with page.expect_navigation():
+            checklist.get_by_role('link', name='Name the site').click()
+        self.check_page(page)
+        self.assertTrue(page.url.endswith('/admin/settings/basic/#setting-APP_TITLE'))
+        page.fill('#id_APP_TITLE', 'Open Foris Support')
+        with page.expect_navigation():
+            page.click('#submit')
+        self.visit(page, '/admin/')
+        self.assertIn('1 of 6 done', checklist.inner_text())
+        self.assertIn('is-done', checklist.locator('li').first.get_attribute('class'))
+
+        with page.expect_navigation():
+            page.get_by_role('button', name='Hide this list').click()
+        self.check_page(page)
+        self.assertEqual(page.locator('.admin-checklist').count(), 0)
+        with page.expect_navigation():
+            page.get_by_role('button', name='Show the Getting started list').click()
+        self.assertEqual(page.locator('.admin-checklist').count(), 1)
+
+    def test_slash_goes_to_the_search(self):
+        page = self.open(self.admin)
+        self.visit(page, '/admin/settings/basic/')
+        page.locator('body').press('/')
+        self.assertEqual(page.evaluate('document.activeElement.id'), 'admin-search-q')
+        # Not while typing.
+        page.locator('#id_APP_TITLE').press('/')
+        self.assertIn('/', page.input_value('#id_APP_TITLE'))
+        self.assertEqual(page.evaluate('document.activeElement.id'), 'id_APP_TITLE')
+
+    def test_choosing_a_style_from_the_list(self):
+        page = self.open(self.admin)
+        self.visit(page, '/admin/settings/appearance/')
+        page.select_option('#id_THEME_STYLE', 'midnight')
+        self.assertEqual(page.input_value('#id_THEME_BRAND_COLOR'), '#1e3a8a')
+        self.assertEqual(page.input_value('#id_DEFAULT_THEME'), 'dark')
+        with page.expect_navigation():
+            page.click('#submit')
+        self.check_page(page)
+        self.assertEqual(settings.THEME_STYLE.value, 'midnight')
+
+    def test_every_style_on_the_site(self):
+        """Each style applied, as visitors see it (screenshots with E2E_SCREENSHOTS)."""
+        from forum.utils import appearance
+        alice = self.create_user('alice', reputation=100)
+        question = self.create_question(alice, 'How do I export Collect survey data to CSV?', tags='collect export')
+        self.create_answer(alice, question)
+        for style in appearance.STYLES:
+            with self.subTest(style=style.key):
+                for setting, value in ((settings.THEME_STYLE, style.key), (settings.THEME_BRAND_COLOR, style.brand),
+                                       (settings.THEME_ACCENT_COLOR, style.accent),
+                                       (settings.THEME_BACKGROUND, style.background),
+                                       (settings.THEME_FONT, style.font), (settings.THEME_PAGE_WIDTH, style.width)):
+                    self.set_setting(setting, value)
+                visitor = self.open(dark=style.theme == 'dark')
+                self.visit(visitor, question.get_absolute_url())
+                self.screenshot(visitor, 'style-%s' % style.key)
+
+    def test_menu_groups_fold_and_remember(self):
+        page = self.open(self.admin)
+        self.visit(page, '/admin/settings/minrep/')
+        members = page.locator('#members-menu')
+        self.assertTrue(members.evaluate('d => d.open'))  # holds the page being shown
+        self.assertFalse(page.locator('#look-menu').evaluate('d => d.open'))
+        self.assertFalse(page.get_by_role('link', name='Custom CSS').is_visible())
+        self.screenshot(page, 'menu')
+
+        # A group opened by hand stays open on the next page; the current one is always open.
+        page.click('#look-menu > summary')
+        self.assertTrue(page.get_by_role('link', name='Custom CSS').is_visible())
+        page.click('#members-menu > summary')
+        page.click('#content-menu > summary')
+        with page.expect_navigation():
+            page.get_by_role('link', name='Display', exact=True).click()
+        self.check_page(page)
+        self.assertTrue(page.locator('#look-menu').evaluate('d => d.open'))
+        self.assertTrue(page.locator('#content-menu').evaluate('d => d.open'))
+        self.assertFalse(page.locator('#members-menu').evaluate('d => d.open'))
+        self.assertEqual(page.locator('#admin-menu a[aria-current="page"]').inner_text(), 'Display')
+
+        # Keyboard: a group's name is a button that opens it.
+        page.locator('#integrations-menu > summary').focus()
+        page.keyboard.press('Enter')
+        self.assertTrue(page.locator('#integrations-menu').evaluate('d => d.open'))
+
+        phone = self.open(self.admin, device='mobile', dark=True)
+        self.visit(phone, '/admin/settings/minrep/')
+        phone.click('#admin-menu > summary')
+        self.screenshot(phone, 'menu')

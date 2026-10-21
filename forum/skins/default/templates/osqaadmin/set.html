@@ -27,7 +27,8 @@ and sections that don't match.
     </div>
     {% endif %}
     <form action="" method="POST" enctype="multipart/form-data" accept-charset="utf-8" class="admin-settings-form"
-          data-show-text="{% trans "Show" %}" data-hide-text="{% trans "Hide" %}" data-new-tab-text="{% trans "opens in a new tab" %}">
+          data-show-text="{% trans "Show" %}" data-hide-text="{% trans "Hide" %}" data-new-tab-text="{% trans "opens in a new tab" %}"
+          data-unsaved-one="{% trans "1 unsaved change" %}" data-unsaved-many="{% trans "%(count)s unsaved changes" %}">
         {% csrf_token %}
         {% if sections and form.non_field_errors %}<div class="errornote">{{ form.non_field_errors }}</div>{% endif %}
         {% for section in sections %}
@@ -83,15 +84,17 @@ and sections that don't match.
             {{ form.as_table }}
         </table>
         {% endif %}
-        <div class="submit-row">
+        <div class="submit-row admin-savebar">
                     <input id="submit" name="submit" type="submit" value="{% trans "Save" %}" data-form-target="" />
                     {% if form.set.can_preview %}
                         <input id="preview" name="preview" type="submit" value="{% trans "Preview" %}" data-form-target="_blank" />
                         {% if form.set.name|contained_in:unsaved %}
-                            <input id="reset" name="reset" type="submit" value="{% trans "Reset Changes" %}" data-form-target="" />
+                            <input id="reset" name="reset" type="submit" value="{% trans "Discard preview" %}" data-form-target="" />
                         {% endif %}
                     {% endif %}
+                    <button type="reset" class="admin-discard" hidden>{% trans "Undo my changes" %}</button>
+                    <span class="admin-unsaved-status" role="status"></span>
         </div>
-        {% if form.set.can_preview %}<p class="admin-preview-note">{% trans "Preview opens the site in a new tab with these values, for you only, until you save or reset them." %}</p>{% endif %}
+        {% if form.set.can_preview %}<p class="admin-preview-note">{% trans "Preview opens the site in a new tab with these values, for you only, until you save them or discard the preview." %}</p>{% endif %}
     </form>
 {% endblock %}

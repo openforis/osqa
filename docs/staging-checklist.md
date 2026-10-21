@@ -113,7 +113,7 @@ switch to the real SMTP server with an allow-list or for the last check.
       in with a code and with a recovery code; turn it off.
 - [ ] "Keep me signed in", sign out, "sign out everywhere"; deleting a test
       account asks to confirm, removes its profile, and treats its posts as
-      set under Admin > Users settings ("Posts of deleted accounts").
+      set under Admin > Members ("Posts of deleted accounts").
 - [ ] Repeated wrong passwords lock the sign-in for a while and show up in
       `log/security.log`.
 - [ ] Behind the proxy, `log/security.log` shows the visitors' real IPs, not

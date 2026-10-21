@@ -2,7 +2,7 @@ from .base import Setting, SettingSet
 from django.utils.translation import gettext_lazy as _
 
 """ view settings """
-VIEW_SET = SettingSet('view', _('View settings'), _("Set up how certain parts of the site are displayed."), 20)
+VIEW_SET = SettingSet('view', _('Display'), _("How lists, summaries, tags and other parts of the public pages are shown."), 20)
 
 EMBED_YOUTUBE_VIDEOS = Setting('EMBED_YOUTUBE_VIDEOS', True, VIEW_SET, dict(
 label = _("Embed YouTube Videos"),

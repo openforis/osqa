@@ -94,7 +94,7 @@ class AdminPagesTest(SettingMixin, OSQATestCase):
         header = re.search(r'<header id="header">(.*?)</header>', body, re.S).group(1)
         for link in ('href="/"', 'href="/admin/moderation/"', 'href="/logout/"', '>admin<'):
             self.assertIn(link, header)
-        menu = re.search(r'<details id="admin-menu".*?</details>', body, re.S).group(0)
+        menu = re.search(r'<nav id="content-related".*?</nav>', body, re.S).group(0)
         # Every settings page, the moderation pages, the core and module tools.
         from forum.settings.base import Setting
         for name in Setting.sets:
@@ -104,6 +104,10 @@ class AdminPagesTest(SettingMixin, OSQATestCase):
             self.assertIn('href="%s"' % path, menu)
         self.assertIn('A module tool', menu)
         self.assertIn('href="/admin/settings/basic/" aria-current="page"', menu)
+        # Groups by task; the one holding this page is open, the others folded.
+        self.assertIn('<details id="site-menu" class="module admin-menu-group has-current" data-group="site-menu" open>', menu)
+        self.assertIn('<details id="members-menu" class="module admin-menu-group" data-group="members-menu">', menu)
+        self.assertNotIn('id="other-sets-menu"', menu)  # every core page has a group
 
     def test_header_shows_the_moderation_inbox_count(self):
         from forum.actions import FlagAction
@@ -117,7 +121,7 @@ class AdminPagesTest(SettingMixin, OSQATestCase):
     def test_moderators_get_the_moderation_menu_only(self):
         self.login(self.create_user('moderator', is_staff=True))
         body = self.client.get('/admin/moderation/').content.decode()
-        menu = re.search(r'<details id="admin-menu".*?</details>', body, re.S).group(0)
+        menu = re.search(r'<nav id="content-related".*?</nav>', body, re.S).group(0)
         self.assertIn('href="/admin/support/"', menu)
         self.assertNotIn('/admin/settings/', menu)
         self.assertNotIn('/admin/tools/', menu)

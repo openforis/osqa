@@ -119,15 +119,41 @@ class AdminSearchTest(OSQATestCase):
 class AppearanceTest(SettingMixin, OSQATestCase):
     def values(self, **changes):
         return dict({'brand': appearance.DEFAULT_BRAND, 'accent': appearance.DEFAULT_ACCENT,
-                     'background': 'default', 'font': 'system', 'width': 'standard'}, **changes)
+                     'background': 'default', 'font': 'system', 'width': 'standard', 'style': 'none'}, **changes)
 
     def test_defaults_write_nothing(self):
         self.assertEqual(appearance.css(self.values()), '')
         self.assertNotContains(self.client.get('/'), 'appearance-style')
 
-    def test_presets_are_readable_as_they_are(self):
-        for key, label, brand, accent in appearance.PRESETS:
-            self.assertEqual(appearance.adjustments(self.values(brand=brand, accent=accent)), [], key)
+    def test_ten_styles_that_are_readable_as_they_are(self):
+        from forum.utils import display
+        self.assertEqual(len(appearance.STYLES), 10)
+        self.assertEqual(len(appearance.STYLES_BY_KEY), 10)
+        for style in appearance.STYLES:
+            values = self.values(brand=style.brand, accent=style.accent, background=style.background,
+                                 font=style.font, width=style.width, style=style.key)
+            self.assertEqual(appearance.adjustments(values), [], style.key)
+            self.assertIn(style.font, appearance.FONTS)
+            self.assertIn(style.width, appearance.WIDTHS)
+            self.assertIn(style.background, appearance.BACKGROUNDS)
+            self.assertIn(style.theme, (None,) + display.THEMES)
+            self.assertNotIn('<', appearance.css(values))
+
+    def test_open_foris_style(self):
+        style = appearance.STYLES_BY_KEY['openforis']
+        self.assertEqual((style.brand, style.accent), ('#8f5a5a', '#17798f'))
+        css = appearance.css(self.values(brand=style.brand, accent=style.accent, style='openforis'))
+        self.assertIn('--brand:#8f5a5a', css)
+        self.assertIn('#roof{box-shadow:inset 0 4px 0 var(--brand)}', css)
+
+    def test_a_style_adds_its_rules_only_while_chosen(self):
+        self.set(settings.THEME_STYLE, 'minimal')
+        self.assertContains(self.client.get('/'), '--shadow:none')
+        self.set(settings.THEME_STYLE, 'none')
+        self.assertNotContains(self.client.get('/'), '--shadow:none')
+        # The classic style is the skin itself: nothing to write.
+        self.set(settings.THEME_STYLE, 'classic')
+        self.assertNotContains(self.client.get('/'), 'appearance-style')
 
     def test_light_colours_are_darkened_and_dark_mode_gets_its_own(self):
         values = self.values(brand='#ffd166', accent='#ffe066')
@@ -186,3 +212,132 @@ class AppearanceTest(SettingMixin, OSQATestCase):
         # Their own choice still wins.
         self.client.cookies['osqa_theme'] = 'light'
         self.assertContains(self.client.get('/'), 'data-theme="light"')
+
+
+class SettingRowsTest(SettingMixin, OSQATestCase):
+    def setUp(self):
+        super().setUp()
+        self.admin = self.create_user('admin', is_superuser=True, is_staff=True)
+        self.login(self.admin)
+
+    def test_rows_show_the_name_default_and_changed_marker(self):
+        self.set(settings.REP_TO_VOTE_UP, 20)
+        content = self.client.get('/admin/settings/minrep/').content.decode()
+        row = content[content.index('id="setting-REP_TO_VOTE_UP"'):]
+        row = row[:row.index('</tr>')]
+        self.assertIn('is-customized', row)
+        self.assertIn('data-default="15"', row)
+        self.assertIn('<span class="setting-changed">Changed</span>', row)
+        self.assertIn('<span class="setting-name"', row)
+        self.assertIn('<div class="setting-default">Default: <span class="setting-default-value">15</span>', row)
+        # At the default: no marker, the default line hidden until the field changes.
+        other = content[content.index('id="setting-REP_TO_COMMENT"'):]
+        other = other[:other.index('</tr>')]
+        self.assertNotIn('setting-changed', other)
+        self.assertIn('<div class="setting-default" hidden>', other)
+        # The help text is what the field's aria-describedby names.
+        self.assertIn('id="id_REP_TO_VOTE_UP_helptext"', row)
+
+    def test_default_texts(self):
+        content = self.client.get('/admin/settings/email/').content.decode()
+        self.assertIn('data-default="false"', content)  # EMAIL_USE_TLS
+        content = self.client.get('/admin/settings/appearance/').content.decode()
+        self.assertIn('<span class="setting-default-value">Light grey</span>', content)  # a choice's label
+
+    def test_save_message_names_the_page_and_the_settings(self):
+        data = dict((s.name, s.value) for s in Setting.sets['basic'] if not isinstance(s.value, bool))
+        data.update({'APP_TITLE': 'Open Foris Support', 'APP_LOGO_old': settings.APP_LOGO.value,
+                     'APP_FAVICON_old': settings.APP_FAVICON.value, 'submit': 'Save'})
+        response = self.client.post('/admin/settings/basic/', data, follow=True)
+        self.assertContains(response, 'Basic settings saved: Application title changed.')
+        response = self.client.post('/admin/settings/basic/', data, follow=True)
+        self.assertContains(response, 'Basic settings: nothing to save, no setting was changed.')
+
+    def test_the_old_reset_link_is_gone(self):
+        # It saved the default on a GET; "Use default" now only fills the field in.
+        self.set(settings.APP_TITLE, 'Kept')
+        self.assertEqual(self.client.get('/admin/settings/basic/APP_TITLE/').status_code, 404)
+        self.assertEqual(str(settings.APP_TITLE), 'Kept')
+
+
+class SetupChecklistTest(SettingMixin, OSQATestCase):
+    def setUp(self):
+        super().setUp()
+        self.admin = self.create_user('admin', is_superuser=True, is_staff=True)
+        self.login(self.admin)
+
+    def test_items_follow_the_settings(self):
+        from forum.utils import setup_checklist
+        done = lambda: dict((i['key'], i['done']) for i in setup_checklist.items())
+        self.assertFalse(any(done().values()))
+        self.set(settings.APP_TITLE, 'Open Foris Support')
+        self.set(settings.EMAIL_HOST, 'smtp.example.org')
+        self.set(settings.FIRST_POSTS_MODERATION, 'before')
+        self.set(settings.THEME_BRAND_COLOR, '#2d6a3e')
+        self.assertEqual([k for k, v in done().items() if v], ['name', 'email', 'look', 'spam'])
+        self.assertEqual(setup_checklist.checklist()['done'], 4)
+
+    def test_dashboard_shows_hides_and_finishes(self):
+        self.assertContains(self.client.get('/admin/'), 'Getting started')
+        self.client.post('/admin/', {'checklist': 'hide'})
+        response = self.client.get('/admin/')
+        self.assertNotContains(response, 'class="admin-guide admin-checklist"')
+        self.assertContains(response, 'Show the Getting started list')
+        self.client.post('/admin/', {'checklist': 'show'})
+        self.assertContains(self.client.get('/admin/'), 'class="admin-guide admin-checklist"')
+        # Gone once every required item is done (signing in with providers is optional).
+        for setting, value in ((settings.APP_TITLE, 'Site'), (settings.EMAIL_HOST, 'smtp.example.org'),
+                               (settings.APP_LOGO, '/upfiles/mine.png'), (settings.THEME_FONT, 'serif'),
+                               (settings.ABOUT_PAGE_TEXT, 'About us'), (settings.FIRST_POSTS_MODERATION, 'after')):
+            self.set(setting, value)
+        self.assertNotContains(self.client.get('/admin/'), 'class="admin-guide admin-checklist"')
+
+    def test_moderators_neither_see_nor_change_it(self):
+        moderator = self.create_user('moderator', is_staff=True)
+        self.login(moderator)
+        self.assertNotContains(self.client.get('/admin/'), 'Getting started')
+        self.client.post('/admin/', {'checklist': 'hide'})
+        self.assertFalse(settings.SETUP_CHECKLIST_HIDDEN.value)
+
+
+class AdminMenuTest(OSQATestCase):
+    def setUp(self):
+        super().setUp()
+        self.admin = self.create_user('admin', is_superuser=True, is_staff=True)
+        self.login(self.admin)
+
+    def groups(self, path='/admin/'):
+        return self.client.get(path).context['admin_menu']
+
+    def test_every_settings_page_is_in_a_task_group(self):
+        from forum.settings.base import Setting
+        groups = self.groups()
+        titles = [str(g['title']) for g in groups]
+        self.assertEqual(titles, ['Moderation', 'Site', 'Members and permissions', 'Questions and answers',
+                                  'Look and feel', 'Pages', 'Integrations', 'Tools'])
+        urls = [i['url'] for g in groups for i in g['items']]
+        for name in Setting.sets:
+            self.assertIn('/admin/settings/%s/' % name, urls)
+        self.assertEqual(len(urls), len(set(urls)))
+
+    def test_open_group_and_folded_count(self):
+        from forum.actions import FlagAction
+        from forum.models import Question
+        question = Question(author=self.admin, title='Flag me please', body='<p>Body text</p>', tagnames='one')
+        question.save()
+        FlagAction(user=self.create_user('flagger', reputation=500), node=question, extra='spam',
+                   ip='127.0.0.1').save()
+        groups = dict((g['id'], g) for g in self.groups('/admin/settings/minrep/'))
+        self.assertTrue(groups['members-menu']['open'])
+        self.assertFalse(groups['moderation-menu']['open'])
+        self.assertEqual(groups['moderation-menu']['count'], 1)
+        # On the dashboard, where no group holds the page, the moderation one is open.
+        self.assertTrue(dict((g['id'], g) for g in self.groups())['moderation-menu']['open'])
+
+    def test_clearer_page_names(self):
+        labels = [str(i['label']) for g in self.groups() for i in g['items']]
+        for name in ('Members', 'Privileges', 'Reputation points', 'Badges', 'Asking and answering', 'Display',
+                     'File uploads', 'Custom pages'):
+            self.assertIn(name, labels)
+        for old in ('Users settings', 'Minimum reputation config', 'Reputation gains and losses config'):
+            self.assertNotIn(old, labels)

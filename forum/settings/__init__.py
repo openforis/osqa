@@ -55,7 +55,7 @@ from .routing import *
 
 # Defined before the module settings below are loaded: modules such as
 # default_badges import it.
-BADGES_SET = SettingSet('badges', _('Badges config'), _("Configure badges on your OSQA site."), 500)
+BADGES_SET = SettingSet('badges', _('Badges'), _("When members earn each badge."), 500)
 
 __all__ = list(locals().keys())
 

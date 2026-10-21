@@ -111,12 +111,30 @@ manifests are in `docs/k8s/`. See [docs/deployment.md](docs/deployment.md).
 
 ## Administration
 
+The admin menu groups the pages by task: Moderation, Site, Members and
+permissions, Questions and answers, Look and feel, Pages, Integrations and
+Tools (settings pages of modules that no group names go under "Other
+settings"). Each group folds away; the group of the page being shown is
+open and the others stay as they were last left in this browser, and the
+moderation inbox's count shows on its group while it is folded.
+
 Administrators find every setting with the search box at the top of the
 admin menu (`/admin/search/`): it matches the setting's label, help text,
 name and keywords, the page and section titles, and a few synonyms (colour
 and color, login and sign-in...), and links to the setting's row on its page,
 highlighted. Settings pages with many settings also have a "Find a setting on
 this page" filter.
+
+Every setting shows its name (as used in templates, `{{ settings.NAME }}`), a
+"Changed" mark when its saved value isn't the default, and the default with a
+"Use default" button, which only fills the field in: nothing is saved before
+Save. Fields edited since the page was opened are highlighted and counted in
+a save bar that stays at the bottom of the window ("Undo my changes" puts the
+page back), and leaving the page with unsaved changes asks first. `/` goes to
+the admin search. The dashboard starts with a "Getting started" list for new
+sites (name, email, logo, colours, About page, spam protection, and
+optionally sign-in with Google, GitHub or Facebook), which can be hidden and
+goes away once everything is done.
 
 Pages that need outside accounts explain how to get them. External Keys has
 one card per service (sign-in with Google, GitHub and Facebook, reCAPTCHA,
@@ -601,7 +619,7 @@ for a new one.
 ### Accounts
 
 What members can do with their account, and the settings for it (Admin >
-Users settings and Admin > Security). The code is in `forum/utils/accounts.py`.
+Members and Admin > Security). The code is in `forum/utils/accounts.py`.
 
 - **Signing up (double opt-in):** after signing up with an email address and
   password, the member gets a welcome email with a button that confirms the
@@ -825,7 +843,7 @@ All modules below except the (switched-off) full-text search ones are covered by
 
 Bots that register and never post (often only to put links in their profile)
 are handled without any external service; the thresholds are under Admin >
-Users settings:
+Members:
 
 - The sign-up forms have a hidden honeypot field and a signed time stamp:
   forms filled in faster than "Minimum time to fill in the sign-up form"
@@ -1006,7 +1024,17 @@ in one file, `forum/skins/default/media/style/osqa.css`, drawn with colour
 variables (`--brand`, `--accent`, ... at the start of its section 2).
 
 Admin > Look and feel changes the common things without writing CSS:
-- **Colours:** pick one of the presets or a brand colour (links, buttons,
+- **Ready-made styles:** ten complete looks, each shown as a card with a
+  small drawing: Classic (the skin as it comes), Open Foris (the palette of
+  the Open Foris Support site: muted red-brown links with a teal accent),
+  Forest, Ocean, Editorial (serif, narrow, square corners), Plum (rounded,
+  pill-shaped buttons), Midnight (new visitors get the dark theme), Minimal
+  (greys, no shadows), Crimson and Earth. "Use this style" (or the Style
+  list) fills in the fields below, which can still be changed; while a
+  style is chosen its own touches (corners, a stripe on the header, the
+  headings' font) are added too. Styles are data, `STYLES` in
+  `forum/utils/appearance.py`.
+- **Colours:** a brand colour (links, buttons,
   the current tab) and an accent colour (the Ask button). A sample of a
   page in the light and dark themes follows the fields as they change.
   Text stays readable whatever is picked: a colour too light for white

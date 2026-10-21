@@ -33,18 +33,64 @@ TEXT_RATIO = 4.5
 
 HEX = re.compile(r'^#?([0-9a-fA-F]{6})$')
 
-# Colour presets offered on the admin page: (key, label, brand, accent).
-# Every one passes the contrast checks unchanged.
-PRESETS = (
-    ('ocean', _('Ocean blue'), DEFAULT_BRAND, DEFAULT_ACCENT),
-    ('forest', _('Forest green'), '#2d6a3e', '#b45309'),
-    ('teal', _('Teal'), '#0f6e78', '#c2410c'),
-    ('plum', _('Plum'), '#6b3fa0', '#be185d'),
-    ('crimson', _('Crimson'), '#a61e2e', '#1d4ed8'),
-    ('earth', _('Earth'), '#8f5a3c', '#17798f'),
-    ('slate', _('Slate'), '#3d4f63', '#c2410c'),
-    ('midnight', _('Midnight'), '#1e3a8a', '#047857'),
+class Style:
+    """A ready-made style: values for the Look and feel fields (filled in
+    by the admin page; saved like any other value) and, while THEME_STYLE
+    names it, a few rules of its own (`css`: corners, header, headings),
+    written after the colour variables. `css` is fixed text written here,
+    drawn with the skin's variables so dark mode follows."""
+    def __init__(self, key, label, description, brand, accent, background='default', font='system',
+                 width='standard', theme=None, css=''):
+        self.key, self.label, self.description = key, label, description
+        self.brand, self.accent, self.background, self.font, self.width = brand, accent, background, font, width
+        # The theme for new visitors it suggests (None: leave the setting alone).
+        self.theme = theme
+        self.css = css
+
+
+SQUARE = ('input[type="submit"],input[type="button"],button,.submit,a.button,.button,input[type="text"],'
+          'input[type="search"],input[type="email"],input[type="password"],textarea,select{border-radius:2px}')
+ROUND = ('input[type="submit"],input[type="button"],button,.submit,a.button,.button{border-radius:999px}'
+         '.post-tag,.tags a{border-radius:999px}')
+BRAND_STRIPE = '#roof{box-shadow:inset 0 4px 0 var(--brand)}'
+SERIF_HEADINGS = ("h1,h2,h3,.question-hyperlink,#question-title{font-family:Charter,'Bitstream Charter',"
+                  "'Sitka Text',Cambria,Georgia,serif}")
+
+# The styles offered on the admin page, in this order. Every one passes the
+# contrast checks unchanged (forum/tests/test_admin_guidance.py).
+STYLES = (
+    Style('classic', _('Classic'), _("The skin as it comes: blue links and buttons, an orange Ask button."),
+          DEFAULT_BRAND, DEFAULT_ACCENT),
+    # Open Foris: the palette of the Open Foris Support site (its logo and its
+    # #996666 links, scripts/dev/create_openforis_demo_data.py), a brand
+    # stripe on the header and a rounded logo.
+    Style('openforis', _('Open Foris'), _("Muted red-brown from the Open Foris Support site, with a teal accent "
+                                          "and a brand stripe on the header."),
+          '#8f5a5a', '#17798f', background='tinted', font='humanist',
+          css=BRAND_STRIPE + ':root{--info-border:#e6d5d5;--border-strong:#d9c6c6}'
+              ':root[data-theme="dark"]{--info-border:#553a3a;--border-strong:#5e4a4a}'
+              '#logo img{border-radius:6px}'),
+    Style('forest', _('Forest'), _("Deep green and amber on a green-tinted page, in a friendly sans-serif."),
+          '#2d6a3e', '#b45309', background='tinted', font='humanist', css=BRAND_STRIPE),
+    Style('ocean', _('Ocean'), _("Teal and orange on white, in a geometric sans-serif."),
+          '#0f6e78', '#c2410c', background='white', font='geometric'),
+    Style('editorial', _('Editorial'), _("Ink and red on white, serif text, a narrow column and square corners: "
+                                         "reads like a newspaper."),
+          '#1f3a5f', '#b91c1c', background='white', font='serif', width='narrow', css=SQUARE + SERIF_HEADINGS),
+    Style('plum', _('Plum'), _("Purple and pink with a rounded font and pill-shaped buttons and tags."),
+          '#6b3fa0', '#be185d', font='rounded', css=ROUND + ':root{--radius:14px}'),
+    Style('midnight', _('Midnight'), _("Navy and green; new visitors get the dark theme."),
+          '#1e3a8a', '#047857', font='geometric', theme='dark', css=BRAND_STRIPE),
+    Style('minimal', _('Minimal'), _("Greys only, white page, no shadows and square corners: the content comes "
+                                     "first."),
+          '#374151', '#111827', background='white', width='wide',
+          css=SQUARE + ':root{--shadow:none;--radius:2px}'),
+    Style('crimson', _('Crimson'), _("A university look: crimson with a blue accent and serif headings."),
+          '#a61e2e', '#1d4ed8', background='white', css=SERIF_HEADINGS + BRAND_STRIPE),
+    Style('earth', _('Earth'), _("Clay brown and teal on a warm tinted page, with rounded buttons."),
+          '#8f5a3c', '#17798f', background='tinted', font='humanist', css=ROUND),
 )
+STYLES_BY_KEY = dict((style.key, style) for style in STYLES)
 
 # Font stacks of fonts that come with the visitor's system (nothing is downloaded).
 FONTS = {
@@ -132,6 +178,7 @@ def current(request=None):
         'background': str(value(settings.THEME_BACKGROUND)),
         'font': str(value(settings.THEME_FONT)),
         'width': str(value(settings.THEME_PAGE_WIDTH)),
+        'style': str(value(settings.THEME_STYLE)),
     }
 
 
@@ -175,11 +222,18 @@ def _palette(brand, accent, background):
             '--accent-dark': with_lightness(button, lightness(button) - 0.06),
             '--accent-soft': mix(accent, DARK_BACKGROUND, 0.8),
         })
-    if background == 'white':
-        light['--background'] = WHITE
-    elif background == 'tinted':
-        light['--background'] = mix(brand, WHITE, 0.955)
+    if background != 'default':
+        light['--background'] = page_background(brand, background)
     return {'light': light, 'dark': dark}
+
+
+def page_background(brand, background):
+    """The light theme's page background for THEME_BACKGROUND."""
+    if background == 'white':
+        return WHITE
+    if background == 'tinted':
+        return mix(brand, WHITE, 0.955)
+    return LIGHT_BACKGROUND
 
 
 def css(values):
@@ -191,10 +245,13 @@ def css(values):
     if WIDTHS.get(values['width']):
         root['--content-width'] = WIDTHS[values['width']]
     rules = []
+    style = STYLES_BY_KEY.get(values.get('style'))
     if root:
         rules.append(':root{%s}' % ''.join('%s:%s;' % item for item in root.items()))
     if colours['dark']:
         rules.append(':root[data-theme="dark"]{%s}' % ''.join('%s:%s;' % item for item in colours['dark'].items()))
+    if style is not None and style.css:
+        rules.append(style.css)
     return '\n'.join(rules)
 
 

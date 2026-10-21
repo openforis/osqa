@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: OSQA (Open Foris edition)\n"
-"Report-Msgid-Bugs-To: https://github.com/openforis/osqa/issues\n"
-"POT-Creation-Date: 2026-10-20 10:37-0400\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-21 06:01-0400\n"
 "PO-Revision-Date: 2026-10-14 12:00+0000\n"
 "Last-Translator: Open Foris <https://github.com/openforis/osqa>\n"
 "Language-Team: Spanish <https://github.com/openforis/osqa>\n"
@@ -1032,11 +1032,11 @@ msgstr "quitar el estado de superusuario"
 msgid "grant super user status"
 msgstr "otorgar el estado de superusuario"
 
-msgid "Badges config"
-msgstr "Configuración de insignias"
+msgid "Badges"
+msgstr "Insignias"
 
-msgid "Configure badges on your OSQA site."
-msgstr "Configure las insignias de su sitio OSQA."
+msgid "When members earn each badge."
+msgstr "Cuándo ganan los miembros cada insignia."
 
 msgid "Accepting answers"
 msgstr "Aceptación de respuestas"
@@ -1113,11 +1113,23 @@ msgstr "Orígenes autorizados a leer la API con JavaScript (CORS), separados por
 msgid "Look and feel"
 msgstr "Apariencia"
 
-msgid "Colours, font and page width of the public pages, and the colour theme visitors get. Pick a preset or your own colours, check them in the sample, then press Preview to see the whole site with them before you save. For anything else, use Custom CSS."
-msgstr "Colores, fuente y ancho de página de las páginas públicas, y el tema de colores que reciben los visitantes. Elija una combinación predefinida o sus propios colores, compruébelos en la muestra y pulse Vista previa para ver todo el sitio con ellos antes de guardar. Para todo lo demás, use el CSS personalizado."
+msgid "Colours, font and page width of the public pages, and the colour theme visitors get. Pick a ready-made style or your own colours, check them in the sample, then press Preview to see the whole site with them before you save. For anything else, use Custom CSS."
+msgstr "Colores, fuente y ancho de página de las páginas públicas, y el tema de colores que reciben los visitantes. Elija un estilo predefinido o sus propios colores, compruébelos en la muestra y pulse Vista previa para ver todo el sitio con ellos antes de guardar. Para todo lo demás, use el CSS personalizado."
 
 msgid "Enter a colour as # and six hexadecimal digits, e.g. #2c5aa0."
 msgstr "Introduzca un color como # y seis dígitos hexadecimales, p. ej., #2c5aa0."
+
+msgid "None: only the values below"
+msgstr "Ninguno: solo los valores de abajo"
+
+msgid "Style"
+msgstr "Estilo"
+
+msgid "A ready-made style also changes a few shapes: corners, a stripe on the header, the headings' font. Picking one above fills in the values below as well; change any of them afterwards."
+msgstr "Un estilo predefinido también cambia algunas formas: las esquinas, una franja en el encabezado, la fuente de los títulos. Al elegir uno arriba también se rellenan los valores de abajo; puede cambiar cualquiera después."
+
+msgid "theme style preset template skin design"
+msgstr "tema estilo predefinido plantilla apariencia diseño"
 
 msgid "Brand colour"
 msgstr "Color de marca"
@@ -1512,11 +1524,11 @@ msgstr "Texto de la página de preguntas frecuentes"
 msgid "The faq page."
 msgstr "La página de preguntas frecuentes."
 
-msgid "Form settings"
-msgstr "Configuración de formularios"
+msgid "Asking and answering"
+msgstr "Preguntar y responder"
 
-msgid "General settings for the OSQA forms."
-msgstr "Configuración general de los formularios de OSQA."
+msgid "Lengths, tags and other rules of the ask, answer and comment forms."
+msgstr "Longitudes, etiquetas y otras reglas de los formularios de preguntas, respuestas y comentarios."
 
 msgid "Enable community wiki"
 msgstr "Activar la wiki de la comunidad"
@@ -1596,14 +1608,30 @@ msgstr "Mostrar el Gravatar del autor en los comentarios"
 msgid "Show the gravatar image of a comment author."
 msgstr "Mostrar la imagen de Gravatar del autor de un comentario."
 
-msgid "context"
-msgstr "contexto"
-
-msgid "default"
-msgstr "predeterminado"
-
 msgid "Example:"
 msgstr "Ejemplo:"
+
+#, python-format
+msgid "Name of the setting, e.g. for templates: {{ settings.%s }}"
+msgstr "Nombre de la opción, p. ej. para plantillas: {{ settings.%s }}"
+
+msgid "Changed"
+msgstr "Cambiado"
+
+msgid "Default:"
+msgstr "Predeterminado:"
+
+msgid "Use default"
+msgstr "Usar el predeterminado"
+
+msgid "On"
+msgstr "Activada"
+
+msgid "Off"
+msgstr "Desactivada"
+
+msgid "(empty)"
+msgstr "(vacío)"
 
 msgid "Current image"
 msgstr "Imagen actual"
@@ -1623,11 +1651,11 @@ msgstr "Probar"
 msgid "Testing your current e-mail settings. Please, wait."
 msgstr "Probando la configuración de correo actual. Espere, por favor."
 
-msgid "Minimum reputation config"
-msgstr "Configuración de reputación mínima"
+msgid "Privileges"
+msgstr "Privilegios"
 
-msgid "Configure the minimum reputation required to perform certain actions on your site."
-msgstr "Configure la reputación mínima necesaria para realizar ciertas acciones en su sitio."
+msgid "The reputation members need before they may vote, comment, edit, close and so on."
+msgstr "La reputación que necesitan los miembros para votar, comentar, editar, cerrar, etc."
 
 msgid "Show captcha if user with less reputation than"
 msgstr "Mostrar captcha si el usuario tiene menos reputación que"
@@ -1844,11 +1872,11 @@ msgstr "Ediciones sugeridas por miembro y día"
 msgid "How many edits a member may suggest in 24 hours. 0 for no limit."
 msgstr "Cuántas ediciones puede sugerir un miembro en 24 horas. 0 para no limitar."
 
-msgid "Reputation gains and losses config"
-msgstr "Configuración de ganancias y pérdidas de reputación"
+msgid "Reputation points"
+msgstr "Puntos de reputación"
 
-msgid "Configure the reputation points a user may gain or lose upon certain actions."
-msgstr "Configure los puntos de reputación que un usuario puede ganar o perder al realizar ciertas acciones."
+msgid "How many reputation points members gain or lose for votes, accepted answers and other actions."
+msgstr "Cuántos puntos de reputación ganan o pierden los miembros por votos, respuestas aceptadas y otras acciones."
 
 msgid "Initial reputation"
 msgstr "Reputación inicial"
@@ -2030,6 +2058,12 @@ msgstr "Confirmar la identidad después de (minutos)"
 msgid "Changing the email address, adding a passkey, setting up two-step verification, creating an API token or removing the last way to sign in asks members to confirm it's them (password, code, passkey or an emailed link) when they signed in or confirmed longer ago than this."
 msgstr "Cambiar la dirección de correo, añadir una llave de acceso, configurar la verificación en dos pasos, crear un token de API o quitar el último método de inicio de sesión pide a los miembros que confirmen su identidad (contraseña, código, llave de acceso o un enlace por correo) si iniciaron sesión o la confirmaron hace más de este tiempo."
 
+msgid "Sidebar"
+msgstr "Barra lateral"
+
+msgid "Content shown in the sidebar of the public pages. You can use Markdown and some basic HTML tags."
+msgstr "Contenido que se muestra en la barra lateral de las páginas públicas. Puede usar Markdown y algunas etiquetas HTML básicas."
+
 msgid "Show the Welcome box"
 msgstr "Mostrar el cuadro de bienvenida"
 
@@ -2060,11 +2094,8 @@ msgstr "Modo de representación del bloque inferior"
 msgid "How to render your lower block code."
 msgstr "Cómo representar el código de su bloque inferior."
 
-msgid "Sitemap settings"
-msgstr "Configuración del mapa del sitio"
-
-msgid "Some settings connected with the Sitemaps."
-msgstr "Algunos ajustes relacionados con los mapas del sitio."
+msgid "The sitemap search engines read to find the questions."
+msgstr "El mapa del sitio que leen los buscadores para encontrar las preguntas."
 
 msgid "Questions Sitemap Limit"
 msgstr "Límite del mapa del sitio de preguntas"
@@ -2207,11 +2238,11 @@ msgstr "Recordar a los autores que acepten una respuesta tras (días)"
 msgid "manage.py remind_unaccepted (run daily) reminds the asker once, by notification and email, when their question has had an answer for this many days but none is accepted. Only questions asked in the last 60 days are considered. 0 turns reminders off."
 msgstr "manage.py remind_unaccepted (ejecutado a diario) recuerda una vez al autor, mediante notificación y correo electrónico, cuando su pregunta lleva este número de días con una respuesta pero ninguna aceptada. Solo se tienen en cuenta las preguntas formuladas en los últimos 60 días. 0 desactiva los recordatorios."
 
-msgid "File upload settings"
-msgstr "Configuración de subida de archivos"
+msgid "File uploads"
+msgstr "Archivos subidos"
 
-msgid "File uploads related settings."
-msgstr "Ajustes relacionados con la subida de archivos."
+msgid "Where uploaded files are kept, and their size limits."
+msgstr "Dónde se guardan los archivos subidos y sus límites de tamaño."
 
 msgid "Uploaded files folder"
 msgstr "Carpeta de archivos subidos"
@@ -2264,11 +2295,11 @@ msgstr "Forzar URL única"
 msgid "Redirect the request in case there is a mismatch between the slug in the url and the actual slug"
 msgstr "Redirigir la solicitud si no coinciden el slug de la URL y el slug real"
 
-msgid "Users settings"
-msgstr "Configuración de usuarios"
+msgid "Members"
+msgstr "Miembros"
 
-msgid "General settings for the OSQA users."
-msgstr "Configuración general de los usuarios de OSQA."
+msgid "Sign-up, accounts, profiles and what members may change about themselves."
+msgstr "Registro, cuentas, perfiles y lo que los miembros pueden cambiar de sí mismos."
 
 msgid "Allow negative reputation"
 msgstr "Permitir reputación negativa"
@@ -2501,11 +2532,11 @@ msgstr "Eliminar las cuentas inactivas tras (días)"
 msgid "The cleanup_inactive_users command (run daily from cron) deletes accounts older than this that never confirmed their email, never posted, voted or did anything else, and haven't logged in during that time. Staff accounts are never deleted. 0 turns it off."
 msgstr "El comando cleanup_inactive_users (ejecutado a diario desde cron) elimina las cuentas más antiguas que esto que nunca confirmaron su correo electrónico, nunca publicaron, votaron ni hicieron nada más, y que no han iniciado sesión durante ese tiempo. Las cuentas del personal nunca se eliminan. 0 lo desactiva."
 
-msgid "View settings"
-msgstr "Configuración de visualización"
+msgid "Display"
+msgstr "Visualización"
 
-msgid "Set up how certain parts of the site are displayed."
-msgstr "Configure cómo se muestran ciertas partes del sitio."
+msgid "How lists, summaries, tags and other parts of the public pages are shown."
+msgstr "Cómo se muestran las listas, los resúmenes, las etiquetas y otras partes de las páginas públicas."
 
 msgid "Embed YouTube Videos"
 msgstr "Insertar vídeos de YouTube"
@@ -3762,9 +3793,6 @@ msgid_plural "Your username is %(name)s. The link works once, for %(hours)s hour
 msgstr[0] "Su nombre de usuario es %(name)s. El enlace funciona una vez, durante %(hours)s hora."
 msgstr[1] "Su nombre de usuario es %(name)s. El enlace funciona una vez, durante %(hours)s horas."
 msgstr[2] "Su nombre de usuario es %(name)s. El enlace funciona una vez, durante %(hours)s horas."
-
-msgid "Badges"
-msgstr "Insignias"
 
 msgid "gold"
 msgstr "oro"
@@ -5435,6 +5463,22 @@ msgstr "Guardar"
 msgid "How the community is doing: activity, answers, members and moderation, compared with the period before."
 msgstr "Cómo va la comunidad: actividad, respuestas, miembros y moderación, en comparación con el periodo anterior."
 
+msgid "Getting started"
+msgstr "Primeros pasos"
+
+#, python-format
+msgid "%(done)s of %(total)s done"
+msgstr "%(done)s de %(total)s hechos"
+
+msgid "done"
+msgstr "hecho"
+
+msgid "to do"
+msgstr "pendiente"
+
+msgid "Hide this list"
+msgstr "Ocultar esta lista"
+
 msgid "Quick statistics"
 msgstr "Estadísticas rápidas"
 
@@ -5462,14 +5506,14 @@ msgstr "Su sitio se está ejecutando con algunos ajustes personalizados; haga cl
 msgid "Are you sure you want to revert to the defaults?"
 msgstr "¿Está seguro de que desea volver a los valores predeterminados?"
 
-msgid "revert to defaults"
-msgstr "volver a los valores predeterminados"
+msgid "Revert to defaults"
+msgstr "Volver a los valores predeterminados"
 
 msgid "Are you sure you want to run bootstrap mode?"
 msgstr "¿Está seguro de que desea ejecutar el modo de arranque?"
 
-msgid "go bootstrap"
-msgstr "pasar al modo de arranque"
+msgid "Go bootstrap"
+msgstr "Pasar al modo de arranque"
 
 msgid "\"Bootstrap mode\" relaxes the minimum required reputation to perform actions like voting and commenting. This is useful to help new communities get started."
 msgstr "El \"modo de arranque\" rebaja la reputación mínima necesaria para acciones como votar o comentar. Es útil para ayudar a arrancar a las comunidades nuevas."
@@ -5482,6 +5526,9 @@ msgstr "Esta es una operación pesada, ¿está seguro?"
 
 msgid "Recalculate"
 msgstr "Recalcular"
+
+msgid "Show the Getting started list"
+msgstr "Mostrar la lista de primeros pasos"
 
 msgid "Recent activity"
 msgstr "Actividad reciente"
@@ -5561,12 +5608,6 @@ msgstr "Copiar"
 msgid "Using the API"
 msgstr "Uso de la API"
 
-msgid "On"
-msgstr "Activada"
-
-msgid "Off"
-msgstr "Desactivada"
-
 msgid "Programs read public questions, answers, tags and members as JSON without signing in. To post, or to see what only a member may see, a member creates a <strong>personal access token</strong> on their account and sends it in the <code>Authorization</code> header. A token can only do what its member may do on the site, with the same reputation rules and limits."
 msgstr "Los programas leen las preguntas, respuestas, etiquetas y miembros públicos en JSON sin iniciar sesión. Para publicar, o para ver lo que solo puede ver un miembro, el miembro crea un <strong>token de acceso personal</strong> en su cuenta y lo envía en el encabezado <code>Authorization</code>. Un token solo puede hacer lo que su miembro puede hacer en el sitio, con las mismas reglas de reputación y los mismos límites."
 
@@ -5597,11 +5638,14 @@ msgstr "Lectura desde una página web de un sitio permitido (CORS)"
 msgid "Lists come as <code>{\"data\": [...], \"next\": \"...\"}</code>: request the <code>next</code> address for the following page. Errors are JSON problem documents with a <code>type</code>, a <code>title</code> and, for invalid fields, <code>errors</code>. Going over a rate limit answers 429 with a <code>Retry-After</code> header."
 msgstr "Las listas llegan como <code>{\"data\": [...], \"next\": \"...\"}</code>: solicite la dirección <code>next</code> para obtener la página siguiente. Los errores son documentos de problema JSON con un <code>type</code>, un <code>title</code> y, para los campos no válidos, <code>errors</code>. Al superar un límite de frecuencia se responde 429 con un encabezado <code>Retry-After</code>."
 
-msgid "Colour presets"
-msgstr "Combinaciones de colores predefinidas"
+msgid "Ready-made styles"
+msgstr "Estilos predefinidos"
 
-msgid "Pick a starting point; it fills in the brand and accent colours below, which you can still change. Nothing changes for visitors until you save."
-msgstr "Elija un punto de partida; rellena los colores de marca y de acento de abajo, que aún puede cambiar. Nada cambia para los visitantes hasta que guarde."
+msgid "Each style sets the colours, background, font and page width below, and adds a few touches of its own (corners, a header stripe, heading font). Choose one, adjust anything below, then press Preview or Save. Nothing changes for visitors until you save."
+msgstr "Cada estilo fija los colores, el fondo, la fuente y el ancho de página de abajo, y añade algunos toques propios (esquinas, una franja en el encabezado, la fuente de los títulos). Elija uno, ajuste lo que quiera abajo y pulse Vista previa o Guardar. Nada cambia para los visitantes hasta que guarde."
+
+msgid "Use this style"
+msgstr "Usar este estilo"
 
 msgid "Sample"
 msgstr "Muestra"
@@ -5813,9 +5857,6 @@ msgstr "Preguntas pendientes sin respuesta"
 
 msgid "Open questions (not closed) of any age without an answer from someone else; the previous figure is the backlog when the period began."
 msgstr "Preguntas abiertas (no cerradas) de cualquier antigüedad sin respuesta de otra persona; la cifra anterior es la acumulada al empezar el periodo."
-
-msgid "Members"
-msgstr "Miembros"
 
 msgid "Accounts that joined in the period and are not suspended. “Confirmed their email” is as of now; “posted within 7 days” counts a question, answer or comment within a week of joining and only looks at members who joined at least 7 days ago."
 msgstr "Cuentas que se unieron en el periodo y no están suspendidas. «Confirmaron su correo» se refiere al momento actual; «publicaron en 7 días» cuenta una pregunta, respuesta o comentario en la semana siguiente a unirse y solo tiene en cuenta a los miembros que se unieron hace al menos 7 días."
@@ -6207,6 +6248,13 @@ msgstr "Ocultar"
 msgid "opens in a new tab"
 msgstr "se abre en una pestaña nueva"
 
+msgid "1 unsaved change"
+msgstr "1 cambio sin guardar"
+
+#, python-format
+msgid "%%(count)s unsaved changes"
+msgstr "%%(count)s cambios sin guardar"
+
 msgid "How it was set up"
 msgstr "Cómo se configuró"
 
@@ -6216,11 +6264,14 @@ msgstr "Cómo configurarlo"
 msgid "Other settings"
 msgstr "Otras opciones de configuración"
 
-msgid "Reset Changes"
-msgstr "Restablecer cambios"
+msgid "Discard preview"
+msgstr "Descartar la vista previa"
 
-msgid "Preview opens the site in a new tab with these values, for you only, until you save or reset them."
-msgstr "Vista previa abre el sitio en una pestaña nueva con estos valores, solo para usted, hasta que los guarde o los restablezca."
+msgid "Undo my changes"
+msgstr "Deshacer mis cambios"
+
+msgid "Preview opens the site in a new tab with these values, for you only, until you save them or discard the preview."
+msgstr "Vista previa abre el sitio en una pestaña nueva con estos valores, solo para usted, hasta que los guarde o descarte la vista previa."
 
 msgid "Static pages"
 msgstr "Páginas estáticas"
@@ -8382,29 +8433,65 @@ msgstr "Ha publicado el número máximo de respuestas permitido en una hora. Esp
 msgid "You have posted the maximum number of comments for one hour. Please wait a while."
 msgstr "Ha publicado el número máximo de comentarios permitido en una hora. Espere un rato."
 
-msgid "Ocean blue"
-msgstr "Azul océano"
+msgid "Classic"
+msgstr "Clásico"
 
-msgid "Forest green"
-msgstr "Verde bosque"
+msgid "The skin as it comes: blue links and buttons, an orange Ask button."
+msgstr "El aspecto original: enlaces y botones azules, botón Preguntar naranja."
 
-msgid "Teal"
-msgstr "Verde azulado"
+msgid "Open Foris"
+msgstr "Open Foris"
+
+msgid "Muted red-brown from the Open Foris Support site, with a teal accent and a brand stripe on the header."
+msgstr "El marrón rojizo apagado del sitio Open Foris Support, con un acento verde azulado y una franja de color en el encabezado."
+
+msgid "Forest"
+msgstr "Bosque"
+
+msgid "Deep green and amber on a green-tinted page, in a friendly sans-serif."
+msgstr "Verde intenso y ámbar sobre una página teñida de verde, con una sans-serif amable."
+
+msgid "Ocean"
+msgstr "Océano"
+
+msgid "Teal and orange on white, in a geometric sans-serif."
+msgstr "Verde azulado y naranja sobre blanco, con una sans-serif geométrica."
+
+msgid "Editorial"
+msgstr "Editorial"
+
+msgid "Ink and red on white, serif text, a narrow column and square corners: reads like a newspaper."
+msgstr "Tinta y rojo sobre blanco, texto con serifa, una columna estrecha y esquinas rectas: se lee como un periódico."
 
 msgid "Plum"
 msgstr "Ciruela"
 
+msgid "Purple and pink with a rounded font and pill-shaped buttons and tags."
+msgstr "Morado y rosa con una fuente redondeada y botones y etiquetas en forma de píldora."
+
+msgid "Midnight"
+msgstr "Medianoche"
+
+msgid "Navy and green; new visitors get the dark theme."
+msgstr "Azul marino y verde; los visitantes nuevos ven el tema oscuro."
+
+msgid "Minimal"
+msgstr "Minimalista"
+
+msgid "Greys only, white page, no shadows and square corners: the content comes first."
+msgstr "Solo grises, página blanca, sin sombras y esquinas rectas: el contenido es lo primero."
+
 msgid "Crimson"
 msgstr "Carmesí"
+
+msgid "A university look: crimson with a blue accent and serif headings."
+msgstr "Un aire universitario: carmesí con acento azul y títulos con serifa."
 
 msgid "Earth"
 msgstr "Tierra"
 
-msgid "Slate"
-msgstr "Pizarra"
-
-msgid "Midnight"
-msgstr "Medianoche"
+msgid "Clay brown and teal on a warm tinted page, with rounded buttons."
+msgstr "Marrón arcilla y verde azulado sobre una página de tono cálido, con botones redondeados."
 
 #, python-format
 msgid "%d min"
@@ -8935,6 +9022,48 @@ msgstr "Nueva notificación"
 msgid "Thanks! Your post will appear once a moderator has reviewed it."
 msgstr "¡Gracias! Su publicación aparecerá cuando un moderador la haya revisado."
 
+msgid "Name the site"
+msgstr "Dar nombre al sitio"
+
+msgid "Its title and short name appear in the header, the browser tab and emails."
+msgstr "Su título y su nombre corto aparecen en el encabezado, en la pestaña del navegador y en los correos."
+
+msgid "Set up sending email"
+msgstr "Configurar el envío de correo"
+
+msgid "Sign-up confirmations, password resets and notifications need it. Test it from the same page."
+msgstr "Lo necesitan las confirmaciones de registro, los restablecimientos de contraseña y las notificaciones. Pruébelo desde la misma página."
+
+msgid "Upload your logo"
+msgstr "Subir su logotipo"
+
+msgid "And the small icon browsers show in tabs."
+msgstr "Y el pequeño icono que los navegadores muestran en las pestañas."
+
+msgid "Choose the colours"
+msgstr "Elegir los colores"
+
+msgid "Pick a preset or your own colours under Look and feel."
+msgstr "Elija una combinación predefinida o sus propios colores en Apariencia."
+
+msgid "Write the About page"
+msgstr "Escribir la página Acerca de"
+
+msgid "Say what the site is for and who answers."
+msgstr "Explique para qué sirve el sitio y quién responde."
+
+msgid "Turn on spam protection"
+msgstr "Activar la protección contra spam"
+
+msgid "reCAPTCHA, Akismet or AI review under External Keys, or reviewing new members' first posts under Moderation settings."
+msgstr "reCAPTCHA, Akismet o la revisión con IA en Claves externas, o la revisión de las primeras publicaciones de los miembros nuevos en la configuración de moderación."
+
+msgid "Let members sign in with Google, GitHub or Facebook"
+msgstr "Permitir que los miembros inicien sesión con Google, GitHub o Facebook"
+
+msgid "Optional: fewer passwords to remember, and confirmed email addresses."
+msgstr "Opcional: menos contraseñas que recordar y direcciones de correo confirmadas."
+
 msgid "Please confirm it's you first."
 msgstr "Primero confirme que es usted."
 
@@ -9131,16 +9260,19 @@ msgstr "Su cuenta y sus publicaciones se han eliminado. Le hemos enviado un últ
 msgid "Your account has been deleted. Your posts remain, without your name. We sent a last email to confirm it."
 msgstr "Su cuenta se ha eliminado. Sus publicaciones se conservan, sin su nombre. Le hemos enviado un último correo para confirmarlo."
 
-msgid "Workflow settings"
-msgstr "Configuración del flujo de trabajo"
+msgid "Site"
+msgstr "Sitio"
 
-msgid "Forum settings"
-msgstr "Configuración del foro"
+msgid "Members and permissions"
+msgstr "Miembros y permisos"
 
-msgid "Static content"
-msgstr "Contenido estático"
+msgid "Questions and answers"
+msgstr "Preguntas y respuestas"
 
-msgid "Custom Pages"
+msgid "Integrations"
+msgstr "Integraciones"
+
+msgid "Custom pages"
 msgstr "Páginas personalizadas"
 
 msgid "Tools"
@@ -9153,8 +9285,15 @@ msgid "Users Graph"
 msgstr "Gráfico de usuarios"
 
 #, python-format
-msgid "'%s' settings saved succesfully"
-msgstr "La configuración de '%s' se guardó correctamente"
+msgid "%(page)s saved: %(settings)s changed."
+msgid_plural "%(page)s saved: %(count)d settings changed (%(settings)s)."
+msgstr[0] "%(page)s guardado: se cambió %(settings)s."
+msgstr[1] "%(page)s guardado: se cambiaron %(count)d opciones (%(settings)s)."
+msgstr[2] "%(page)s guardado: se cambiaron %(count)d opciones (%(settings)s)."
+
+#, python-format
+msgid "%(page)s: nothing to save, no setting was changed."
+msgstr "%(page)s: nada que guardar, no se cambió ninguna opción."
 
 msgid "Set up"
 msgstr "Configurado"
@@ -11660,6 +11799,12 @@ msgstr "Google: casilla de reCAPTCHA v2"
 
 msgid "captcha robot spam bot"
 msgstr "captcha robot spam bot"
+
+msgid "robots.txt"
+msgstr "robots.txt"
+
+msgid "What the robots.txt file tells search engines and other crawlers."
+msgstr "Lo que el archivo robots.txt indica a los buscadores y otros rastreadores."
 
 #, python-format
 msgid "The dump has no %s.xml file."

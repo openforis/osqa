@@ -58,7 +58,7 @@ admincontent. The menu comes from admin_menu() in forum/views/admin.py.
             {% if request.user.is_superuser %}
             <form class="admin-menu-search" action="{% url "admin_search" %}" method="get" role="search">
                 <label for="admin-search-q" class="admin-visually-hidden">{% trans "Search settings and pages" %}</label>
-                <input type="search" id="admin-search-q" name="q" placeholder="{% trans "Search settings…" %}" autocomplete="off"{% if request.resolver_match.url_name == "admin_search" %} value="{{ request.GET.q }}"{% endif %} />
+                <input type="search" id="admin-search-q" name="q" placeholder="{% trans "Search settings…" %}" aria-keyshortcuts="/" autocomplete="off"{% if request.resolver_match.url_name == "admin_search" %} value="{{ request.GET.q }}"{% endif %} />
                 <button type="submit" title="{% trans "Search" %}"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><span class="admin-visually-hidden">{% trans "Search" %}</span></button>
             </form>
             {% endif %}
@@ -66,17 +66,17 @@ admincontent. The menu comes from admin_menu() in forum/views/admin.py.
             <summary>{% trans "Admin menu" %}</summary>
             {% url "admin_index" as dashboard_url %}
             <ul class="admin-menu-home">
-                <li><a href="{{ dashboard_url }}"{% if request.path == dashboard_url %} aria-current="page"{% endif %}>{% trans "Dashboard" %}</a></li>
+                <li><a href="{{ dashboard_url }}"{% if request.path == dashboard_url %} aria-current="page"{% endif %}>{% include "osqaadmin/menu_icon.html" with icon="dashboard" %}<span class="admin-menu-label">{% trans "Dashboard" %}</span></a></li>
             </ul>
             {% for group in admin_menu %}
-            <div id="{{ group.id }}" class="module">
-                <h2>{{ group.title }}</h2>
+            <details id="{{ group.id }}" class="module admin-menu-group{% if group.open %} has-current{% endif %}" data-group="{{ group.id }}"{% if group.open %} open{% endif %}>
+                <summary>{% include "osqaadmin/menu_icon.html" with icon=group.icon %}<span class="admin-menu-group-title">{{ group.title }}</span>{% if group.count %}<span class="admin-count admin-group-count" aria-label="{% blocktrans count counter=group.count %}{{ counter }} waiting{% plural %}{{ counter }} waiting{% endblocktrans %}">{{ group.count }}</span>{% endif %}</summary>
                 <ul>
                 {% for item in group.items %}
                     <li><a href="{{ item.url }}"{% if item.current %} aria-current="page"{% endif %}><span class="admin-menu-label">{{ item.label }}</span>{% if item.count %} <span class="admin-count">{{ item.count }}</span>{% endif %}{% if item.unsaved %} <img width="12" height="12" src="{% url "django_admin_media" "img/icon-alert.svg" %}" alt="{% trans "Unsaved changes" %}" />{% endif %}</a></li>
                 {% endfor %}
                 </ul>
-            </div>
+            </details>
             {% endfor %}
             </details>
             <script nonce="{{ csp_nonce }}">osqaAdminMenu(document.getElementById('admin-menu'));</script>

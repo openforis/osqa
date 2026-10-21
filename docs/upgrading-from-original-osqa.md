@@ -260,7 +260,7 @@ these, because the old values may not fit the new version:
   under Admin > External Keys > "Google custom search engine ID".
 - **Sidebar:** the old default blocks advertising osqa.net/WebFaction are
   hidden automatically. Check your own blocks.
-- **Admin > Security and Users settings:** the new sign-in, posting and spam
+- **Admin > Security and Members:** the new sign-in, posting and spam
   limits. Defaults are fine for most sites.
 - **AI assistance** (optional): see the README's "AI assistance".
 
