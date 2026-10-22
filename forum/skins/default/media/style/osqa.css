@@ -6484,6 +6484,22 @@ h2.error-lead {
     font-weight: 650;
 }
 
+/* Sections (##) and the questions under them (###), as in the FAQ. */
+.static-content h2 + h3 {
+    margin-top: 10px;
+}
+
+.static-content h3 {
+    margin-top: 18px;
+    font-size: 15px;
+}
+
+/* Links in the text of About, FAQ and custom pages are underlined: with a
+   muted brand colour, colour alone doesn't tell them apart (WCAG 1.4.1). */
+.static-content p a, .static-content li a {
+    text-decoration: underline;
+}
+
 .static-content h2.subtitle {
     padding: 0;
     border: 0;
