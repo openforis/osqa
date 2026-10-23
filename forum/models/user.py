@@ -583,7 +583,8 @@ class SubscriptionSettings(models.Model):
     notify_comments = models.BooleanField(default=False)
     notify_accepted = models.BooleanField(default=False)
 
-    send_digest = models.BooleanField(default=True)
+    # New members opt in to the daily digest of new questions.
+    send_digest = models.BooleanField(default=False)
 
     # How often activity emails (answers, comments, mentions, accepted answers,
     # new questions, new members) are sent: as it happens, gathered into a

@@ -442,7 +442,7 @@ should we email you?"):
 The per-kind switches still decide which kinds are collected. Mentions stay
 immediate unless the member unticks "Send mentions right away"; account
 emails (sign-in links, validation) are always immediate. The daily digest of
-new questions (`send_digest`) is a separate email, unchanged.
+new questions (`send_digest`, off until the member turns it on) is a separate email.
 
 `send_email_alerts` should run once a day. Daily summaries go out on every
 run (at most one a day per member); weekly ones on the weekday set in Admin >

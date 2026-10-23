@@ -325,9 +325,9 @@ class SettingsPageTest(FrequencyTestCase):
         self.client.post(url, dict(data, email_frequency='x'))
         self.assertEqual(self.prefs(self.alice).email_frequency, 'w')
 
-    def test_existing_members_keep_their_emails(self):
-        prefs = self.prefs(self.create_user('olduser'))
-        self.assertEqual((prefs.email_frequency, prefs.mentions_immediate, prefs.send_digest), ('i', True, True))
+    def test_new_members_defaults(self):
+        prefs = self.prefs(self.create_user('newuser'))
+        self.assertEqual((prefs.email_frequency, prefs.mentions_immediate, prefs.send_digest), ('i', True, False))
 
 
 class SwitchLinksTest(FrequencyTestCase):
