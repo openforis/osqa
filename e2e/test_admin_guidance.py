@@ -370,7 +370,8 @@ class AdminGuidanceTest(E2ETestCase):
         with page.expect_navigation():
             card.get_by_role('button', name='Send a test error').click()
         self.check_page(page)
-        self.assertIn('set up yet', page.locator('.admin_message').first.inner_text())
+        # Other notices (e.g. email not configured) may come before the Sentry one.
+        self.assertIn('set up yet', ' '.join(page.locator('.admin_message').all_inner_texts()))
 
         page.fill('#id_ERROR_REPORTING_DSN', 'my-key')
         with page.expect_navigation():
@@ -387,7 +388,7 @@ class AdminGuidanceTest(E2ETestCase):
         with page.expect_navigation():
             card.get_by_role('button', name='Send a test error').click()
         self.check_page(page)
-        self.assertIn('Test event sent', page.locator('.admin_message').first.inner_text())
+        self.assertIn('Test event sent', ' '.join(page.locator('.admin_message').all_inner_texts()))
         self.assertEqual(events[-1]['environment'], 'staging')
         self.assertTrue(events[-1]['message'].startswith('Test event from'))
 
