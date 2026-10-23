@@ -1,7 +1,11 @@
+from email import message_from_string
+from email.header import decode_header, make_header
+from email.utils import parseaddr
 from smtplib import SMTPAuthenticationError, SMTPNotSupportedError
 from unittest import mock
 
 from forum import settings
+from forum.models import User
 from forum.templatetags import email_tags
 from forum.utils import mail
 
@@ -40,6 +44,19 @@ class EmailSettingsTestButtonTest(SettingMixin, OSQATestCase):
         self.assertNotContains(response, 'could not be sent')
         self.assertNotContains(response, '<html')
         self.assertEqual(self.smtp.sendmail.call_args[0][1], ['admin@example.com'])
+
+    def test_addresses_stay_readable(self):
+        # Amazon SES refuses headers whose address is inside an encoded word.
+        self.set(settings.APP_SHORT_NAME, 'Fórum (OF)')
+        User.objects.filter(username='admin').update(username='José (OF)')
+        self.press_test()
+        envelope_sender, _, raw = self.smtp.sendmail.call_args[0]
+        self.assertEqual(envelope_sender, 'forum@example.com')
+        message = message_from_string(raw)
+        for header, name, address in (('From', 'Fórum (OF)', 'forum@example.com'),
+                                      ('To', 'José (OF)', 'admin@example.com')):
+            self.assertTrue(message[header].endswith(' <%s>' % address), message[header])
+            self.assertEqual(parseaddr(str(make_header(decode_header(message[header])))), (name, address))
 
     def test_visiting_the_url_sends_nothing(self):
         response = self.client.get('/admin/test_email_settings/')
