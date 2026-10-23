@@ -220,7 +220,9 @@ if APP_PROTOCOL == 'https':
 # Sentry error reporting (https://docs.sentry.io). SENTRY_DSN reports server
 # errors; SENTRY_FRONTEND_DSN reports JavaScript errors in visitors' browsers
 # (defaults to SENTRY_DSN; set it to 'off' to turn browser reporting off). Each
-# can also come from the environment variable of the same name. Request bodies,
+# can also come from the environment variable of the same name. Without them,
+# a DSN can be set under Admin > External Keys (forum/utils/sentry.py), which
+# misses errors while the site starts. Request bodies,
 # cookies, IP addresses and emails are never sent; signed-in users are
 # identified by their numeric id only.
 def _setting(name, default=''):
@@ -249,9 +251,15 @@ if SENTRY_DSN:
     from forum.utils.sentry import init_server
     if not init_server(SENTRY_DSN, SENTRY_ENVIRONMENT, SENTRY_RELEASE, SENTRY_TRACES_SAMPLE_RATE):
         print('SENTRY_DSN is set but sentry-sdk is not installed: pip install -r requirements.txt', file=sys.stderr)
-    else:
-        MIDDLEWARE.insert(MIDDLEWARE.index('forum.middleware.extended_user.ExtendedUser') + 1,
-                          'forum.middleware.sentry.SentryUserMiddleware')
+# Also without SENTRY_DSN: a DSN set under Admin > External Keys is started by
+# this middleware, in each process, on its first request.
+try:
+    import sentry_sdk  # noqa: F401
+except ImportError:
+    pass
+else:
+    MIDDLEWARE.insert(MIDDLEWARE.index('forum.middleware.extended_user.ExtendedUser') + 1,
+                      'forum.middleware.sentry.SentryUserMiddleware')
 
 # Prometheus metrics at /metrics (forum/utils/metrics.py): set a long random
 # token to switch them on; Prometheus sends it as "Authorization: Bearer <token>".

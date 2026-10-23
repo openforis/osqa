@@ -40,7 +40,7 @@ committed and is mounted into the container in Docker setups. Set:
 | `CACHES` | memcached, see the `.dist` file | Shared cache |
 | `TIME_ZONE` | `'Europe/Rome'` | Dates are stored in this zone. **When moving an existing forum, keep the old value**, or every date shifts |
 | `LANGUAGE_CODE` | `'en'` | Interface language |
-| `SENTRY_DSN` (optional) | `'https://<key>@o<org>.ingest.sentry.io/<project>'` | Server and browser error reports (see the README) |
+| `SENTRY_DSN` (optional) | `'https://<key>@o<org>.ingest.sentry.io/<project>'` | Server and browser error reports (see the README). Can also be set under Admin > External Keys, which misses errors while the site starts |
 | `DISABLED_MODULES` | `['recaptcha', 'project_badges']` | Optional modules to switch off |
 | `METRICS_TOKEN` (optional, or env) | a long random string | Turns on Prometheus metrics at `/metrics` (see [Monitoring](#monitoring-with-prometheus)) |
 | `LOG_FORMAT` (optional, or env) | `'json'` | One JSON object per line on standard output (see [Logs](#logs-and-request-ids)) |

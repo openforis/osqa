@@ -595,6 +595,13 @@ link to the revisions; saving again replaces their version.
     `SENTRY_RELEASE` (default `osqa@<git commit>`; for Docker pass
     `--build-arg SENTRY_RELEASE=...`) and `SENTRY_TRACES_SAMPLE_RATE`
     (performance tracing, default 0).
+  - Without `SENTRY_DSN`, the DSN can be set under Admin > External Keys >
+    "Sentry error reporting" (with the environment and whether browser
+    errors are reported too), and "Send a test error" checks it. Each server
+    process starts reporting on its next request after saving, and the
+    scheduled commands when they start; errors from before, and while the site
+    starts or can't reach its database, are missed. A DSN set on the server
+    wins, so use that for production.
   - Blocked content (CSP reports) arrives as warnings.
   - Flood protection: each visitor (signed-in user, or IP address) sends at
     most `SENTRY_MAX_EVENTS_PER_VISITOR` events per hour (default 10) from
