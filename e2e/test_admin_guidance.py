@@ -344,3 +344,55 @@ class AdminGuidanceTest(E2ETestCase):
         self.visit(phone, '/admin/settings/minrep/')
         phone.click('#admin-menu > summary')
         self.screenshot(phone, 'menu')
+
+    def test_sentry_from_the_admin(self):
+        import json
+        import sentry_sdk
+        from sentry_sdk.transport import Transport
+        from forum.utils import sentry
+
+        events = []
+
+        class Keep(Transport):
+            def capture_envelope(self, envelope):
+                events.extend(json.loads(i.payload.get_bytes()) for i in envelope.items if i.type == 'event')
+
+        real_init = sentry.init_server
+        self._patch(mock.patch.object(sentry, 'init_server',
+                                      lambda *args, **options: real_init(*args, transport=Keep(), **options)))
+        self.addCleanup(sentry_sdk.init)
+        self.addCleanup(sentry._admin_client.update, dsn='')
+
+        page = self.open(self.admin)
+        self.visit(page, '/admin/settings/extkeys/#section-sentry')
+        card = page.locator('#section-sentry')
+        self.assertEqual(card.locator('.admin-status').inner_text(), 'Not set up')
+        with page.expect_navigation():
+            card.get_by_role('button', name='Send a test error').click()
+        self.check_page(page)
+        self.assertIn('set up yet', page.locator('.admin_message').first.inner_text())
+
+        page.fill('#id_ERROR_REPORTING_DSN', 'my-key')
+        with page.expect_navigation():
+            page.click('#submit')
+        self.check_page(page)
+        self.assertIn('Enter the DSN as Sentry shows it', card.inner_text())
+        page.fill('#id_ERROR_REPORTING_DSN', 'https://abc123@o77.ingest.de.sentry.io/42')
+        page.fill('#id_ERROR_REPORTING_ENVIRONMENT', 'staging')
+        with page.expect_navigation():
+            page.click('#submit')
+        self.check_page(page)
+        self.assertEqual(card.locator('.admin-status').inner_text(), 'Set up')
+        self.screenshot(page, 'sentry')
+        with page.expect_navigation():
+            card.get_by_role('button', name='Send a test error').click()
+        self.check_page(page)
+        self.assertIn('Test event sent', page.locator('.admin_message').first.inner_text())
+        self.assertEqual(events[-1]['environment'], 'staging')
+        self.assertTrue(events[-1]['message'].startswith('Test event from'))
+
+        # Visitors' pages load the browser SDK, and their CSP lets it report.
+        visitor = self.open()
+        response = visitor.goto(self.url('/'))
+        self.assertIn('o77.ingest.de.sentry.io', response.headers['content-security-policy'])
+        self.assertEqual(visitor.locator('#sentry-config').count(), 1)

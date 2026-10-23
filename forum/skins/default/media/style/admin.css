@@ -1035,6 +1035,17 @@ html:has(.admin-savebar) {
     line-height: 1.5;
 }
 
+.admin-guide-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 10px;
+}
+
+#content-main .admin-guide-actions .button {
+    min-height: var(--osqa-tap);
+}
+
 .admin-guide-links {
     margin: 4px 0 8px;
     padding: 0;

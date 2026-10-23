@@ -73,6 +73,12 @@ def install():
         name = command_name(self)
         if not (getattr(self, 'record_last_run', False) or name in tracked_commands()) or options.get('dry_run'):
             return original(self, *args, **options)
+        # Errors of the scheduled commands reach Sentry when its DSN is set in the admin.
+        try:
+            from forum.utils.sentry import ensure_admin_client
+            ensure_admin_client()
+        except Exception:
+            pass
         started = time.time()
         try:
             result = original(self, *args, **options)
