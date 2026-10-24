@@ -11,7 +11,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.urls import reverse
 from django.utils.encoding import smart_str
 from django.utils.translation import ngettext, gettext as _
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotAllowed, HttpResponseNotFound, Http404
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect, HttpResponseNotAllowed, HttpResponseNotFound, Http404
 from django.shortcuts import get_object_or_404, render
 
 from django.contrib import messages
@@ -627,10 +627,11 @@ def mark_tag(request, tag=None, **kwargs):#tagging system
     return HttpResponse(json.dumps(''), content_type="application/json")
 
 def matching_tags(request):
-    if len(request.GET['q']) == 0:
-        raise CommandException(_("Invalid request"))
+    query = request.GET.get('q', '').strip().lower()
+    if not query:
+        # Crawlers follow these URLs without a query: a 400, not a logged server error.
+        return HttpResponseBadRequest(_("Invalid request"), content_type="text/plain")
 
-    query = request.GET['q'].strip().lower()
     possible_tags = list(Tag.active.filter(name__icontains=query))
     listed = set(tag.id for tag in possible_tags)
     # Synonyms ("csv") give their tag, with the synonym as a fourth column:
@@ -651,8 +652,8 @@ def matching_tags(request):
 
 def matching_users(request):
     query = request.GET.get('q', '').strip()
-    if len(query) == 0:
-        raise CommandException(_("Invalid request"))
+    if not query:
+        return HttpResponseBadRequest(_("Invalid request"), content_type="text/plain")
 
     try:
         limit = min(max(int(request.GET.get('limit', 20)), 1), 50)

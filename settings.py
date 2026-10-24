@@ -280,6 +280,15 @@ if LOG_FORMAT == 'json':
     from forum.utils.logs import json_logging
     LOGGING = json_logging(str(_setting('LOG_LEVEL', 'INFO')).upper())
 
+# Requests for a host name not in ALLOWED_HOSTS (scanners, the server's IP
+# address) get a 400 without an error line each; LOGGING can still configure
+# the logger.
+if isinstance(globals().get('LOGGING'), dict):
+    # A NullHandler: without any handler Python prints the record anyway (logging.lastResort).
+    LOGGING.setdefault('handlers', {}).setdefault('null', {'class': 'logging.NullHandler'})
+    LOGGING.setdefault('loggers', {}).setdefault(
+        'django.security.DisallowedHost', {'handlers': ['null'], 'propagate': False})
+
 FORCE_SCRIPT_NAME = ''
 
 for path in app_url_split[1].split('/')[1:]:

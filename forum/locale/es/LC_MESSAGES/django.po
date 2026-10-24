@@ -334,6 +334,10 @@ msgstr "suspendido"
 msgid "%(user)s reported %(reported)s : %(msg)s"
 msgstr "%(user)s denunció a %(reported)s : %(msg)s"
 
+#, python-format
+msgid "%(user)s reported a user"
+msgstr "%(user)s denunció a un usuario"
+
 msgid "N/A"
 msgstr "N/D"
 
