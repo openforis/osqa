@@ -587,6 +587,10 @@ scrape_configs:
   format, with client IPs. Leave it out if the proxy logs requests already.
 - **Text logs** (the default outside containers) are unchanged:
   `log/django.osqa.log` and `log/security.log`.
+- **Unknown host names:** requests whose `Host` isn't in `ALLOWED_HOSTS`
+  get a plain 400 and nothing is logged (Django's `django.security.DisallowedHost`
+  logger is silenced; give it handlers in `LOGGING` to see them). If every
+  page answers 400 after a deployment, check `ALLOWED_HOSTS`.
 
 ## Backups and restore
 

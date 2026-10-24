@@ -218,10 +218,14 @@ class ReportAction(ActionProxy):
             )
 
     def describe(self, viewer=None):
+        user = self.hyperlink(self.user.get_profile_url(), self.friendly_username(viewer, self.user))
+        # Reports from the original OSQA hold a pickled Django 1.6 user that can't be loaded (extra is the raw text).
+        reported = self.extra.get('reported') if isinstance(self.extra, dict) else None
+        if reported is None:
+            return _("%(user)s reported a user") % {'user': user}
 
-        reported = self.extra.get('reported')
         return _("%(user)s reported %(reported)s : %(msg)s") % {
-            'user': self.hyperlink(self.user.get_profile_url(), self.friendly_username(viewer, self.user)),
+            'user': user,
             'reported': self.hyperlink(reported.get_profile_url(), self.friendly_username(viewer, reported)),
             'msg': escape(self.extra.get('publicmsg', _('N/A')))
         }

@@ -50,7 +50,8 @@ class HottestQuestionsSort(pagination.SortBase):
 
 class UnansweredQuestionsSort(pagination.SortBase):
     def apply(self, questions):
-        return questions.extra(select={'answer_count': '''
+        # Not 'answer_count': Django would assign it to the read-only Question.answer_count property.
+        return questions.extra(select={'visible_answer_count': '''
             SELECT COUNT(1)
                 FROM forum_node fn1
                 WHERE fn1.abs_parent_id = forum_node.id
@@ -58,7 +59,7 @@ class UnansweredQuestionsSort(pagination.SortBase):
                     AND fn1.node_type='answer'
                     AND NOT(fn1.state_string LIKE '%%(deleted)%%')
                     AND NOT(fn1.state_string LIKE '%%(pending_review)%%')'''
-            }).order_by('answer_count', 'last_activity_at')
+            }).order_by('visible_answer_count', 'last_activity_at')
 
 class QuestionListPaginatorContext(pagination.PaginatorContext):
     def __init__(self, id='QUESTIONS_LIST', prefix='', pagesizes=(15, 30, 50), default_pagesize=30):

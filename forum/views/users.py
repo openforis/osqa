@@ -328,10 +328,18 @@ def report_user(request, id):
 ACTIVITY_EXCLUDED_TYPES = ("voteup", "votedown", "voteupcomment", "flag", "newpage", "editpage", "queueforreview")
 
 
+def orphaned_actions_q(prefix=''):
+    """Actions an imported forum left without what they describe: badge awards
+    without their award, actions on answers whose question was removed."""
+    return (Q(**{prefix + 'action_type': 'award', prefix + 'award': None})
+            | Q(**{prefix + 'node__node_type': 'answer', prefix + 'node__parent': None}))
+
+
 def visible_activity(user, viewer):
     """`user`'s actions shown in their profile to `viewer`: none about posts
     held for review that `viewer` may not see."""
-    return review.visible_to(user.actions.exclude(action_type__in=ACTIVITY_EXCLUDED_TYPES), viewer, prefix='node__')
+    actions = user.actions.exclude(action_type__in=ACTIVITY_EXCLUDED_TYPES).exclude(orphaned_actions_q())
+    return review.visible_to(actions, viewer, prefix='node__')
 
 
 def _profile_tab_counts(user, can_view_private):
@@ -443,7 +451,8 @@ def user_view(template, tab_name, tab_title, tab_description, private=False, tab
 def user_profile(request, user, **kwargs):
     questions = Question.objects.visible_to(request.user).filter(author=user).order_by('-added_at') \
         .prefetch_cached(fks=('last_activity_by',), counts=('answer_count', 'accepted_count'))
-    answers = Answer.objects.visible_to(request.user).filter(author=user).order_by('-added_at') \
+    # Answers whose question was removed in an imported forum have no page to link to.
+    answers = Answer.objects.visible_to(request.user).filter(author=user, parent__isnull=False).order_by('-added_at') \
         .prefetch_cached(fks=('parent',))
 
     # Check whether the passed slug matches the one for the user object
@@ -527,7 +536,7 @@ def reputation_graph_points(user, now=None):
 def user_reputation(request, user, **kwargs):
     graph_data = json.dumps(reputation_graph_points(user))
 
-    rep = list(user.reputes.filter(action__canceled=False).order_by('-date')[0:20])
+    rep = list(user.reputes.filter(action__canceled=False).exclude(orphaned_actions_q('action__')).order_by('-date')[0:20])
     prefetch_cached_fk(rep, 'action')
     for repute, action in zip(rep, prefetch_activity([r.action for r in rep])):
         repute.leaf_action = action
@@ -537,7 +546,8 @@ def user_reputation(request, user, **kwargs):
 @user_view('users/votes.html', 'votes', _lazy('votes'), _lazy('user vote record'), True)
 def user_votes(request, user, **kwargs):
     votes = list(user.votes.exclude(node__state_string__contains="(deleted").filter(
-            node__node_type__in=("question", "answer")).order_by('-voted_at')[:USERS_PAGE_SIZE])
+            node__node_type__in=("question", "answer")).exclude(
+            node__node_type="answer", node__parent=None).order_by('-voted_at')[:USERS_PAGE_SIZE])
     # The posts and, for answers, their questions: from the object cache, not one query per row.
     prefetch_cached_fk(votes, 'node')
     prefetch_cached_fk([vote.node for vote in votes if vote._meta.get_field('node').is_cached(vote)], 'parent')

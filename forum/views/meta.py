@@ -4,7 +4,7 @@ from itertools import groupby
 
 import django.contrib.admin
 from django.shortcuts import render
-from django.http import HttpResponseRedirect, HttpResponse, Http404
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseBadRequest, Http404
 from django.views.static import serve
 from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_exempt
@@ -199,6 +199,12 @@ def page(request, exception=None):
     'sidebar': sidebar,
     'base': base,
     })
+
+
+def bad_request(request, exception=None):
+    """400 page without Django's CSRF check: an unknown Host header is refused
+    before SessionMiddleware runs, and CSRF_USE_SESSIONS needs the session."""
+    return HttpResponseBadRequest('<h1>Bad Request (400)</h1>')
 
 
 def error_handler(request):
