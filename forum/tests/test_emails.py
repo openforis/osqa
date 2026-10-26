@@ -99,8 +99,9 @@ class ManagementCommandsTest(OSQATestCase):
 class DigestTest(EmailTestCase):
     def setUp(self):
         super().setUp()
-        self.prefs(self.bob, send_digest=False)
-        self.carol = self.create_user('carol', email_isvalid=False)  # digest on, but not validated
+        self.prefs(self.alice, send_digest=True)
+        self.carol = self.create_user('carol', email_isvalid=False)
+        self.prefs(self.carol, send_digest=True)  # digest on, but not validated
         self.addCleanup(setattr, EMAIL_DIGEST_FLAG, '_temp', None)
         self.set_setting(EMAIL_DIGEST_FLAG, {'LAST_DAILY': datetime.datetime.now() - datetime.timedelta(hours=1)})
         self.question = self.ask(self.bob, 'How do I import plots from a shapefile?')
@@ -315,7 +316,7 @@ class UnsubscribeUndoTest(EmailTestCase):
         return changed, self.prefs(self.alice)
 
     def test_every_scope(self):
-        self.prefs(self.alice, member_joins='i')
+        self.prefs(self.alice, member_joins='i', send_digest=True)
         checks = {
             'all': lambda p: p.enable_notifications,
             'mentions': lambda p: p.notify_reply_to_comments,

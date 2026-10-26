@@ -15,6 +15,7 @@ except:
     from email.MIMEImage import MIMEImage
     from email.Header import Header
 
+from email.utils import formataddr
 from django.core.mail import DNS_NAME
 from smtplib import SMTP
 from smtplib import SMTPRecipientsRefused
@@ -74,16 +75,14 @@ def create_and_send_mail_messages(messages, sender_data=None, reply_to=None):
         errors.append('No email server is set (Email host is empty), so no email was sent.')
         return errors
 
-    sender = Header(str(settings.APP_SHORT_NAME), 'utf-8')
-    
     if sender_data == None:
-        sender.append('<%s>' % str(settings.DEFAULT_FROM_EMAIL))
-        sender = u'%s <%s>' % (str(settings.APP_SHORT_NAME), str(settings.DEFAULT_FROM_EMAIL))
+        sender_name, sender_email = str(settings.APP_SHORT_NAME), str(settings.DEFAULT_FROM_EMAIL)
     else:
-        sender.append('<%s>' % str(sender_data['email']))
-        sender = u'%s <%s>' % (str(sender_data['name']), str(sender_data['email']))
-        
-    
+        sender_name, sender_email = str(sender_data['name']), str(sender_data['email'])
+    # formataddr encodes only the name: a header encoded as a whole hides the
+    # address, and Amazon SES refuses it ("Missing final '@domain'").
+    sender = formataddr((sender_name, sender_email))
+
     if reply_to == None:
         reply_to = str(settings.DEFAULT_REPLY_TO_EMAIL)
     else:
@@ -91,9 +90,6 @@ def create_and_send_mail_messages(messages, sender_data=None, reply_to=None):
 
     try:
         connection = None
-
-        if sender is None:
-            sender = str(settings.DEFAULT_FROM_EMAIL)
 
         for message in messages:
             recipient, subject, html, text, media = message[:5]
@@ -106,8 +102,7 @@ def create_and_send_mail_messages(messages, sender_data=None, reply_to=None):
             msgRoot['Subject'] = Header(subject, 'utf-8')
             msgRoot['From'] = sender
 
-            to = Header(u"%s <%s>" % (recipient.username, recipient.email), 'utf-8')
-            msgRoot['To'] = to
+            msgRoot['To'] = formataddr((recipient.username, recipient.email))
 
             if reply_to:
                 msgRoot['Reply-To'] = reply_to
@@ -131,7 +126,7 @@ def create_and_send_mail_messages(messages, sender_data=None, reply_to=None):
                 msgRoot.attach(msgImage)
 
             try:
-                connection.sendmail(sender, [recipient.email], msgRoot.as_string())
+                connection.sendmail(sender_email, [recipient.email], msgRoot.as_string())
                 metrics.count('osqa_emails_sent_total')
             except SMTPRecipientsRefused as e:
                 error("Email address not accepted.  Exception: %s" % e)

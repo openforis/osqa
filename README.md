@@ -67,6 +67,7 @@ Step-by-step guides:
 - Email digests and summaries: run `cron/send_email_alerts` once a day (e.g. at 07:00); it
   also sends the weekly summaries on their day, so weekly needs no cron line of its own.
 - Dormant (bot) accounts: run `cron/cleanup_inactive_users` daily (see "Spam sign-ups" below).
+- Expired sessions: run `cron/clearsessions` daily; Django never removes them from the database otherwise.
 - Accept reminders: run `cron/remind_unaccepted` daily (see "Notifications, community health and support dashboard" below).
 - Questions for experts: run `cron/refresh_tag_expertise` daily (see "Questions for you" below).
 - AI assistant (optional, `ai` module): run `cron/build_knowledge_index` nightly and
@@ -441,7 +442,7 @@ should we email you?"):
 The per-kind switches still decide which kinds are collected. Mentions stay
 immediate unless the member unticks "Send mentions right away"; account
 emails (sign-in links, validation) are always immediate. The daily digest of
-new questions (`send_digest`) is a separate email, unchanged.
+new questions (`send_digest`, off until the member turns it on) is a separate email.
 
 `send_email_alerts` should run once a day. Daily summaries go out on every
 run (at most one a day per member); weekly ones on the weekday set in Admin >
@@ -595,6 +596,13 @@ link to the revisions; saving again replaces their version.
     `SENTRY_RELEASE` (default `osqa@<git commit>`; for Docker pass
     `--build-arg SENTRY_RELEASE=...`) and `SENTRY_TRACES_SAMPLE_RATE`
     (performance tracing, default 0).
+  - Without `SENTRY_DSN`, the DSN can be set under Admin > External Keys >
+    "Sentry error reporting" (with the environment and whether browser
+    errors are reported too), and "Send a test error" checks it. Each server
+    process starts reporting on its next request after saving, and the
+    scheduled commands when they start; errors from before, and while the site
+    starts or can't reach its database, are missed. A DSN set on the server
+    wins, so use that for production.
   - Blocked content (CSP reports) arrives as warnings.
   - Flood protection: each visitor (signed-in user, or IP address) sends at
     most `SENTRY_MAX_EVENTS_PER_VISITOR` events per hour (default 10) from

@@ -46,11 +46,13 @@ class ClientIPMiddleware:
             forwarded = [ip.strip() for ip in request.META.get('HTTP_X_FORWARDED_FOR', '').split(',') if ip.strip()]
             if forwarded:
                 request.META['REMOTE_ADDR'] = forwarded[-min(proxies, len(forwarded))]
-        if request.path_info == '/healthz':
+        # Probes may be configured with a trailing slash (AWS load balancers, for one).
+        path = request.path_info.rstrip('/')
+        if path == '/healthz':
             return health(request)
-        if request.path_info in ('/readyz', '/metrics'):
+        if path in ('/readyz', '/metrics'):
             from forum.views.ops import ENDPOINTS
-            return ENDPOINTS[request.path_info](request)
+            return ENDPOINTS[path](request)
         return self.get_response(request)
 
 

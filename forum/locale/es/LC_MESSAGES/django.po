@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: OSQA (Open Foris edition)\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-21 06:01-0400\n"
+"Report-Msgid-Bugs-To: https://github.com/openforis/osqa/issues\n"
+"POT-Creation-Date: 2026-10-26 04:22-0400\n"
 "PO-Revision-Date: 2026-10-14 12:00+0000\n"
 "Last-Translator: Open Foris <https://github.com/openforis/osqa>\n"
 "Language-Team: Spanish <https://github.com/openforis/osqa>\n"
@@ -329,6 +329,10 @@ msgstr "recibió"
 
 msgid "suspended"
 msgstr "suspendido"
+
+#, python-format
+msgid "%(user)s reported a user"
+msgstr "%(user)s denunció a un usuario"
 
 #, python-format
 msgid "%(user)s reported %(reported)s : %(msg)s"
@@ -1511,6 +1515,75 @@ msgstr "Mencione Google Analytics en su página de privacidad."
 
 msgid "statistics tracking gtag ga4 visitors"
 msgstr "estadísticas seguimiento gtag ga4 visitantes"
+
+msgid "Enter the DSN as Sentry shows it: https://<key>@<host>/<project number>."
+msgstr "Escriba el DSN tal como lo muestra Sentry: https://<clave>@<host>/<número de proyecto>."
+
+msgid "Sentry DSN"
+msgstr "DSN de Sentry"
+
+msgid "The DSN of a Sentry project, from Sentry's <strong>Settings &gt; Projects &gt; Client Keys (DSN)</strong>."
+msgstr "El DSN de un proyecto de Sentry, en <strong>Settings &gt; Projects &gt; Client Keys (DSN)</strong> de Sentry."
+
+msgid "sentry errors crashes monitoring bugs exceptions logging"
+msgstr "sentry errores fallos monitorización excepciones registro"
+
+msgid "Also report errors in visitors' browsers"
+msgstr "Informar también de los errores en los navegadores de los visitantes"
+
+msgid "JavaScript errors on the pages, at most 10 an hour from each visitor. The DSN is then visible in the pages' source, as Sentry intends; set a rate limit on the key in Sentry."
+msgstr "Errores de JavaScript en las páginas, como máximo 10 por hora de cada visitante. El DSN queda entonces visible en el código de las páginas, como prevé Sentry; ponga un límite de frecuencia a la clave en Sentry."
+
+msgid "sentry javascript browser frontend"
+msgstr "sentry javascript navegador frontend"
+
+msgid "Sentry environment"
+msgstr "Entorno de Sentry"
+
+msgid "Shown with each error in Sentry, to tell this site from a test copy, e.g. production or staging."
+msgstr "Se muestra con cada error en Sentry, para distinguir este sitio de una copia de prueba, p. ej. production o staging."
+
+msgid "sentry environment staging production"
+msgstr "sentry entorno staging production pruebas producción"
+
+msgid "Reporting with the DSN set on the server (SENTRY_DSN), which also catches errors while the site starts. The fields below are not used while it is set."
+msgstr "Se informa con el DSN definido en el servidor (SENTRY_DSN), que también capta los errores mientras el sitio arranca. Los campos de abajo no se usan mientras esté definido."
+
+msgid "The sentry-sdk package is not installed on the server: pip install -r requirements.txt."
+msgstr "El paquete sentry-sdk no está instalado en el servidor: pip install -r requirements.txt."
+
+msgid "This doesn't look like a DSN, which looks like https://<key>@<host>/<project number>."
+msgstr "Esto no parece un DSN, que tiene la forma https://<clave>@<host>/<número de proyecto>."
+
+msgid "Errors are reported from now on: each server process starts reporting on its next request. Errors from before, and while the site starts or can't reach its database, are only reported with SENTRY_DSN set on the server."
+msgstr "Los errores se informan a partir de ahora: cada proceso del servidor empieza a informar en su próxima petición. Los errores anteriores, y los que ocurren mientras el sitio arranca o no puede acceder a su base de datos, solo se informan con SENTRY_DSN definido en el servidor."
+
+msgid "Sentry error reporting"
+msgstr "Informes de errores con Sentry"
+
+msgid "Sends the details of every error on the site (on the server, and optionally in visitors' browsers) to Sentry, which groups them and emails you, so you hear about problems before members report them. Passwords, cookies, email and IP addresses are never sent; members are identified by their number only."
+msgstr "Envía a Sentry los detalles de cada error del sitio (en el servidor y, si lo desea, en los navegadores de los visitantes); Sentry los agrupa y le avisa por correo, para que conozca los problemas antes de que los miembros los comuniquen. Nunca se envían contraseñas, cookies, direcciones de correo ni direcciones IP; los miembros se identifican solo por su número."
+
+msgid "Create a free account on <a href=\"https://sentry.io/signup/\">sentry.io</a> (or use your own Sentry server) and create a project of type <strong>Django</strong>."
+msgstr "Cree una cuenta gratuita en <a href=\"https://sentry.io/signup/\">sentry.io</a> (o use su propio servidor Sentry) y cree un proyecto de tipo <strong>Django</strong>."
+
+msgid "Copy its DSN from <strong>Settings &gt; Projects &gt; (your project) &gt; Client Keys (DSN)</strong> into the field below and save."
+msgstr "Copie su DSN de <strong>Settings &gt; Projects &gt; (su proyecto) &gt; Client Keys (DSN)</strong> en el campo de abajo y guarde."
+
+msgid "Press <strong>Send a test error</strong>: the test should appear under <strong>Issues</strong> in Sentry within a minute."
+msgstr "Pulse <strong>Enviar un error de prueba</strong>: la prueba debería aparecer en <strong>Issues</strong> en Sentry en menos de un minuto."
+
+msgid "For complete reporting, also set <code>SENTRY_DSN</code> on the server (environment variable or settings_local.py) and restart it: only then are errors while the site starts reported too. It replaces the value here."
+msgstr "Para informes completos, defina también <code>SENTRY_DSN</code> en el servidor (variable de entorno o settings_local.py) y reinícielo: solo así se informan también los errores mientras el sitio arranca. Sustituye al valor de aquí."
+
+msgid "Send a test error"
+msgstr "Enviar un error de prueba"
+
+msgid "Sentry for Django"
+msgstr "Sentry para Django"
+
+msgid "sentry errors crashes monitoring exceptions"
+msgstr "sentry errores fallos monitorización excepciones"
 
 msgid "FAQ page"
 msgstr "Página de preguntas frecuentes"
@@ -9277,6 +9350,13 @@ msgstr "Páginas personalizadas"
 
 msgid "Tools"
 msgstr "Herramientas"
+
+msgid "Sentry isn't set up yet: enter its DSN and save first."
+msgstr "Sentry aún no está configurado: primero escriba su DSN y guarde."
+
+#, python-format
+msgid "Test event sent (id %(id)s). It should appear under Issues in your Sentry project within a minute; if it doesn't, check the DSN and that the server can reach Sentry."
+msgstr "Evento de prueba enviado (id %(id)s). Debería aparecer en Issues de su proyecto de Sentry en menos de un minuto; si no aparece, compruebe el DSN y que el servidor pueda conectarse con Sentry."
 
 msgid "Questions Graph"
 msgstr "Gráfico de preguntas"

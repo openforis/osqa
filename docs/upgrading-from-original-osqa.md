@@ -143,7 +143,10 @@ sudo systemctl start osqa
 `import_original_osqa` prints every table with its row count. It refuses to
 run on a database that already has data, and when any table's count differs
 from the old one it stops and imports nothing. Columns that only exist in the
-new version get their defaults. What's left out: content types and
+new version get their defaults. Settings that only fit the old server are
+reset: maintenance mode (the final dump is taken in it) is turned off, and the
+upload and exporter folders go back to the defaults when the old paths don't
+exist here. What's left out: content types and
 permissions are recreated by `migrate` (OSQA doesn't use Django permissions),
 OpenID tables and the South history are gone, and old sessions are dropped,
 so everyone signs in again once.
@@ -232,6 +235,10 @@ and footer.
 Site settings came across with the database (they are stored in it). Review
 these, because the old values may not fit the new version:
 
+- **Folders:** if uploads live elsewhere than the default `forum/upfiles/`,
+  set the folder under Admin > File upload settings (the import reset it to
+  the default). Other settings may still hold old server paths:
+  ``SELECT `key` FROM forum_keyvalue WHERE value LIKE '%/opt/%'``.
 - **Email settings:** SMTP server, sender; send a test.
 - **External keys:**
   - Create new OAuth apps for Google/GitHub/Facebook sign-in with the new

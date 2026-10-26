@@ -74,9 +74,8 @@ class ServerReportingTest(OSQATestCase):
         client = Client(raise_request_exception=False)
         client.force_login(alice)
         client.cookies['sessionid'] = client.cookies['sessionid'].value
-        middleware = djsettings.MIDDLEWARE + ['forum.middleware.sentry.SentryUserMiddleware']
-        with override_settings(MIDDLEWARE=middleware), \
-                mock.patch('forum.views.meta.render', side_effect=RuntimeError('template exploded')):
+        # SentryUserMiddleware is in MIDDLEWARE whenever sentry-sdk is installed.
+        with mock.patch('forum.views.meta.render', side_effect=RuntimeError('template exploded')):
             response = client.post('/about/', {'password': 'hunter2'}, HTTP_USER_AGENT='Test')
         self.assertEqual(response.status_code, 500)
 
@@ -90,10 +89,9 @@ class ServerReportingTest(OSQATestCase):
             self.assertNotIn(secret, serialized)
 
     def fail_pages(self, client, times):
-        middleware = djsettings.MIDDLEWARE + ['forum.middleware.sentry.SentryUserMiddleware']
         def explode(*args, **kwargs):
             raise RuntimeError('template exploded')  # a new exception each time, like real failures
-        with override_settings(MIDDLEWARE=middleware), mock.patch('forum.views.meta.render', side_effect=explode):
+        with mock.patch('forum.views.meta.render', side_effect=explode):
             for _ in range(times):
                 self.assertEqual(client.get('/about/').status_code, 500)
 
@@ -134,3 +132,111 @@ class ServerReportingTest(OSQATestCase):
         self.assertEqual(event['level'], 'warning')
         self.assertEqual(event['message'], 'CSP blocked https://cdn.example/x.js (script-src-elem)')
         self.assertEqual(event['fingerprint'], ['csp', 'script-src-elem', 'https://cdn.example/x.js'])
+
+
+class AdminDsnTest(OSQATestCase):
+    """The DSN set under Admin > External Keys, used without SENTRY_DSN."""
+    def setUp(self):
+        super().setUp()
+        from forum.utils import sentry
+        self.sentry = sentry
+        self.addCleanup(self.reset)
+
+    def reset(self):
+        self.sentry._admin_client['dsn'] = ''
+        sentry_sdk.init()  # back to a disabled client
+        from forum import settings
+        for setting in (settings.ERROR_REPORTING_DSN, settings.ERROR_REPORTING_BROWSER):
+            setting._temp = None
+
+    def set_dsn(self, dsn, browser=True):
+        from forum import settings
+        settings.ERROR_REPORTING_DSN.set_value(dsn)
+        settings.ERROR_REPORTING_BROWSER.set_value(browser)
+
+    def start(self):
+        """As the middleware does on a request, with a transport that keeps the events."""
+        transport = CapturingTransport()
+        self.sentry.ensure_admin_client(transport=transport)
+        return transport
+
+    def test_valid_dsn(self):
+        self.assertTrue(self.sentry.valid_dsn(DSN))
+        self.assertTrue(self.sentry.valid_dsn('https://k@sentry.openforis.org:9000/3'))
+        for value in ('', 'not a dsn', 'https://o77.ingest.sentry.io/42', 'https://abc@o77.ingest.sentry.io/'):
+            self.assertFalse(self.sentry.valid_dsn(value), value)
+
+    def test_server_errors_are_reported_after_saving(self):
+        transport = self.start()
+        self.assertFalse(self.sentry.server_reporting())  # nothing set yet
+        self.set_dsn(DSN)
+        transport = self.start()
+        self.assertTrue(self.sentry.server_reporting())
+        self.assertIn('forum.middleware.sentry.SentryUserMiddleware', djsettings.MIDDLEWARE)
+        client = Client(raise_request_exception=False)
+        with mock.patch('forum.views.meta.render', side_effect=RuntimeError('template exploded')):
+            self.assertEqual(client.get('/about/').status_code, 500)
+        self.assertEqual(len(transport.events), 1)
+        self.assertEqual(transport.events[0]['environment'], 'production')
+
+        # Cleared: the client stops.
+        self.set_dsn('')
+        self.sentry.ensure_admin_client()
+        self.assertFalse(self.sentry.server_reporting())
+        self.assertIsNone(sentry_sdk.get_client().dsn)
+
+    def test_browser_reporting_follows_the_admin(self):
+        self.set_dsn(DSN)
+        response = self.client.get('/')
+        self.assertContains(response, 'sentry-config')
+        self.assertIn('https://o77.ingest.de.sentry.io', response['Content-Security-Policy'].split('connect-src')[1]
+                      .split(';')[0])
+        self.set_dsn(DSN, browser=False)
+        response = self.client.get('/')
+        self.assertNotContains(response, 'sentry-config')
+        self.assertNotIn('sentry.io', response['Content-Security-Policy'])
+
+    @override_settings(SENTRY_DSN='https://server@o1.ingest.sentry.io/1', SENTRY_FRONTEND_DSN='https://server@o1.ingest.sentry.io/1')
+    def test_the_server_dsn_wins(self):
+        self.set_dsn(DSN)
+        self.assertEqual(self.sentry.frontend_dsn(), 'https://server@o1.ingest.sentry.io/1')
+        self.sentry.ensure_admin_client()
+        self.assertEqual(self.sentry._admin_client['dsn'], '')  # the admin's is not started
+        admin = self.create_user('admin', is_superuser=True, is_staff=True)
+        self.login(admin)
+        section = dict((s['key'], s) for s in self.client.get('/admin/settings/extkeys/').context['sections'])['sentry']
+        self.assertEqual(section['state'], 'on')
+        self.assertIn('set on the server', section['message'])
+
+    def test_admin_page_status_and_validation(self):
+        admin = self.create_user('admin', is_superuser=True, is_staff=True)
+        self.login(admin)
+        sections = lambda: dict((s['key'], s) for s in self.client.get('/admin/settings/extkeys/').context['sections'])
+        self.assertEqual(sections()['sentry']['state'], 'off')
+        self.assertContains(self.client.get('/admin/settings/extkeys/'), 'form="action-sentry-0"')
+        self.set_dsn(DSN)
+        self.assertEqual(sections()['sentry']['state'], 'on')
+        # A value that isn't a DSN is refused.
+        from forum.settings.base import Setting
+        data = dict((s.name, s.value) for s in Setting.sets['extkeys'] if not isinstance(s.value, bool))
+        data.update({'ERROR_REPORTING_DSN': 'my-project-key', 'submit': 'Save'})
+        response = self.client.post('/admin/settings/extkeys/', data)
+        self.assertContains(response, 'Enter the DSN as Sentry shows it')
+        self.assertEqual(self.sentry.admin_config()['dsn'], DSN)
+
+    def test_send_a_test_error(self):
+        admin = self.create_user('admin', is_superuser=True, is_staff=True)
+        self.login(admin)
+        response = self.client.post('/admin/sentry-test/', follow=True)
+        self.assertContains(response, 'set up yet: enter its DSN and save first')
+        self.set_dsn(DSN)
+        transport = self.start()
+        response = self.client.post('/admin/sentry-test/', follow=True)
+        self.assertContains(response, 'Test event sent')
+        self.assertEqual(transport.events[-1]['message'], 'Test event from OSQA (Admin > External Keys)')
+        self.assertEqual(self.client.get('/admin/sentry-test/').status_code, 405)
+        # Superusers only.
+        self.login(self.create_user('moderator', is_staff=True))
+        count = len(transport.events)
+        self.client.post('/admin/sentry-test/')
+        self.assertEqual(len(transport.events), count)

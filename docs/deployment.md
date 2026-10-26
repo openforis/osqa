@@ -40,7 +40,7 @@ committed and is mounted into the container in Docker setups. Set:
 | `CACHES` | memcached, see the `.dist` file | Shared cache |
 | `TIME_ZONE` | `'Europe/Rome'` | Dates are stored in this zone. **When moving an existing forum, keep the old value**, or every date shifts |
 | `LANGUAGE_CODE` | `'en'` | Interface language |
-| `SENTRY_DSN` (optional) | `'https://<key>@o<org>.ingest.sentry.io/<project>'` | Server and browser error reports (see the README) |
+| `SENTRY_DSN` (optional) | `'https://<key>@o<org>.ingest.sentry.io/<project>'` | Server and browser error reports (see the README). Can also be set under Admin > External Keys, which misses errors while the site starts |
 | `DISABLED_MODULES` | `['recaptcha', 'project_badges']` | Optional modules to switch off |
 | `METRICS_TOKEN` (optional, or env) | a long random string | Turns on Prometheus metrics at `/metrics` (see [Monitoring](#monitoring-with-prometheus)) |
 | `LOG_FORMAT` (optional, or env) | `'json'` | One JSON object per line on standard output (see [Logs](#logs-and-request-ids)) |
@@ -303,6 +303,8 @@ PY=/srv/osqa/venv/bin/python
 # daily run: no separate weekly line), and clean-up of dormant (bot) and never-confirmed accounts
 0 7 * * *   cd $OSQA && $PY manage.py send_email_alerts
 45 6 * * *  cd $OSQA && $PY manage.py cleanup_inactive_users
+# Expired sessions (database sessions are kept until this runs)
+50 6 * * *  cd $OSQA && $PY manage.py clearsessions
 0 7 * * *   cd $OSQA && $PY manage.py remind_unaccepted
 # Expertise per tag (who is asked to answer new questions, "Questions for you")
 20 5 * * *  cd $OSQA && $PY manage.py refresh_tag_expertise
@@ -525,7 +527,7 @@ How it works (`forum/utils/metrics.py`):
   (`forum/utils/cron.py`; the commands themselves are not changed: a hook on
   Django's `BaseCommand.execute`, enabled from `forum/apps.py`, records the
   commands listed in `CRON_COMMANDS`; by default `send_email_alerts`,
-  `remind_unaccepted`, `cleanup_inactive_users`, `build_knowledge_index`,
+  `remind_unaccepted`, `cleanup_inactive_users`, `clearsessions`, `build_knowledge_index`,
   `suggest_answers`, `backup_site`, `rebuild_search_index` and
   `refresh_tag_expertise`; `--dry-run`
   runs aren't recorded).
@@ -585,6 +587,10 @@ scrape_configs:
   format, with client IPs. Leave it out if the proxy logs requests already.
 - **Text logs** (the default outside containers) are unchanged:
   `log/django.osqa.log` and `log/security.log`.
+- **Unknown host names:** requests whose `Host` isn't in `ALLOWED_HOSTS`
+  get a plain 400 and nothing is logged (Django's `django.security.DisallowedHost`
+  logger is silenced; give it handlers in `LOGGING` to see them). If every
+  page answers 400 after a deployment, check `ALLOWED_HOSTS`.
 
 ## Backups and restore
 

@@ -235,8 +235,9 @@ class NewQuestionAndDigestEmailTest(EmailTestCase):
         self.assertEqual(self.mail_to(self.alice), [])
 
     def test_daily_digest(self):
-        self.prefs(self.bob, send_digest=False)
+        self.prefs(self.alice, send_digest=True)
         carol = self.create_user('carol', email_isvalid=False)
+        self.prefs(carol, send_digest=True)
         self.set_setting(EMAIL_DIGEST_FLAG, {'LAST_DAILY': datetime.datetime.now() - datetime.timedelta(hours=1)})
         question = self.create_question(self.bob, 'What resolution do Sentinel-2 mosaics have?')
         self.sent_mail.clear()

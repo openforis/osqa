@@ -1,9 +1,15 @@
+import base64
 import datetime
 import json
 import re
+import zlib
+
+from django.core.cache import cache
+from django.db import connection
+from django.test import override_settings
 
 from forum.actions import VoteUpAction
-from forum.models import Question, User
+from forum.models import Action, ActionRepute, Answer, Node, Question, User
 from forum.views.users import reputation_graph_points
 
 from .base import OSQATestCase
@@ -17,6 +23,91 @@ class FocusedAnswerTest(OSQATestCase):
         for value in ('abc', '', '12x', '7'):
             with self.subTest(value=value):
                 self.assertCleanPage(self.client.get(question.get_absolute_url(), {'focusedAnswerId': value}))
+
+
+class UnansweredSortTest(OSQATestCase):
+    def test_unanswered_sort_lists_questions_with_fewer_answers_first(self):
+        alice = self.create_user('alice')
+        answered = Question(author=alice, title='An answered question', body='Body text', tagnames='one')
+        answered.save()
+        Answer(author=self.create_user('bob'), parent=answered, body='An answer long enough').save()
+        open_question = Question(author=alice, title='An open question', body='Body text', tagnames='one')
+        open_question.save()
+        for url in ('/questions/unanswered/?sort=unanswered', '/questions/?sort=unanswered', '/tags/one/?sort=unanswered'):
+            with self.subTest(url=url):
+                self.assertCleanPage(self.client.get(url))
+        html = self.client.get('/questions/?sort=unanswered').content.decode()
+        self.assertLess(html.index('An open question'), html.index('An answered question'))
+
+
+class BadRequestTest(OSQATestCase):
+    @override_settings(SECURE_SSL_REDIRECT=True)
+    def test_unknown_host_is_a_plain_400(self):
+        # SecurityMiddleware refuses the host before SessionMiddleware runs: the
+        # 400 page must not need the session (CSRF_USE_SESSIONS).
+        with self.assertNoLogs('forum.errors', level='ERROR'):
+            response = self.client.get('/', HTTP_HOST='scanner.example')
+        self.assertEqual(response.status_code, 400)
+
+    def test_autocomplete_without_query_is_a_400(self):
+        for url in ('/matching_users/', '/matching_tags/', '/matching_tags/?q=%20'):
+            with self.subTest(url=url):
+                self.assertEqual(self.client.get(url).status_code, 400)
+
+
+class ImportedLeftoversTest(OSQATestCase):
+    """Rows an imported forum left behind must not break profile pages."""
+
+    def setUp(self):
+        super().setUp()
+        self.alice = self.create_user('alice')
+        self.bob = self.create_user('bob', reputation=1000)
+        self.question = Question(author=self.alice, title='A question title', body='Body text', tagnames='one')
+        self.question.save()
+        answer = Answer(author=self.bob, parent=self.question, body='An answer whose question goes away')
+        answer.save()
+        self.imported_action(self.bob, 'answer', node=answer)
+        accepted = self.imported_action(self.alice, 'acceptanswer', node=answer)
+        ActionRepute(action=accepted, user=self.bob, value=15).save()
+        VoteUpAction(user=self.alice, node=answer, ip='127.0.0.1').save()
+        Node.objects.filter(id=answer.id).update(parent=None, abs_parent=None)
+        # A badge award whose Award row is gone.
+        self.imported_action(self.bob, 'award')
+        cache.clear()
+
+    def imported_action(self, user, action_type, node=None, extra=None):
+        """An action row as an import writes it (Action.save() would set its type and extra)."""
+        action = Action(user=user, node=node, ip='127.0.0.1')
+        action.save()
+        with connection.cursor() as cursor:
+            cursor.execute('UPDATE forum_action SET action_type = %s, extra = %s WHERE id = %s',
+                           [action_type, extra, action.id])
+        return action
+
+    def assertProfilePagesClean(self, user):
+        with self.assertNoLogs(level='ERROR'):
+            for tab in ('', '/recent/', '/reputation/'):
+                with self.subTest(tab=tab):
+                    self.assertCleanPage(self.client.get(user.get_profile_url() + tab))
+
+    def test_answer_without_question_and_award_without_badge(self):
+        self.assertProfilePagesClean(self.bob)
+        self.login(self.alice)
+        with self.assertNoLogs(level='ERROR'):
+            self.assertCleanPage(self.client.get(self.alice.get_profile_url() + '/votes/'))
+
+    def test_other_activity_is_still_listed(self):
+        self.imported_action(self.alice, 'ask', node=self.question)
+        response = self.client.get(self.alice.get_profile_url() + '/recent/')
+        self.assertContains(response, 'A question title')
+
+    def test_report_from_the_original_osqa(self):
+        # A pickle naming a function Django no longer has (Django 1.6 model pickles).
+        legacy = base64.b64encode(zlib.compress(b'cdjango.db.models.base\nsimple_class_factory\n.')).decode()
+        self.imported_action(self.alice, 'report', extra=legacy)
+        cache.clear()
+        self.assertProfilePagesClean(self.alice)
+        self.assertContains(self.client.get(self.alice.get_profile_url() + '/recent/'), 'reported a user')
 
 
 class ReputationGraphDataTest(OSQATestCase):

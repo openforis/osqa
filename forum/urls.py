@@ -212,6 +212,7 @@ core_urls = [
     # The admin used to have two layouts; old "switch" links go to the dashboard.
     re_path(r'^%s%s$' % ('admin/', 'switch_interface/'), app.admin.interface_switch, name='admin_switch_interface'),
     re_path(r'^admin/search/$', app.admin.search, name='admin_search'),
+    re_path(r'^admin/sentry-test/$', app.admin.sentry_test, name='admin_sentry_test'),
     re_path(r'^%s%s$' % ('admin/', 'statistics/'), app.admin.statistics, name='admin_statistics'),
     re_path(r'^%s%s$' % ('admin/', 'denormalize/'), app.admin.recalculate_denormalized, name='admin_denormalize'),
     re_path(r'^%s%s$' % ('admin/', 'go_bootstrap/'), app.admin.go_bootstrap, name='admin_go_bootstrap'),
@@ -272,8 +273,12 @@ urlpatterns += core_defined
 if djsettings.DEBUG:
     try:
         import debug_toolbar
+        from forum.utils.static_files import serve_file
+        # Its CSS and JS live under STATIC_URL, which only Django's (unused) staticfiles app would serve.
+        toolbar_media = os.path.join(os.path.dirname(debug_toolbar.__file__), 'static', 'debug_toolbar')
         urlpatterns = [
             re_path(r'^__debug__/', include(debug_toolbar.urls)),
+            re_path(r'^m/static/debug_toolbar/(?P<path>.*)$', serve_file, {'document_root': toolbar_media}),
         ] + urlpatterns
     except ImportError:
         pass

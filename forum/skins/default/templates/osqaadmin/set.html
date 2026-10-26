@@ -7,7 +7,8 @@ up (steps, values to copy, links) and its settings; the settings no section
 lists come last. osqaadmin/guides/<set name>.html, when it exists, is shown
 above the form (guide_template). Every row has the id setting-<NAME>, which
 the admin search links to; the filter box (osqa.admin.js) hides the rows
-and sections that don't match.
+and sections that don't match. A section's actions (a test button) submit
+forms of their own, after the settings form.
 {% endcomment %}
 
 {% block subtitle %}{{ form.set.title }}{% endblock %}
@@ -64,6 +65,11 @@ and sections that don't match.
                 <p class="admin-visually-hidden" role="status"></p>
             </details>
             {% endif %}
+            {% if section.actions %}
+            <div class="admin-guide-actions">
+                {% for label, url, form_id in section.actions %}<button type="submit" class="button" form="{{ form_id }}">{{ label }}</button>{% endfor %}
+            </div>
+            {% endif %}
             <table class="admin-form-table admin-settings-table">
                 {{ section.rows }}
             </table>
@@ -97,4 +103,8 @@ and sections that don't match.
         </div>
         {% if form.set.can_preview %}<p class="admin-preview-note">{% trans "Preview opens the site in a new tab with these values, for you only, until you save them or discard the preview." %}</p>{% endif %}
     </form>
+    {# The sections' action buttons are in the settings form; they submit these (forms can't nest). #}
+    {% for section in sections %}{% for label, url, form_id in section.actions %}
+    <form id="{{ form_id }}" method="post" action="{{ url }}" hidden>{% csrf_token %}</form>
+    {% endfor %}{% endfor %}
 {% endblock %}

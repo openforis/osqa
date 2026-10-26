@@ -121,11 +121,11 @@ class EmailSettingsTest(E2ETestCase):
             page.click('.email-master button')
         self.assertTrue(User.objects.get(id=self.bob.id).subscription_settings.enable_notifications)
 
-        page.uncheck('#id_send_digest')
+        page.check('#id_send_digest')
         with page.expect_navigation():
             page.click('.email-settings-form [type=submit]')
         self.check_page(page)
-        self.assertFalse(User.objects.get(id=self.bob.id).subscription_settings.send_digest)
+        self.assertTrue(User.objects.get(id=self.bob.id).subscription_settings.send_digest)
 
     def test_unsubscribe_link_from_an_email(self):
         self.create_answer(self.bob, self.question)  # emails alice, who follows her question

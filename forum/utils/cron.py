@@ -19,7 +19,7 @@ from django.conf import settings as djsettings
 log = logging.getLogger(__name__)
 
 DEFAULT_COMMANDS = (
-    'send_email_alerts', 'remind_unaccepted', 'cleanup_inactive_users',
+    'send_email_alerts', 'remind_unaccepted', 'cleanup_inactive_users', 'clearsessions',
     'build_knowledge_index', 'suggest_answers', 'backup_site', 'rebuild_search_index', 'refresh_tag_expertise',
 )
 KEY_PREFIX = 'ops.cron.'
@@ -73,6 +73,12 @@ def install():
         name = command_name(self)
         if not (getattr(self, 'record_last_run', False) or name in tracked_commands()) or options.get('dry_run'):
             return original(self, *args, **options)
+        # Errors of the scheduled commands reach Sentry when its DSN is set in the admin.
+        try:
+            from forum.utils.sentry import ensure_admin_client
+            ensure_admin_client()
+        except Exception:
+            pass
         started = time.time()
         try:
             result = original(self, *args, **options)

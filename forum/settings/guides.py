@@ -37,7 +37,7 @@ SECTIONS = {}
 
 class Section:
     def __init__(self, key, title, settings, summary='', steps=(), copy=(), links=(),
-                 keywords='', status=None, extra=None, weight=100):
+                 keywords='', status=None, extra=None, weight=100, actions=()):
         self.key = key
         self.title = title
         self.settings = tuple(settings)
@@ -53,6 +53,8 @@ class Section:
         self.extra = extra
         # Lower comes first on the page.
         self.weight = weight
+        # (label, url name) buttons that POST to a view of their own, e.g. a test.
+        self.actions = tuple(actions)
 
     def __repr__(self):
         return '<Section %s>' % self.key

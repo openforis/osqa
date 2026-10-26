@@ -219,6 +219,26 @@ def dashboard(request):
     return ('osqaadmin/dashboard.html', pagination.paginated(
         request, ("recent_activity", ActivityPaginatorContext()), context))
 
+@super_user_required
+@require_POST
+def sentry_test(request):
+    """Sends a test event to Sentry (Admin > External Keys > Sentry error
+    reporting), with the DSN set on the server or in the admin."""
+    from forum.utils import sentry
+    back = reverse('admin_set', args=['extkeys']) + '#section-sentry'
+    sentry.ensure_admin_client()
+    if not sentry.server_reporting():
+        messages.error(request, _("Sentry isn't set up yet: enter its DSN and save first."))
+        return HttpResponseRedirect(back)
+    import sentry_sdk
+    event_id = sentry_sdk.capture_message(
+        'Test event from %s (Admin > External Keys)' % settings.APP_SHORT_NAME, level='info')
+    sentry_sdk.flush(timeout=5)
+    messages.info(request, escape(_("Test event sent (id %(id)s). It should appear under Issues in your Sentry project "
+                                    "within a minute; if it doesn't, check the DSN and that the server can reach "
+                                    "Sentry.") % {'id': event_id}))
+    return HttpResponseRedirect(back)
+
 @admin_page
 def search(request):
     """Settings and admin pages matching ?q= (forum/utils/admin_search.py)."""
@@ -371,6 +391,8 @@ def guide_sections(setting_set, form, request=None):
             'copy': [(label, str(value).replace('{app_url}', str(settings.APP_URL).rstrip('/')))
                      for label, value in section.copy],
             'links': section.links,
+            'actions': [(label, reverse(url_name), 'action-%s-%d' % (section.key, i))
+                        for i, (label, url_name) in enumerate(section.actions)],
             'rows': form.as_table(names),
             'extra': section.extra(request) if section.extra else '',
         })
