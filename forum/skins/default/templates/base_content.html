@@ -4,7 +4,7 @@
 <html lang="{{ LANGUAGE_CODE }}"{% display_attrs %}>
     <head>{% block after_head_js %}{% endblock %}
         <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         {% pwa_head %}
         {% theme_head %}
         <meta name="csrf-token" content="{{ csrf_token }}" />
@@ -80,6 +80,7 @@
         <script defer src="{% media "/media/js/osqa.searchbox.js" %}"></script>
         <script defer src="{% media "/media/js/osqa.avatars.js" %}"></script>
         <script defer src="{% media "/media/js/osqa.scrolltabs.js" %}"></script>
+        <script defer src="{% media "/media/js/osqa.appbar.js" %}"></script>
         {% if settings.DARK_MODE %}<script defer src="{% media "/media/js/osqa.theme.js" %}"></script>{% endif %}
         {% shortcuts_enabled as shortcuts_on %}{% if shortcuts_on %}<script defer src="{% media "/media/js/osqa.shortcuts.js" %}"></script>{% endif %}
         {% if user_messages %}
@@ -152,6 +153,7 @@
         {% block endjs %}
         {% endblock %}
         </div>
+        {% include "display/app_bar.html" %}
 
         <!-- Put all elements with fixed position here, IE6 fixed position fix: http://ryanfait.com/position-fixed-ie6/ -->
         <div class="notify" role="status" style="display:none">

@@ -210,7 +210,9 @@ class ShortcutsTest(E2ETestCase):
         for device, dark in (('desktop', False), ('mobile', True)):
             page = self.open(self.bob, device=device, dark=dark)
             self.visit(page, '/')
-            page.focus('#nav_questions')
+            # On a phone the header's tabs give way to the tab bar.
+            start = 'nav_questions' if device == 'desktop' else 'app-bar-questions'
+            page.focus('#' + start)
             page.keyboard.press('Shift+?')
             page.wait_for_selector('#shortcuts-dialog[open]')
             self.assertTrue(page.evaluate("document.activeElement.matches('#shortcuts-dialog .shortcuts-close')"))
@@ -227,7 +229,7 @@ class ShortcutsTest(E2ETestCase):
                                 'the focus left the dialog after %s' % key)
             page.keyboard.press('Escape')
             self.assertFalse(page.evaluate("document.getElementById('shortcuts-dialog').open"))
-            self.assertEqual(self.active(page), 'nav_questions')
+            self.assertEqual(self.active(page), start)
             # The close button.
             page.keyboard.press('?')
             page.click('#shortcuts-dialog .shortcuts-close')

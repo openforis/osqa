@@ -3237,6 +3237,295 @@ div.comment-tools a:hover {
 
 }
 
+/* ---- Phones: app layout -------------------------------------------- */
+
+/* On phones the site works like an app: a tab bar at the bottom
+   (display/app_bar.html, osqa.appbar.js) replaces the header's tabs and
+   "ask a question" button, the header is the logo and the account icons
+   over the search field (about, faq and logout move to the bar's More
+   menu), and pages run edge to edge. --app-bar-height is the room the bar
+   takes at the bottom (0 on wider screens): whatever is fixed or sticky at
+   the bottom (messages, the live banner, the post menu) sits above it. */
+:root {
+    --app-bar-height: 0px;
+}
+
+.app-bar {
+    display: none;
+}
+
+@media (max-width: 640px) {
+    :root {
+        --app-bar-height: calc(61px + env(safe-area-inset-bottom, 0px));
+    }
+
+    /* Focused controls scroll out from under the bar (WCAG 2.4.11). */
+    html {
+        scroll-padding-bottom: calc(var(--app-bar-height) + 8px);
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+        padding-bottom: var(--app-bar-height);
+    }
+
+    #roof {
+        padding: calc(8px + env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px)) 10px
+            max(12px, env(safe-area-inset-left, 0px));
+        gap: 6px 8px;
+    }
+
+    #roof #nav, #top a.top-link-more {
+        display: none;
+    }
+
+    #top {
+        gap: 2px;
+    }
+
+    #top a.top-link-login, #top a.top-link-login:hover {
+        padding: 7px 16px;
+        border: 1px solid var(--border-strong);
+        border-radius: 999px;
+        background: var(--surface);
+        color: var(--brand);
+        font-weight: 600;
+    }
+
+    #roof #searchBar {
+        margin: 0;
+    }
+
+    #wrapper {
+        padding: 0;
+    }
+
+    #room {
+        gap: 8px;
+        padding: 0 0 8px;
+    }
+
+    #CARight {
+        gap: 8px;
+    }
+
+    /* The padding stays 14px 12px: rows reach the edges with -12px margins. */
+    #CALeft, #CAFull {
+        border-width: 0 0 1px;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    #command-loader, #command-loader.success {
+        bottom: calc(var(--app-bar-height) + 12px);
+    }
+
+    .app-bar {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 70;
+        display: flex;
+        align-items: stretch;
+        padding: 4px max(4px, env(safe-area-inset-right, 0px)) calc(4px + env(safe-area-inset-bottom, 0px))
+            max(4px, env(safe-area-inset-left, 0px));
+        border-top: 1px solid var(--border);
+        background: var(--surface);
+        box-shadow: 0 -2px 12px rgba(16, 24, 40, .06);
+    }
+
+    .app-bar-item, .app-bar-item:hover {
+        flex: 1 1 0;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        height: 52px;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        border-radius: 12px;
+        background: none;
+        color: var(--muted);
+        font: inherit;
+        font-size: 11px;
+        font-weight: 600;
+        line-height: 1.2;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .app-bar-item:focus-visible {
+        outline: 2px solid var(--brand);
+        outline-offset: -2px;
+    }
+
+    .app-bar-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 56px;
+        height: 30px;
+        border-radius: 999px;
+        transition: background-color .15s;
+    }
+
+    .app-bar-label {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .app-bar-item[aria-current="page"] {
+        color: var(--brand);
+    }
+
+    .app-bar-item[aria-current="page"] .app-bar-icon, .app-bar-item:active .app-bar-icon {
+        background: var(--brand-soft);
+    }
+
+    .app-bar-ask .app-bar-icon, .app-bar-ask[aria-current="page"] .app-bar-icon {
+        background: var(--accent);
+        color: #fff;
+        box-shadow: 0 2px 6px rgba(16, 24, 40, .2);
+    }
+
+    .app-bar-ask:active .app-bar-icon {
+        background: var(--accent-dark);
+    }
+
+    /* The More menu: a sheet that slides up from the bottom. */
+    .app-sheet[open] {
+        position: fixed;
+        inset: auto 0 0;
+        width: 100%;
+        max-width: none;
+        max-height: 85dvh;
+        margin: 0;
+        padding: 0 0 calc(12px + env(safe-area-inset-bottom, 0px));
+        overflow: auto;
+        border: 0;
+        border-radius: 16px 16px 0 0;
+        background: var(--surface);
+        color: var(--text);
+        box-shadow: 0 -10px 40px rgba(0, 0, 0, .25);
+        animation: osqa-sheet-up .22s ease-out;
+    }
+
+    .app-sheet::backdrop {
+        background: rgba(16, 24, 40, .5);
+    }
+
+    .app-sheet-head {
+        position: sticky;
+        top: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 8px 2px 20px;
+        background: var(--surface);
+    }
+
+    /* The grab handle. */
+    .app-sheet-head::before {
+        content: "";
+        position: absolute;
+        top: 6px;
+        left: 50%;
+        width: 36px;
+        height: 4px;
+        margin-left: -18px;
+        border-radius: 2px;
+        background: var(--border-strong);
+    }
+
+    .app-sheet-head h2 {
+        margin: 0;
+        font-size: 18px;
+    }
+
+    .app-sheet-close, .app-sheet-close:hover {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        border: 0;
+        border-radius: 999px;
+        background: none;
+        color: var(--muted);
+    }
+
+    .app-sheet-close:active {
+        background: var(--hover-overlay);
+    }
+
+    .app-sheet-list {
+        margin: 4px 0;
+        padding: 0 8px;
+        list-style: none;
+    }
+
+    .app-sheet-list + .app-sheet-list {
+        padding-top: 4px;
+        border-top: 1px solid var(--border);
+    }
+
+    .app-sheet-list a {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-height: 48px;
+        padding: 0 14px;
+        border-radius: 10px;
+        color: var(--text);
+        font-size: 16px;
+        text-decoration: none;
+    }
+
+    /* A chevron at the end of each row. */
+    .app-sheet-list a::after {
+        content: "";
+        width: 7px;
+        height: 7px;
+        margin: 0 4px 0 auto;
+        border-top: 2px solid var(--muted);
+        border-right: 2px solid var(--muted);
+        transform: rotate(45deg);
+    }
+
+    .app-sheet-list a:active {
+        background: var(--hover-overlay);
+    }
+
+    .app-sheet-list a[aria-current="page"] {
+        background: var(--brand-soft);
+        color: var(--brand);
+        font-weight: 600;
+    }
+}
+
+@keyframes osqa-sheet-up {
+    from {
+        transform: translateY(100%);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .app-sheet[open] {
+        animation: none;
+    }
+
+    .app-bar-icon {
+        transition: none;
+    }
+}
+
 /* ---- Tag autocomplete dropdown ------------------------------------- */
 
 .ui-widget.ui-autocomplete.osqa-autocomplete {
@@ -4153,7 +4442,7 @@ button.version-confirm-button:hover, button.version-undo-button:hover {
    being written. */
 .live-banner {
     position: fixed;
-    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(16px + max(var(--app-bar-height), env(safe-area-inset-bottom, 0px)));
     left: 50%;
     z-index: 60;
     max-width: calc(100% - 32px);
@@ -5176,7 +5465,7 @@ ul.question-tags-list .tag-number {
         position: fixed;
         top: auto;
         right: 12px;
-        bottom: 12px;
+        bottom: calc(12px + var(--app-bar-height));
         left: 12px;
         min-width: 0;
         max-width: none;
@@ -7457,7 +7746,7 @@ a.badge-awardee img.gravatar {
         position: sticky;
         top: auto;
         right: auto;
-        bottom: 0;
+        bottom: var(--app-bar-height);
         left: auto;
         z-index: 60;
         width: auto;
@@ -10504,8 +10793,10 @@ li.similar-item {
     font-size: 12px;
 }
 
+/* Hidden until the script counts, but its room is kept: the fields under it
+   don't jump when the count appears (layout shift on a phone). */
 .compose-editor-footer:has(.editor-metrics:empty) {
-    display: none;
+    visibility: hidden;
 }
 
 /* ---- Tags as chips (osqa.tagchips.js) ---- */
@@ -10924,6 +11215,12 @@ li.tag-chip {
     }
 
     .compose-preview-head {
+        display: none;
+    }
+
+    /* The Preview tab shows it (osqa.compose.js); hidden from the first paint,
+       so the fields under it don't jump up when the script starts. */
+    .compose-page:not(.is-previewing) .compose-preview {
         display: none;
     }
 
@@ -12822,6 +13119,11 @@ ul.related-tags li {
         flex-basis: 100%;
     }
 
+    .for-you-item.is-requested {
+        margin: 0 -12px;
+        padding: 0 12px;
+    }
+
     .list-footer {
         margin: 4px -12px -14px;
         padding: 12px;
@@ -12857,6 +13159,9 @@ ul.related-tags li {
 
     #CARight .boxA, #CARight .boxC {
         padding: 14px 16px;
+        border-width: 1px 0;
+        border-radius: 0;
+        box-shadow: none;
     }
 }
 
@@ -13278,12 +13583,12 @@ input:is([type="checkbox"], [type="radio"]):focus-visible {
    over the end of the screen: with this padding the browser scrolls a
    focused control above them instead of leaving it underneath. */
 html:has(#live-banner:not(:empty)) {
-    scroll-padding-bottom: 88px;
+    scroll-padding-bottom: calc(88px + var(--app-bar-height));
 }
 
 /* ...and the end of the page can scroll up from under the banner. */
 html:has(#live-banner:not(:empty)) body {
-    padding-bottom: 88px;
+    padding-bottom: calc(88px + var(--app-bar-height));
 }
 
 /* On wider screens the messages float over the bottom right corner. */
@@ -13293,7 +13598,7 @@ html:has(.notify:not([style*="none"])) {
 
 @media (max-width: 640px) {
     html:has(.notify:not([style*="none"])) {
-        scroll-padding-bottom: 120px;
+        scroll-padding-bottom: calc(120px + var(--app-bar-height));
     }
 }
 
