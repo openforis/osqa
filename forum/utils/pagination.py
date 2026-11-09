@@ -8,7 +8,6 @@ from django.utils.encoding import smart_str
 from urllib.parse import quote as urlquote
 from django.utils.safestring import mark_safe
 from django.utils.html import strip_tags
-import logging
 
 def generate_uri(querydict, exclude=None):
     all = []
@@ -109,9 +108,6 @@ class PaginatorContext:
                 try:
                     pagesize = int(request.GET[self.PAGESIZE])
                 except ValueError:
-                    logging.error('Found invalid page size "%s", loading %s, refered by %s' % (
-                        request.GET.get(self.PAGESIZE, ''), request.path, request.META.get('HTTP_REFERER', 'UNKNOWN')
-                    ))
                     raise Http404()
 
                 session_prefs[self.PAGESIZE] = pagesize
@@ -129,9 +125,6 @@ class PaginatorContext:
         try:
             return int(request.GET.get(self.PAGE, "1").strip())
         except ValueError:
-            logging.error('Found invalid page number "%s", loading %s, refered by %s' % (
-                request.GET.get(self.PAGE, ''), request.path, request.META.get('HTTP_REFERER', 'UNKNOWN')
-            ))
             raise Http404()
 
     def sort(self, request, session_prefs=None):
@@ -201,9 +194,7 @@ def _paginated(request, objects, context):
     try:
         page_obj = paginator.page(page)
     except EmptyPage:
-        logging.error('Found invalid page number "%s", loading %s, refered by %s' % (
-            request.GET.get(context.PAGE, ''), request.path, request.META.get('HTTP_REFERER', 'UNKNOWN')
-        ))
+        # A page past the end (old links, crawlers): a 404, which Django already logs as a warning.
         raise Http404()
 
     if context.base_path:

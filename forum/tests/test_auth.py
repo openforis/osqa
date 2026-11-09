@@ -56,6 +56,12 @@ class LocalAuthTest(OSQATestCase):
         self.client.post('/account/signout/')
         self.assertIsNone(self.logged_in_user_id())
 
+    def test_signin_without_fields_redirects(self):
+        # Sentry OSQA-3: a GET (no username field) crashed with a 500
+        response = self.client.get('/account/local/signin/')
+        self.assertRedirects(response, '/account/signin/', fetch_redirect_response=False)
+        self.assertIsNone(self.logged_in_user_id())
+
     def test_sign_in_with_email_address(self):
         user = self.create_user('carol', password='right-pass')
         self.client.post('/account/local/signin/', {'username': 'Carol@Example.com', 'password': 'right-pass'})

@@ -9,7 +9,7 @@ from django.db import connection
 from django.test import override_settings
 
 from forum.actions import VoteUpAction
-from forum.models import Action, ActionRepute, Answer, Node, Question, User
+from forum.models import Action, ActionRepute, Answer, Comment, Node, Question, User
 from forum.views.users import reputation_graph_points
 
 from .base import OSQATestCase
@@ -95,6 +95,15 @@ class ImportedLeftoversTest(OSQATestCase):
         self.login(self.alice)
         with self.assertNoLogs(level='ERROR'):
             self.assertCleanPage(self.client.get(self.alice.get_profile_url() + '/votes/'))
+
+    def test_comment_without_post(self):
+        # Sentry OSQA-B: describing the comment crashed on its missing parent.
+        comment = Comment(author=self.alice, parent=self.question, body='A comment whose post goes away')
+        comment.save()
+        self.imported_action(self.alice, 'comment', node=comment)
+        Node.objects.filter(id=comment.id).update(parent=None, abs_parent=None)
+        cache.clear()
+        self.assertProfilePagesClean(self.alice)
 
     def test_other_activity_is_still_listed(self):
         self.imported_action(self.alice, 'ask', node=self.question)

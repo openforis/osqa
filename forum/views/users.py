@@ -330,9 +330,9 @@ ACTIVITY_EXCLUDED_TYPES = ("voteup", "votedown", "voteupcomment", "flag", "newpa
 
 def orphaned_actions_q(prefix=''):
     """Actions an imported forum left without what they describe: badge awards
-    without their award, actions on answers whose question was removed."""
+    without their award, actions on answers or comments whose post was removed."""
     return (Q(**{prefix + 'action_type': 'award', prefix + 'award': None})
-            | Q(**{prefix + 'node__node_type': 'answer', prefix + 'node__parent': None}))
+            | Q(**{prefix + 'node__node_type__in': ('answer', 'comment'), prefix + 'node__parent': None}))
 
 
 def visible_activity(user, viewer):
