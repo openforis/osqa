@@ -3,7 +3,9 @@ The phone's bottom tab bar (shown at 640px and narrower, osqa.css section 2
 "Phones: app layout"): the main sections, Ask in the middle, and More, which
 opens the menu sheet (a modal <dialog>, media/js/osqa.appbar.js) with every
 page tab of the header, help pages and the account links. On phones it
-replaces the header's tabs and "ask a question" button. Members see their
+replaces the header's tabs and "ask a question" button. On a question page
+that takes answers (answer_here, question.html) the middle button is
+Answer: it jumps to the answer form and puts the cursor in it. Members see their
 unread notifications on More and in the sheet, kept current by
 osqa.notifications.js ([data-unread-badge], [data-unread-number],
 [data-unread-label]).
@@ -17,10 +19,17 @@ osqa.notifications.js ([data-unread-badge], [data-unread-number],
         <span class="app-bar-icon"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12V4a1 1 0 0 1 1-1h8l9 9-9 9z"/><circle cx="8" cy="8" r="1.5"/></svg></span>
         <span class="app-bar-label">{% trans "Tags" %}</span>
     </a>
-    <a class="app-bar-item app-bar-ask" id="app-bar-ask" href="{{ ask_url }}"{% if request.path == ask_url %} aria-current="page"{% endif %}>
+    {% if answer_here %}
+    <a class="app-bar-item app-bar-ask" id="app-bar-answer" href="#fmanswer">
+        <span class="app-bar-icon"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg></span>
+        <span class="app-bar-label">{% trans "Answer" %}</span>
+    </a>
+    {% else %}
+        <a class="app-bar-item app-bar-ask" id="app-bar-ask" href="{{ ask_url }}"{% if request.path == ask_url %} aria-current="page"{% endif %}>
         <span class="app-bar-icon"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
         <span class="app-bar-label">{% trans "Ask" %}</span>
     </a>
+    {% endif %}
     <a class="app-bar-item" id="app-bar-users" href="{% url "users" %}"{% if tab == "users" %} aria-current="page"{% endif %}>
         <span class="app-bar-icon"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.2a6.5 6.5 0 0 1 3.5 5.8"/></svg></span>
         <span class="app-bar-label">{% trans "Users" %}</span>

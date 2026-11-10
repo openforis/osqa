@@ -125,6 +125,11 @@ def post_controls(post, user):
     menu = []
     post_type = post.node_type
 
+    # Share: the phone's share sheet, or the link copied (osqa.main.js); a plain link without JavaScript.
+    if post_type == "question":
+        controls.append(post_control(_('share'), post.get_absolute_url(), title=_("Share this question"),
+                                     extra_classes=['post-share']))
+
     # We show the link tool if the post is an Answer. It is visible to Guests too.
     if post_type == "answer":
         # Answer permanent link tool

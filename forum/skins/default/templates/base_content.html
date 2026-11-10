@@ -69,7 +69,8 @@
                 discard: "{% trans "Discard" %}",
                 upload_url: "{% url "upload" %}",
                 uploading: "{% trans "Uploading" %}",
-                upload_failed: "{% trans "The image could not be uploaded." %}"
+                upload_failed: "{% trans "The image could not be uploaded." %}",
+                link_copied: "{% trans "Link copied" %}"
             }
         /*]]>*/
         </script>
@@ -153,7 +154,7 @@
         {% block endjs %}
         {% endblock %}
         </div>
-        {% include "display/app_bar.html" %}
+        {% block app_bar %}{% include "display/app_bar.html" %}{% endblock %}
 
         <!-- Put all elements with fixed position here, IE6 fixed position fix: http://ryanfait.com/position-fixed-ie6/ -->
         <div class="notify" role="status" style="display:none">

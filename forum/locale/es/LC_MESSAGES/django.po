@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OSQA (Open Foris edition)\n"
 "Report-Msgid-Bugs-To: https://github.com/openforis/osqa/issues\n"
-"POT-Creation-Date: 2026-11-09 19:29-0500\n"
+"POT-Creation-Date: 2026-11-09 19:43-0500\n"
 "PO-Revision-Date: 2026-10-14 12:00+0000\n"
 "Last-Translator: Open Foris <https://github.com/openforis/osqa>\n"
 "Language-Team: Spanish <https://github.com/openforis/osqa>\n"
@@ -3987,6 +3987,9 @@ msgstr "Subiendo"
 msgid "The image could not be uploaded."
 msgstr "No se ha podido subir la imagen."
 
+msgid "Link copied"
+msgstr "Enlace copiado"
+
 msgid "Skip to content"
 msgstr "Saltar al contenido"
 
@@ -4229,6 +4232,9 @@ msgstr "Principal"
 
 msgid "Questions"
 msgstr "Preguntas"
+
+msgid "Answer"
+msgstr "Responder"
 
 msgid "Ask"
 msgstr "Preguntar"
@@ -4505,6 +4511,9 @@ msgstr "Contenido con licencia"
 
 msgid "This Q&amp;A software is free and open source (GPL). Any organisation can run it for its own community: get the code and instructions at <a href=\"https://github.com/openforis/osqa\">github.com/openforis/osqa</a>."
 msgstr "Este software de preguntas y respuestas (Q&amp;A) es libre y de código abierto (GPL). Cualquier organización puede utilizarlo para su propia comunidad: obtenga el código y las instrucciones en <a href=\"https://github.com/openforis/osqa\">github.com/openforis/osqa</a>."
+
+msgid "Back"
+msgstr "Atrás"
 
 msgid "back to home page"
 msgstr "volver a la página de inicio"
@@ -8465,6 +8474,12 @@ msgstr "Leerla"
 
 msgid "The new posts are shown."
 msgstr "Se muestran las publicaciones nuevas."
+
+msgid "share"
+msgstr "compartir"
+
+msgid "Share this question"
+msgstr "Compartir esta pregunta"
 
 msgid "permanent link"
 msgstr "enlace permanente"
