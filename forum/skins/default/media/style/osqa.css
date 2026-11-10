@@ -3416,6 +3416,50 @@ div.comment-tools a:hover {
         animation: osqa-sheet-up .22s ease-out;
     }
 
+    .app-sheet[open] {
+        overscroll-behavior: contain;
+    }
+
+    /* Dragged down by its head (osqa.appbar.js), it follows the finger. */
+    .app-sheet.is-dragging {
+        transition: none;
+    }
+
+    .app-sheet.is-settling {
+        transition: transform .18s ease-out;
+    }
+
+    .app-sheet-head {
+        touch-action: none;
+    }
+
+    /* While typing, the keyboard needs the room. */
+    body:has(:is(input:not([type="checkbox"], [type="radio"], [type="submit"], [type="button"], [type="reset"]), textarea,
+                 select, [contenteditable="true"]):focus) .app-bar {
+        display: none;
+    }
+
+    /* A question in a list opens with a tap anywhere on its row; the tags
+       and the author stay links of their own. */
+    .question-row {
+        position: relative;
+    }
+
+    .question-row h2 a::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+    }
+
+    .question-row .tags a, .question-row .userinfo a, .question-row .review-badge {
+        position: relative;
+        z-index: 1;
+    }
+
+    .question-row:has(h2 a:active) {
+        background: var(--hover-overlay);
+    }
+
     .app-sheet::backdrop {
         background: rgba(16, 24, 40, .5);
     }
@@ -3517,8 +3561,9 @@ div.comment-tools a:hover {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .app-sheet[open] {
+    .app-sheet[open], .app-sheet.is-settling {
         animation: none;
+        transition: none;
     }
 
     .app-bar-icon {

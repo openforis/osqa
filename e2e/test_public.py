@@ -60,16 +60,52 @@ class PublicPagesTest(E2ETestCase):
         self.assertTrue(sheet.evaluate('el => el.contains(document.activeElement)'))
         self.assertIn('Sign in', sheet.inner_text())
         page.keyboard.press('Escape')
-        page.wait_for_function("document.getElementById('app-more').getAttribute('aria-expanded') === 'false'")
+        page.wait_for_selector('#app-more[aria-expanded=false]', state='attached')
         self.assertFalse(sheet.is_visible())
         self.assertEqual(page.evaluate('document.activeElement.id'), 'app-more')
         more.click()
         page.mouse.click(195, 40)
         self.assertFalse(sheet.is_visible())
+        # Dragged down by its head with a finger, it closes; a short drag doesn't.
+        cdp = page.context.new_cdp_session(page)
+
+        def drag(distance):
+            more.click()
+            page.wait_for_selector('#app-more-sheet[open]')
+            page.wait_for_timeout(400)   # it slides up
+            head = page.locator('.app-sheet-head h2').bounding_box()
+            x, y = head['x'] + head['width'] + 40, head['y'] + head['height'] / 2
+            cdp.send('Input.dispatchTouchEvent', {'type': 'touchStart', 'touchPoints': [{'x': x, 'y': y}]})
+            for step in range(1, 11):
+                cdp.send('Input.dispatchTouchEvent', {'type': 'touchMove',
+                                                      'touchPoints': [{'x': x, 'y': y + distance * step / 10}]})
+                page.wait_for_timeout(30)
+            cdp.send('Input.dispatchTouchEvent', {'type': 'touchEnd', 'touchPoints': []})
+            page.wait_for_timeout(300)
+        drag(20)
+        self.assertTrue(sheet.is_visible())
+        self.assertEqual(sheet.evaluate('el => getComputedStyle(el).transform'), 'none')
+        page.keyboard.press('Escape')
+        drag(400)
+        self.assertFalse(sheet.is_visible())
         more.click()
         with page.expect_navigation():
             sheet.get_by_role('link', name='Unanswered').click()
         self.assertTrue(page.url.endswith('/questions/unanswered/'), page.url)
+        # A tap anywhere on a question's row opens it; its tags stay links.
+        row = page.locator('.question-row').first
+        with page.expect_navigation():
+            row.locator('.summary').click(force=True)   # Playwright sees the row's link would take it
+        self.assertIn('/questions/%d/' % self.unanswered.id, page.url)
+        self.visit(page, '/questions/')
+        with page.expect_navigation():
+            page.locator('.question-row .tags a').first.click()
+        self.assertIn('/tags/', page.url)
+        # While typing, the bar makes room for the keyboard.
+        page.locator('#keywords').focus()
+        self.assertFalse(page.locator('nav.app-bar').is_visible())
+        page.locator('#keywords').blur()
+        self.assertTrue(page.locator('nav.app-bar').is_visible())
         # Not on wider screens: the header keeps its tabs there.
         desktop = self.open()
         self.visit(desktop, '/')

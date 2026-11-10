@@ -1034,7 +1034,9 @@ variables (`--brand`, `--accent`, ... at the start of its section 2).
 On phones (640px wide and narrower) the forum works like an app: a tab bar
 at the bottom (Questions, Tags, Ask, Users, More) replaces the header's tabs
 and "ask a question" button, More opens a menu sheet with every section, the
-help pages and the account links, and pages run edge to edge
+help pages and the account links (a sheet that closes with Escape, a tap
+outside or a swipe down), and pages run edge to edge. A tap anywhere on a
+question's row opens it, and the bar steps aside while the keyboard is up
 (`display/app_bar.html`, `media/js/osqa.appbar.js`).
 
 Admin > Look and feel changes the common things without writing CSS:
