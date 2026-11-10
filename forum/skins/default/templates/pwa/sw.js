@@ -41,7 +41,8 @@
    the same tag (one question) replace each other. `notificationclick`
    brings a forum tab to the front and opens the URL in it, or opens a new
    window. Only URLs of this site are opened. Signing out (the sign-out
-   navigation above) also unsubscribes this browser from push.
+   navigation above) also unsubscribes this browser from push. A push also
+   sets the unread count on the installed app's icon (Badging API).
 */
 'use strict';
 
@@ -233,8 +234,24 @@ self.addEventListener('push', event => {
         renotify: true,
         data: {url: siteUrl(text(data.url, 500) || NOTIFICATIONS_URL), id: Number(data.id) || null},
     };
-    event.waitUntil(self.registration.showNotification(text(data.title, 100) || APP_NAME, options));
+    event.waitUntil(Promise.all([
+        self.registration.showNotification(text(data.title, 100) || APP_NAME, options),
+        updateBadge(),
+    ]));
 });
+
+// The unread count on the installed app's icon (Badging API), as the bell shows it.
+async function updateBadge() {
+    if (!self.navigator.setAppBadge) return;
+    try {
+        const response = await fetch(NOTIFICATIONS_URL + 'count/', {credentials: 'same-origin', headers: {'Accept': 'application/json'}});
+        if (!response.ok) return;
+        const unread = Number((await response.json()).unread) || 0;
+        await (unread ? self.navigator.setAppBadge(unread) : self.navigator.clearAppBadge());
+    } catch (error) {
+        // offline or signed out: leave it
+    }
+}
 
 self.addEventListener('notificationclick', event => {
     event.notification.close();

@@ -234,6 +234,22 @@
         }
     }
 
+    // "Not now" on the asker's prompt (push/ask_prompt.html): not shown again for 30 days.
+    document.addEventListener('click', function (evt) {
+        var later = evt.target.closest && evt.target.closest('[data-push-prompt-later]');
+        if (!later) return;
+        try {
+            window.localStorage.setItem('osqa-push-prompt', String(Date.now()));
+        } catch (e) { /* private window: just hide it */ }
+        var prompt = later.closest('.push-prompt');
+        prompt.hidden = true;
+        var heading = document.querySelector('h1');
+        if (heading) {
+            heading.setAttribute('tabindex', '-1');
+            heading.focus({preventScroll: true});
+        }
+    });
+
     function start() {
         var boxes = document.querySelectorAll('[data-push-switch]');
         for (var i = 0; i < boxes.length; i++) {

@@ -108,6 +108,8 @@
 
     if (savedCopy) return;  // a saved copy: who it shows is not who is signed in now
     forgetPagesIfUserChanged();
+    // Signed out: no unread count on the app's icon (osqa.notifications.js sets it).
+    if (!user && navigator.clearAppBadge) navigator.clearAppBadge().catch(function () {});
     if ('serviceWorker' in navigator && window.isSecureContext) {
         window.addEventListener('load', function () {
             navigator.serviceWorker.register(root + 'sw.js', {scope: root}).catch(function () {});

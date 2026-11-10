@@ -1,0 +1,38 @@
+{% load i18n %}{% comment %}
+"Get a notification when someone answers" under the asker's question while it
+has no answers ({% push_prompt %}, push_tags.py). Hidden in the markup; the
+script right after it shows it before the first paint (no layout shift) when
+this browser can use push (or is an iPhone, where the switch explains the
+Home Screen), it isn't on here already (osqa-push-user, set by osqa.push.js)
+and "Not now" wasn't pressed in the last 30 days (osqa-push-prompt, osqa.push.js).
+{% endcomment %}{% if push_on %}
+<section class="push-prompt" id="push-prompt" aria-labelledby="push-prompt-title" data-user="{{ user.pk }}" hidden>
+    <div class="push-prompt-head">
+        <h2 id="push-prompt-title">{% trans "Get a notification when someone answers" %}</h2>
+        <button type="button" class="push-prompt-later plain-button" data-push-prompt-later>{% trans "Not now" %}</button>
+    </div>
+    <p class="push-prompt-text">{% trans "Your phone or computer tells you as soon as there is an answer, so you can come back, try it and accept it if it solves your problem." %}</p>
+    {% include "push/switch.html" %}
+</section>
+<script nonce="{{ csp_nonce }}">
+(function () {
+    var box = document.getElementById('push-prompt');
+    try {
+        var ua = navigator.userAgent || '';
+        var ios = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+        var can = window.isSecureContext && 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+        var on = false, later = 0;
+        try {
+            on = window.localStorage.getItem('osqa-push-user') === box.getAttribute('data-user');
+            later = Number(window.localStorage.getItem('osqa-push-prompt')) || 0;
+        } catch (e) { /* no storage: ask */ }
+        if (!(can || ios) || (can && Notification.permission === 'denied') || (on && can && Notification.permission === 'granted') ||
+                Date.now() - later < 30 * 24 * 3600 * 1000) {
+            return;
+        }
+        box.hidden = false;
+        box.querySelector('[data-push-switch]').hidden = false;
+    } catch (e) { /* leave it hidden */ }
+})();
+</script>
+{% endif %}

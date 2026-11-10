@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OSQA (Open Foris edition)\n"
 "Report-Msgid-Bugs-To: https://github.com/openforis/osqa/issues\n"
-"POT-Creation-Date: 2026-11-09 19:43-0500\n"
+"POT-Creation-Date: 2026-11-09 20:19-0500\n"
 "PO-Revision-Date: 2026-10-14 12:00+0000\n"
 "Last-Translator: Open Foris <https://github.com/openforis/osqa>\n"
 "Language-Team: Spanish <https://github.com/openforis/osqa>\n"
@@ -6602,6 +6602,15 @@ msgstr "Cambios en la política"
 
 msgid "This policy may change from time to time. Changes are published on this page."
 msgstr "Esta política puede cambiar con el tiempo. Los cambios se publican en esta página."
+
+msgid "Get a notification when someone answers"
+msgstr "Recibir un aviso cuando alguien responda"
+
+msgid "Not now"
+msgstr "Ahora no"
+
+msgid "Your phone or computer tells you as soon as there is an answer, so you can come back, try it and accept it if it solves your problem."
+msgstr "Su teléfono u ordenador le avisa en cuanto haya una respuesta, para que pueda volver, probarla y aceptarla si resuelve su problema."
 
 msgid "Notifications on your devices"
 msgstr "Notificaciones en sus dispositivos"

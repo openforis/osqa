@@ -2,7 +2,8 @@
    while the page is visible, and when the tab comes back into view. The
    phone's tab bar shows the same count (display/app_bar.html):
    [data-unread-badge] is hidden at 0, [data-unread-number] holds the number
-   and [data-unread-label] the words for screen readers. */
+   and [data-unread-label] the words for screen readers. The installed
+   app's icon gets the same number. */
 (function () {
     var bell = document.getElementById('notification-bell');
     if (!bell || !window.fetch) {
@@ -22,6 +23,11 @@
         document.querySelectorAll('[data-unread-label]').forEach(function (el) {
             el.textContent = count ? ', ' + bell.dataset.labelSome.replace('%(count)s', count) : '';
         });
+        // The installed app's icon shows the count too (Badging API; the
+        // service worker sets it when a push arrives).
+        if (navigator.setAppBadge) {
+            (count ? navigator.setAppBadge(count) : navigator.clearAppBadge()).catch(function () {});
+        }
     }
 
     function refresh() {

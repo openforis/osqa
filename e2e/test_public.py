@@ -161,6 +161,41 @@ class PublicPagesTest(E2ETestCase):
         self.assertEqual(fresh.url, self.url('/'))
         self.check_page(page)
 
+    def test_phone_header_slides_away_while_scrolling_down(self):
+        for i in range(15):
+            self.create_question(self.bob, 'Filler question number %d about exporting' % i)
+        page = self.open(device='mobile')
+        self.visit(page, '/')
+        roof = page.locator('#roof')
+
+        def on_screen():
+            box = roof.bounding_box()
+            return box['y'] + box['height'] > 1
+
+        page.mouse.wheel(0, 1200)
+        page.wait_for_function('() => document.documentElement.classList.contains("roof-away")')
+        page.wait_for_timeout(300)  # it slides
+        self.assertFalse(on_screen())
+        page.mouse.wheel(0, -150)
+        page.wait_for_function('() => !document.documentElement.classList.contains("roof-away")')
+        page.wait_for_timeout(300)
+        self.assertTrue(on_screen())
+        self.assertEqual(roof.bounding_box()['y'], 0)   # stuck at the top
+        # Back down, then the keyboard reaches the search box: it comes back.
+        page.mouse.wheel(0, 600)
+        page.wait_for_function('() => document.documentElement.classList.contains("roof-away")')
+        page.focus('#keywords')
+        page.wait_for_timeout(300)
+        self.assertTrue(on_screen())
+        # Its height keeps #anchors and focused things clear of it.
+        self.assertEqual(page.evaluate('getComputedStyle(document.documentElement).getPropertyValue("--roof-height")'),
+                         '%dpx' % roof.evaluate('el => el.offsetHeight'))
+        # Not on wider screens.
+        desktop = self.open()
+        self.visit(desktop, '/')
+        self.assertEqual(desktop.locator('#roof').evaluate('el => getComputedStyle(el).position'), 'static')
+        self.check_page(page)
+
     def test_question_page_content(self):
         page = self.open()
         self.visit(page, self.question.get_absolute_url())
