@@ -103,14 +103,15 @@ self.addEventListener('activate', event => {
 
 self.addEventListener('fetch', event => {
     const request = event.request;
-    if (request.method !== 'GET') return;
     const url = new URL(request.url);
     if (url.origin !== self.location.origin) return;
     const path = sitePath(url);
-    if (request.mode === 'navigate' && SIGN_OUT.test(path)) {
+    // Signing out (the form POSTs): no saved pages, no more push on this browser.
+    if (request.mode === 'navigate' && SIGN_OUT.test(path) && (request.method === 'GET' || request.method === 'POST')) {
         event.waitUntil(Promise.all([caches.delete(PAGES), stopPush()]));
         return;
     }
+    if (request.method !== 'GET') return;
     if (NEVER.test(path)) return;
     if (MEDIA.test(path) && !request.headers.has('range')) {
         event.respondWith(url.searchParams.has('v') ? cacheFirst(event, request) : staleWhileRevalidate(event, request));

@@ -381,6 +381,10 @@ class DeclareNode(template.Node):
 def do_declare(parser, token):
     nodelist = parser.parse(('enddeclare',))
     parser.delete_first_token()
+    # The block is evaluated as Python: only literal text, so no value from a
+    # template variable (user data) can ever become code.
+    if any(not isinstance(node, template.base.TextNode) for node in nodelist):
+        raise template.TemplateSyntaxError("declare blocks take only plain text: no {{ variables }} or {% tags %}")
     return DeclareNode(nodelist)
 
 # Usage: {% random 1 999 %}

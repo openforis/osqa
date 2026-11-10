@@ -17,6 +17,7 @@ from django.db.models import Count
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
+from django.utils.html import escape
 from django.utils.translation import gettext as _, ngettext
 from django.views.decorators.http import require_POST
 
@@ -244,11 +245,11 @@ def act_on_post(request, id):
         done, count = delete_as_spam(request, node, author, suspend=suspend, purge=purge)
         text = ngettext("%(count)d post deleted as spam.", "%(count)d posts deleted as spam.", count) % {'count': count}
         if suspend and author.is_suspended():
-            text += ' ' + _("The account %s has been suspended.") % author.username
+            text += ' ' + _("The account %s has been suspended.") % escape(author.username)
         messages.info(request, text)
     elif action == 'suspend':
         done.append(suspend_author(request, author, _('Bad behaviour')))
-        messages.info(request, _("The account %s has been suspended.") % author.username)
+        messages.info(request, _("The account %s has been suspended.") % escape(author.username))
     elif action == 'dismiss':
         count = _dismiss_flags(node, request.user, _ip(request))
         _resolve_reports([node.id], request.user, 'dismissed')
@@ -275,16 +276,16 @@ def act_on_user(request, id):
         return HttpResponseRedirect(_next_url(request))
     if action == 'suspend':
         done.append(suspend_author(request, account, _('Reported by members')))
-        messages.info(request, _("The account %s has been suspended.") % account.username)
+        messages.info(request, _("The account %s has been suspended.") % escape(account.username))
     elif action == 'spam':
         done, count = delete_as_spam(request, None, account, suspend=True, purge=True)
-        messages.info(request, _("The account %s has been suspended.") % account.username + ' ' + ngettext(
+        messages.info(request, _("The account %s has been suspended.") % escape(account.username) + ' ' + ngettext(
             "%(count)d post deleted as spam.", "%(count)d posts deleted as spam.", count) % {'count': count})
     elif action != 'dismiss':
         messages.error(request, _("Unknown action."))
         return HttpResponseRedirect(_next_url(request))
     else:
-        messages.info(request, _("The reports about %s have been dismissed.") % account.username)
+        messages.info(request, _("The reports about %s have been dismissed.") % escape(account.username))
     # Handled either way: the reports leave the inbox (cancelled, by this moderator).
     for report in review.open_user_reports().get(account.id, []):
         report.cancel(request.user, ip=_ip(request))

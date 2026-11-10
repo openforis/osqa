@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OSQA (Open Foris edition)\n"
 "Report-Msgid-Bugs-To: https://github.com/openforis/osqa/issues\n"
-"POT-Creation-Date: 2026-11-09 20:19-0500\n"
+"POT-Creation-Date: 2026-11-10 06:23-0500\n"
 "PO-Revision-Date: 2026-10-14 12:00+0000\n"
 "Last-Translator: Open Foris <https://github.com/openforis/osqa>\n"
 "Language-Team: Spanish <https://github.com/openforis/osqa>\n"
@@ -3768,6 +3768,10 @@ msgstr "Se desactivó la verificación en dos pasos en su cuenta."
 
 msgid "New recovery codes were made for your account; the old ones no longer work."
 msgstr "Se crearon nuevos códigos de recuperación para su cuenta; los anteriores ya no funcionan."
+
+#, python-format
+msgid "Signing in with %(name)s was added to your account."
+msgstr "Se añadió a su cuenta el inicio de sesión con %(name)s."
 
 #, python-format
 msgid "An API token named “%(name)s” was created for your account."
@@ -9797,6 +9801,9 @@ msgstr ""
 msgid "delete posts"
 msgstr "eliminar publicaciones"
 
+msgid "Only a moderator can bring this post back."
+msgstr "Solo un moderador puede restaurar esta publicación."
+
 msgid "Enter the number of the original question or a link to it."
 msgstr "Introduzca el número de la pregunta original o un enlace a ella."
 
@@ -11634,6 +11641,9 @@ msgstr "Error al iniciar sesión. Introduzca un nombre de usuario y una contrase
 
 msgid "Login failed - LDAP bind error. Please contact your system administrator"
 msgstr "Error al iniciar sesión: error de enlace LDAP. Póngase en contacto con el administrador del sistema"
+
+msgid "An account with this username already exists on the forum. Please ask an administrator to link it to your directory account."
+msgstr "Ya existe en el foro una cuenta con este nombre de usuario. Pida a un administrador que la vincule a su cuenta del directorio."
 
 msgid "LDAP settings"
 msgstr "Configuración de LDAP"

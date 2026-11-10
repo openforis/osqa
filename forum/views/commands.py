@@ -237,6 +237,20 @@ def delete_comment(request, id):
     }
     }
 
+def _can_see(node, user):
+    """Whether `user` may see `node`: neither it nor the answer or question it
+    belongs to is deleted (unless they may see deleted posts), and it isn't
+    held for review from them."""
+    posts = [node]
+    for parent_id, attr in ((node.parent_id, 'parent'), (node.abs_parent_id, 'abs_parent')):
+        if parent_id and parent_id not in [p.id for p in posts]:
+            posts.append(getattr(node, attr))
+    for post in posts:
+        if post.nis.deleted and not user.can_view_deleted_post(post):
+            return False
+    return review.can_view(node, user)
+
+
 @decorate.withfn(command)
 def mark_favorite(request, id):
     node = get_object_or_404(Node, id=id)
@@ -249,6 +263,9 @@ def mark_favorite(request, id):
         favorite.cancel(ip=request.META['REMOTE_ADDR'])
         added = False
     except ObjectDoesNotExist:
+        # Only questions the member can see (favorites lists show their title and start).
+        if not _can_see(node, request.user):
+            raise Http404()
         FavoriteAction(node=node, user=request.user, ip=request.META['REMOTE_ADDR']).save()
         added = True
 
@@ -340,7 +357,7 @@ def node_markdown(request, id):
 
     node = get_object_or_404(Node, id=id)
 
-    if (node.nis.deleted and not user.can_view_deleted_post(node)) or not review.can_view(node, user):
+    if not _can_see(node, user):  # also under a deleted answer or question
         raise Http404()
 
     return HttpResponse(node.active_revision.body, content_type="text/plain")
@@ -416,6 +433,8 @@ def delete_post(request, id):
     ret = {'commands': {}}
 
     if post.nis.deleted:
+        if not user.can_undelete_post(post):
+            raise CommandException(_("Only a moderator can bring this post back."))
         post.nstate.deleted.cancel(user, ip=request.META['REMOTE_ADDR'])
         ret['commands']['unmark_deleted'] = [post.node_type, id]
     else:
@@ -590,7 +609,10 @@ def subscribe(request, id, user=None):
         subscription = QuestionSubscription.objects.get(question=question, user=user)
         subscription.delete()
         subscribed = False
-    except:
+    except QuestionSubscription.DoesNotExist:
+        # Only questions the member can see (the subscriptions list shows their title and start).
+        if not _can_see(question, user):
+            raise Http404()
         subscription = QuestionSubscription(question=question, user=user, auto_subscription=False)
         subscription.save()
         subscribed = True

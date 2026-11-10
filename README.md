@@ -41,7 +41,7 @@ site's dark mode setting): a header with links back to the site, to the
 moderation inbox (with the number of items waiting) and to sign out, and a menu
 of every settings page and tool (folded on phones). Settings pages and tools
 that modules add appear in the menu by themselves. Django's model admin is at
-`/nimda/`.
+`/nimda/` (staff signed in through the forum's sign-in only).
 
 `SECRET_KEY` can also come from the `OSQA_SECRET_KEY` environment variable; the
 site refuses to start without one.
@@ -531,8 +531,25 @@ link to the revisions; saving again replaces their version.
 - **Accounts:** sign-up, confirmation, passwords, sessions and deletion are
   described under [Accounts](#accounts) below.
 - **Sign-in:** after 5 wrong passwords an account's password sign-in pauses for
-  15 minutes, and one IP address may fail 20 times. The error never says
+  15 minutes, and one IP address may fail 20 times. Failures count against
+  the account the name signs in to, so spellings the database takes for the
+  same name (case and accents on MySQL) share one count. The error never says
   whether the username exists; the session gets a new key at sign-in.
+  Django's model admin (`/nimda/`) has no sign-in of its own: it sends people
+  to the forum's, and admits only staff signed in there (with two-step
+  verification when they have it or must).
+- **Linked sign-ins:** adding a Google/GitHub/Facebook sign-in to an account,
+  and setting a password without typing the old one (accounts without a
+  password, administrators), need "Confirm it's you"; the member is emailed
+  when a sign-in is added. LDAP sign-ins are linked to their directory entry:
+  a local account that only has the same username is refused (an account LDAP
+  made earlier, or with the directory's address, is taken over).
+- **Signing out:** signing out stops browser push on that browser; signing out
+  everywhere (also any new password) stops it on every device, and a password
+  reset (or one set by an administrator) also revokes the member's API tokens.
+- **Deleted posts:** only moderators, or whoever deleted a post, can undelete it
+  (authors can't bring back what a moderator or the flags removed). Deleted
+  and held questions can't be favorited or followed, and leave those lists.
 - **Passkeys and two-step verification:** on "Passkeys and two-step
   verification" in their settings, members add passkeys (fingerprint, face,
   screen lock or security key; WebAuthn with `webauthn`/py_webauthn) and can turn

@@ -28,6 +28,8 @@ pywebpush==2.5.0
 # py_webauthn, BSD-3-Clause, maintained by Duo Labs (pulls in cbor2, pyOpenSSL, pyasn1, cryptography);
 # segno draws the authenticator app QR code as SVG on the server (BSD-3-Clause, no dependencies).
 webauthn==3.0.1
+# pyasn1 comes with webauthn: at least 0.6.5, which fixes CVE-2026-119194..119197.
+pyasn1==0.6.5
 segno==1.6.6
 
 # Error reporting to Sentry (optional: only used when SENTRY_DSN is set)

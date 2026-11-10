@@ -2,7 +2,7 @@ import ldap
 import ldap.filter
 
 from forum.authentication.base import AuthenticationConsumer, ConsumerTemplateContext, InvalidAuthentication
-from forum.models import User
+from forum.models import AuthKeyUserAssociation, User
 from forum.actions import UserJoinsAction
 from django.utils.translation import gettext as _
 
@@ -61,17 +61,32 @@ class LDAPAuthConsumer(AuthenticationConsumer):
             #could not bind as user - password is incorrect
             raise InvalidAuthentication(_('Login failed. Please enter valid username and password (both are case-sensitive)'))
 
-        try:
-            return User.objects.get(username=username)
-        except User.DoesNotExist:
-            _user = User( username = _text(userinfo[str(settings.LDAP_UID)][0]),
-                          email = _text(userinfo[str(settings.LDAP_MAIL)][0]),
-                          real_name = _text(userinfo[str(settings.LDAP_NAME)][0]) )
-            _user.email_isvalid = True
-            _user.set_unusable_password()
-            _user.save()
-            UserJoinsAction(user=_user, ip=request.META['REMOTE_ADDR']).save()
-            return _user
+        # The directory entry is linked to its forum account (AuthKeyUserAssociation
+        # 'ldap:<dn>'): a local account that only has the same username isn't it.
+        key = ('ldap:%s' % user_dn.lower())[:255]
+        link = AuthKeyUserAssociation.objects.filter(key=key).select_related('user').first()
+        if link is not None:
+            return link.user
+        mail = _text(userinfo[str(settings.LDAP_MAIL)][0])
+        existing = User.objects.filter(username=username).first()
+        if existing is not None:
+            # Made by LDAP before the link existed (no password of its own), or
+            # with the address the directory gives: it is that person's.
+            same_mail = existing.email_isvalid and (existing.email or '').lower() == (mail or '').lower()
+            if existing.has_usable_password() and not same_mail:
+                raise InvalidAuthentication(_('An account with this username already exists on the forum. Please ask '
+                                              'an administrator to link it to your directory account.'))
+            AuthKeyUserAssociation(user=existing, key=key, provider='ldap').save()
+            return existing
+        _user = User( username = _text(userinfo[str(settings.LDAP_UID)][0]),
+                      email = mail,
+                      real_name = _text(userinfo[str(settings.LDAP_NAME)][0]) )
+        _user.email_isvalid = True
+        _user.set_unusable_password()
+        _user.save()
+        AuthKeyUserAssociation(user=_user, key=key, provider='ldap').save()
+        UserJoinsAction(user=_user, ip=request.META['REMOTE_ADDR']).save()
+        return _user
 
 class LDAPAuthContext(ConsumerTemplateContext):
     mode = 'STACK_ITEM'

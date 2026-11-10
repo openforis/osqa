@@ -84,6 +84,23 @@ class LDAPAuthTest(OSQATestCase):
         self.assertEqual(self.logged_in_user_id(), str(user.id))
         self.assertEqual(User.objects.filter(username='carol').count(), 1)
 
+    def test_a_local_account_with_the_same_username_is_not_taken_over(self):
+        """Someone who signed up locally as a colleague's directory uid used to
+        receive that colleague's LDAP sign-ins."""
+        squatter = self.create_user('carol')  # their own address and password
+        self.signin('carol', 'right-pass')
+        self.assertIsNone(self.logged_in_user_id())
+        self.assertContains(self.client.get('/account/signin/'), 'already exists on the forum')
+        self.assertFalse(squatter.auth_keys.exists())
+
+    def test_an_account_ldap_made_before_the_link_is_claimed(self):
+        old = self.create_user('carol')
+        old.set_unusable_password()
+        old.save()
+        self.signin('carol', 'right-pass')
+        self.assertEqual(self.logged_in_user_id(), str(old.id))
+        self.assertEqual(old.auth_keys.get().key, 'ldap:' + USER_DN)
+
     def test_wrong_password_is_refused(self):
         self.signin('carol', 'wrong-pass')
         self.assertIsNone(self.logged_in_user_id())

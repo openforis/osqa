@@ -214,6 +214,11 @@ def search(query, limit=8, source=None, min_score=0.2, spread=0.2):
             continue
         chunk.similarity = float(scores[i])
         results.append(chunk)
+    # Only threads the site shows now (a post may have been deleted or held
+    # since the index was built; forget_knowledge() drops those copies too).
+    threads = {c.node_id for c in results if c.source == 'forum' and c.node_id}
+    public = set(Question.objects.public().filter(id__in=threads).values_list('id', flat=True)) if threads else set()
+    results = [c for c in results if c.source != 'forum' or c.node_id in public]
     results.sort(key=lambda c: -(c.similarity + 0.03 * (c.quality - 1.0)))
     return results[:limit]
 

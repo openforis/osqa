@@ -581,7 +581,7 @@ def resolve_moderation_report(request, id):
             resolution = 'deleted'
         elif resolution == 'suspend':
             done.append(moderation.suspend_author(request, node.author))
-            messages.info(request, _("The account %s has been suspended.") % node.author.username)
+            messages.info(request, _("The account %s has been suspended.") % escape(node.author.username))
             resolution = 'suspended'
         else:
             resolution = 'dismissed'
@@ -594,14 +594,14 @@ def resolve_moderation_report(request, id):
             if Node.objects.filter(author=target).exists():
                 messages.error(request, _("This account has posts; suspend it instead."))
                 return HttpResponseRedirect(done_url)
-            messages.info(request, _("The account %s has been deleted.") % target.username)
+            messages.info(request, _("The account %s has been deleted.") % escape(target.username))
             security_log.event('account_deleted', request, account=target, via='moderation report')
             target.delete()  # also removes its reports
             review.invalidate_counts()
             return HttpResponseRedirect(done_url)
         if resolution == 'suspend':
             done.append(moderation.suspend_author(request, target))
-            messages.info(request, _("The account %s has been suspended.") % target.username)
+            messages.info(request, _("The account %s has been suspended.") % escape(target.username))
             resolution = 'suspended'
         else:
             resolution = 'dismissed'

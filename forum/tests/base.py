@@ -61,11 +61,12 @@ class OSQATestCase(TestCase):
         """Signs `user` in; like a real sign-in, it counts as recent for
         "Confirm it's you" (forum/utils/sudo.py) unless `recent` is False."""
         self.client.force_login(user)
+        from forum.utils import accounts
+        session = self.client.session
+        session[accounts.EPOCH_SESSION_KEY] = int(user.session_epoch or 0)  # as accounts.signed_in() does
         if recent:
-            from forum.utils import accounts
-            session = self.client.session
             session[accounts.AUTH_TIME_SESSION_KEY] = datetime.datetime.now().isoformat()
-            session.save()
+        session.save()
 
     def command(self, url, data=None):
         """POST to an AJAX command view and return the decoded JSON response."""
