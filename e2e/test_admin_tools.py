@@ -107,7 +107,8 @@ class AdminToolsTest(AdminTestCase):
         self.check_page(page)
         self.assertEqual(page.url, self.url(reverse('admin_email_preview', kwargs={'kind': 'new-answer'})))
         frame = page.frame_locator('iframe.email-preview-frame')
-        self.assertEqual(frame.get_by_role('link', name='View the answer').count(), 1)
+        # The sample's reader asked the question: the email asks them to accept the answer.
+        self.assertEqual(frame.get_by_role('link', name='Review and accept the answer').count(), 1)
         self.assertIn('Hi admin,', frame.locator('body').inner_text())
         self.assertIn('Unsubscribe from all emails', page.locator('.email-preview-text').inner_text())
         self.check_page(page)

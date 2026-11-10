@@ -63,8 +63,13 @@
                 window.requestAnimationFrame(place);
             }
         }, {passive: true});
+        // Back at once when the keyboard reaches it, cutting short a slide
+        // under way: the focus must be on screen as it lands (WCAG 2.4.11).
         roof.addEventListener('focusin', function () {
+            roof.style.transition = 'none';
             root.classList.remove('roof-away');
+            roof.getBoundingClientRect();
+            roof.style.transition = '';
         });
         if (window.ResizeObserver) {
             new ResizeObserver(measure).observe(roof);
