@@ -39,6 +39,23 @@ class AnonymousPagesTest(OSQATestCase):
         self.assertContains(home, 'id="app-bar-ask"')
         self.assertNotContains(home, 'id="app-back"')
 
+    def test_custom_header_can_stay_off_phones(self):
+        from forum import settings
+        saved = [(s, s.value) for s in (settings.USE_CUSTOM_HEADER, settings.CUSTOM_HEADER,
+                                          settings.CUSTOM_HEADER_RENDER_MODE, settings.CUSTOM_HEADER_ON_PHONES)]
+        try:
+            settings.USE_CUSTOM_HEADER.set_value(True)
+            settings.CUSTOM_HEADER.set_value('<a href="https://www.openforis.org">Back to Open Foris</a>')
+            settings.CUSTOM_HEADER_RENDER_MODE.set_value('html')
+            self.assertContains(self.client.get('/'), '<div id="custom_header">')
+            settings.CUSTOM_HEADER_ON_PHONES.set_value(False)
+            page = self.client.get('/')
+            self.assertContains(page, '<div id="custom_header" class="custom-header-wide-only">')
+            self.assertContains(page, 'Back to Open Foris')  # still there for wider screens (osqa.css hides it on phones)
+        finally:
+            for setting, value in saved:
+                setting.set_value(value)
+
     def test_feed_and_sitemap(self):
         self.assertContains(self.client.get('/feeds/rss/'), 'A question title')
         self.assertContains(self.client.get('/sitemap.xml'), 'http://testserver/sitemap-questions.xml')

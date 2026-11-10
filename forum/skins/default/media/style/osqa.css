@@ -3331,7 +3331,8 @@ div.comment-tools a:hover {
         transform: translateY(-100%);
     }
 
-    #roof #nav, #top a.top-link-more {
+    /* The admin's custom header, when "Show the custom header on phones" is off. */
+    #roof #nav, #top a.top-link-more, #custom_header.custom-header-wide-only {
         display: none;
     }
 
