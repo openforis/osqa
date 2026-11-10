@@ -180,6 +180,16 @@
                     </nav>
                     {% endif %}
                 </div>
+                {% if not accepted and question.author == request.user and not settings.DISABLE_ACCEPTING_FEATURE %}
+                {# The asker, until an answer is accepted (osqa.main.js removes it on accepting). #}
+                <div class="accept-hint" id="accept-hint" role="note">
+                    <svg class="accept-hint-icon" viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="M7.5 12.5l3 3L16.5 9.5" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <div>
+                        <p class="accept-hint-title">{% trans "Did an answer solve your problem?" %}</p>
+                        <p>{% blocktrans %}Press <strong>Accept</strong> beside it. That marks your question as solved, shows others what worked and thanks the person who helped. You can change your choice later.{% endblocktrans %}</p>
+                    </div>
+                </div>
+                {% endif %}
                 {{ answers.paginator.page_numbers }}
 
                 {% for answer in answers.paginator.page %}

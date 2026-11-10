@@ -410,6 +410,11 @@ live in `forum/utils/tags.py`.
   for 7 days (configurable) and none is accepted. It only looks at questions
   from the last 60 days, so an imported history isn't flooded. There is no
   email if the asker stopped following the question or turned emails off.
+  Before that, the asker is asked from the start: the "new answer" email
+  tells them to accept the answer if it solved their problem (until one is
+  accepted; followers are only asked to vote), the summary email says it
+  under "Answers to your questions", and their question page shows a note
+  above the answers next to a green Accept button.
 - <a id="questions-for-you"></a>**Questions for you (expert routing):** each
   member's expertise per tag comes from their visible answers on others'
   questions (accepted answers weigh most, then votes; answers from the last

@@ -1,5 +1,8 @@
 /* Keeps the notification bell's unread count current: checks every minute
-   while the page is visible, and when the tab comes back into view. */
+   while the page is visible, and when the tab comes back into view. The
+   phone's tab bar shows the same count (display/app_bar.html):
+   [data-unread-badge] is hidden at 0, [data-unread-number] holds the number
+   and [data-unread-label] the words for screen readers. */
 (function () {
     var bell = document.getElementById('notification-bell');
     if (!bell || !window.fetch) {
@@ -14,6 +17,11 @@
         bell.classList.toggle('has-unread', count > 0);
         bell.setAttribute('aria-label', count ? bell.dataset.labelSome.replace('%(count)s', count) : bell.dataset.labelNone);
         document.title = (count ? '(' + count + ') ' : '') + baseTitle;
+        document.querySelectorAll('[data-unread-badge]').forEach(function (el) { el.hidden = !count; });
+        document.querySelectorAll('[data-unread-number]').forEach(function (el) { el.textContent = count; });
+        document.querySelectorAll('[data-unread-label]').forEach(function (el) {
+            el.textContent = count ? ', ' + bell.dataset.labelSome.replace('%(count)s', count) : '';
+        });
     }
 
     function refresh() {

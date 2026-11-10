@@ -1,5 +1,7 @@
 import json
 
+from django.db import connection
+from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
 
 from forum.models import Answer, Comment, Notification, Question, User
@@ -79,6 +81,53 @@ class CreatingNotificationsTest(NotificationFixture):
         self.assertTrue(all(n.text for n in badges))
 
 
+class AcceptPromptTest(NotificationFixture):
+    """The "new answer" email asks the asker to accept the answer if it
+    solved the problem, until one is accepted; followers are only asked to
+    vote."""
+    PROMPT = 'Did it solve your problem? Then accept it.'
+
+    def emails_to(self, user):
+        return [(html, text) for recipient, subject, html, text, media, headers in self.sent_mail
+                if recipient.id == user.id]
+
+    def test_the_asker_is_asked_to_accept(self):
+        from forum.models import QuestionSubscription
+        QuestionSubscription(user=self.carol, question=self.question).save()
+        del self.sent_mail[:]
+        answer = self.answer_as(self.bob)
+        [(html, text)] = self.emails_to(self.alice)
+        for part in (html, text):
+            self.assertIn(self.PROMPT, part)
+            self.assertIn('Press the green Accept button beside the answer', part)
+            self.assertIn('thanks bob', part)
+            self.assertIn('Review and accept the answer', part)
+            self.assertNotIn('vote for it', part)
+        [(html, text)] = self.emails_to(self.carol)
+        self.assertNotIn(self.PROMPT, html + text)
+        self.assertIn('If the answer helps, vote for it', text)
+
+        # Once an answer is accepted, the next one only asks for a vote.
+        self.login(self.alice)
+        self.assertTrue(self.command('/accept_answer/%d/' % answer.id)['success'])
+        del self.sent_mail[:]
+        self.answer_as(self.carol, 'Another answer that is long enough to post.')
+        [(html, text)] = self.emails_to(self.alice)
+        self.assertNotIn(self.PROMPT, html + text)
+        self.assertIn('If the answer helps, vote for it', text)
+
+    def test_the_question_page_shows_the_asker_how_to_accept(self):
+        answer = self.answer_as(self.bob)
+        url = self.question.get_absolute_url()
+        self.login(self.alice)
+        self.assertContains(self.client.get(url), 'id="accept-hint"')
+        self.login(self.carol)
+        self.assertNotContains(self.client.get(url), 'id="accept-hint"')
+        self.login(self.alice)
+        self.command('/accept_answer/%d/' % answer.id)
+        self.assertNotContains(self.client.get(url), 'id="accept-hint"')
+
+
 class BellAndListTest(NotificationFixture):
     def test_bell_list_and_reading(self):
         self.answer_as(self.bob)
@@ -89,6 +138,14 @@ class BellAndListTest(NotificationFixture):
         self.assertContains(page, 'id="notification-bell"')
         self.assertContains(page, 'aria-label="Notifications: 2 unread"')
         self.assertContains(page, '<span class="notification-count">2</span>', html=False)
+        # The phone's tab bar shows it on More and in its sheet, from the same query.
+        self.assertContains(page, '<span data-unread-number>2</span>', count=2)
+        self.assertContains(page, '<span class="visually-hidden" data-unread-label>, Notifications: 2 unread</span>')
+        with CaptureQueriesContext(connection) as queries:
+            self.client.get('/')
+        counts = [q['sql'] for q in queries.captured_queries
+                  if 'forum_notification' in q['sql'] and 'COUNT(' in q['sql'].upper()]
+        self.assertEqual(len(counts), 1, counts)
         self.assertEqual(json.loads(self.client.get(reverse('notifications_count')).content), {'unread': 2})
 
         page = self.client.get(reverse('notifications'))
@@ -103,7 +160,10 @@ class BellAndListTest(NotificationFixture):
 
         self.client.post(reverse('notifications_read'))
         self.assertEqual(json.loads(self.client.get(reverse('notifications_count')).content), {'unread': 0})
-        self.assertContains(self.client.get('/'), '<span class="notification-count" hidden>0</span>', html=False)
+        page = self.client.get('/')
+        self.assertContains(page, '<span class="notification-count" hidden>0</span>', html=False)
+        self.assertContains(page, '<span class="app-unread" data-unread-badge aria-hidden="true" hidden>')
+        self.assertContains(page, '<span class="visually-hidden" data-unread-label></span>')
 
     def test_opening_the_question_marks_its_notifications_read(self):
         self.answer_as(self.bob)

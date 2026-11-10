@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OSQA (Open Foris edition)\n"
 "Report-Msgid-Bugs-To: https://github.com/openforis/osqa/issues\n"
-"POT-Creation-Date: 2026-11-09 18:10-0500\n"
+"POT-Creation-Date: 2026-11-09 19:29-0500\n"
 "PO-Revision-Date: 2026-10-14 12:00+0000\n"
 "Last-Translator: Open Foris <https://github.com/openforis/osqa>\n"
 "Language-Team: Portuguese <https://github.com/openforis/osqa>\n"
@@ -4222,6 +4222,12 @@ msgstr "Usuários"
 msgid "More"
 msgstr "Mais"
 
+#, python-format
+msgid "Notifications: %(counter)s unread"
+msgid_plural "Notifications: %(counter)s unread"
+msgstr[0] "Notificações: %(counter)s não lida"
+msgstr[1] "Notificações: %(counter)s não lidas"
+
 msgid "Menu"
 msgstr "Menu"
 
@@ -4236,6 +4242,9 @@ msgstr "Seu perfil"
 
 msgid "Notifications"
 msgstr "Notificações"
+
+msgid "unread"
+msgstr "não lidas"
 
 msgid "About"
 msgstr "Sobre"
@@ -4507,12 +4516,6 @@ msgstr "fazer uma pergunta"
 #, python-format
 msgid "Notifications: %%(count)s unread"
 msgstr "Notificações: %%(count)s não lidas"
-
-#, python-format
-msgid "Notifications: %(counter)s unread"
-msgid_plural "Notifications: %(counter)s unread"
-msgstr[0] "Notificações: %(counter)s não lida"
-msgstr[1] "Notificações: %(counter)s não lidas"
 
 msgid "Mark all as read"
 msgstr "Marcar todas como lidas"
@@ -5323,6 +5326,19 @@ msgstr "%(answer_author)s respondeu:"
 msgid "%(answer_author)s answered %(question_link)s:"
 msgstr "%(answer_author)s respondeu a %(question_link)s:"
 
+msgid "Did it solve your problem? Then accept it."
+msgstr "Resolveu seu problema? Então aceite-a."
+
+#, python-format
+msgid "Press the green Accept button beside the answer: it marks the question as solved, shows others what worked and thanks %(answer_author)s."
+msgstr "Clique no botão verde Aceitar ao lado da resposta: isso marca a pergunta como resolvida, mostra aos outros o que funcionou e agradece a %(answer_author)s."
+
+msgid "Review and accept the answer"
+msgstr "Revisar e aceitar a resposta"
+
+msgid "Not solved yet? Add a comment to the answer saying what is missing."
+msgstr "Ainda não resolveu? Adicione um comentário à resposta dizendo o que falta."
+
 msgid "If the answer helps, vote for it so the best answers rise to the top."
 msgstr "Se a resposta ajudar, vote nela para que as melhores respostas subam."
 
@@ -5451,6 +5467,9 @@ msgid "And %(counter)s more."
 msgid_plural "And %(counter)s more."
 msgstr[0] "E mais %(counter)s."
 msgstr[1] "E mais %(counter)s."
+
+msgid "If an answer solved your problem, accept it with the green Accept button beside it: that marks your question as solved and thanks the person who helped."
+msgstr "Se uma resposta resolveu seu problema, aceite-a com o botão verde Aceitar ao lado dela: isso marca sua pergunta como resolvida e agradece a quem ajudou."
 
 msgid "See all your notifications"
 msgstr "Ver todas as suas notificações"
@@ -6681,6 +6700,12 @@ msgstr "Mais antigas"
 
 msgid "most recently updated answers/comments will be shown first"
 msgstr "as respostas/comentários atualizados mais recentemente aparecem primeiro"
+
+msgid "Did an answer solve your problem?"
+msgstr "Alguma resposta resolveu seu problema?"
+
+msgid "Press <strong>Accept</strong> beside it. That marks your question as solved, shows others what worked and thanks the person who helped. You can change your choice later."
+msgstr "Clique em <strong>Aceitar</strong> ao lado dela. Isso marca sua pergunta como resolvida, mostra aos outros o que funcionou e agradece a quem ajudou. Você pode mudar sua escolha depois."
 
 msgid "Be the first one to answer this question!"
 msgstr "Seja o primeiro a responder a esta pergunta!"

@@ -55,6 +55,7 @@ var response_commands = {
         $answer.find('.accept-answer').addClass('on');
         $answer.find('a.accept-answer').attr('aria-pressed', 'true');
         $answer.find('.accept-answer').attr('title', $answer.find('.accept-answer').attr('bn:on'));
+        $('#accept-hint').remove();
     },
 
     unmark_accepted: function(id) {
