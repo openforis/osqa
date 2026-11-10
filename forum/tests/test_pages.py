@@ -1,4 +1,4 @@
-from forum.actions import VoteUpAction
+from forum.actions import CloseAction, VoteUpAction
 from forum.models import Question
 
 from .base import OSQATestCase
@@ -21,6 +21,23 @@ class AnonymousPagesTest(OSQATestCase):
     def test_question_list_links_to_question(self):
         response = self.client.get('/questions/')
         self.assertContains(response, 'href="%s"' % self.question.get_absolute_url())
+
+    def test_phone_tab_bar_answer_and_share(self):
+        # Open questions: Answer in the middle of the phone's tab bar, Share in the controls.
+        page = self.client.get(self.question.get_absolute_url())
+        self.assertContains(page, 'id="app-bar-answer" href="#fmanswer"')
+        self.assertNotContains(page, 'id="app-bar-ask"')
+        self.assertContains(page, 'post-share" href="%s"' % self.question.get_absolute_url())
+        self.assertContains(page, 'id="app-back"')
+        # Closed ones take no answers: Ask stays. Other pages have Ask, and the home page no Back.
+        staff = self.create_user('staff', is_staff=True, is_superuser=True)
+        CloseAction(user=staff, node=self.question, extra='off topic', ip='127.0.0.1').save()
+        page = self.client.get(self.question.get_absolute_url())
+        self.assertContains(page, 'id="app-bar-ask"')
+        self.assertNotContains(page, 'id="app-bar-answer"')
+        home = self.client.get('/')
+        self.assertContains(home, 'id="app-bar-ask"')
+        self.assertNotContains(home, 'id="app-back"')
 
     def test_feed_and_sitemap(self):
         self.assertContains(self.client.get('/feeds/rss/'), 'A question title')

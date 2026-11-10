@@ -119,6 +119,48 @@ class PublicPagesTest(E2ETestCase):
         self.assertGreater(page.locator('img.gravatar.gravatar-fallback').count(), 0)
         self.check_page(page)
 
+    def test_phone_question_page_answer_share_and_back(self):
+        page = self.open(device='mobile')
+        page.add_init_script('navigator.share = data => { window.__shared = data; return Promise.resolve(); };')
+        self.visit(page, '/')
+        with page.expect_navigation():
+            page.locator('.question-row h2 a', has_text='Collect survey data').click()
+        url = page.url
+        # The middle of the tab bar is Answer: to the answer form, cursor in it.
+        self.assertEqual(page.locator('nav.app-bar .app-bar-label').all_inner_texts(),
+                         ['Questions', 'Tags', 'Answer', 'Users', 'More'])
+        page.click('#app-bar-answer')
+        self.assertEqual(page.evaluate('document.activeElement.closest("#fmanswer") !== null'), True)
+        self.assertEqual(page.evaluate('document.activeElement.tagName'), 'TEXTAREA')
+        page.evaluate('document.activeElement.blur()')
+        # Share hands the question to the phone's share sheet.
+        page.click('a.post-share')
+        shared = page.evaluate('window.__shared')
+        self.assertEqual(shared['url'], url.split('#')[0])
+        self.assertIn('How do I export Collect survey data to CSV?', shared['title'])
+        # No Back button in a browser tab, which has its own.
+        self.assertFalse(page.locator('#app-back').is_visible())
+        # The installed app (display-mode: standalone, which Chromium can't
+        # emulate here) shows it, except on the home page.
+        self.assertTrue(page.evaluate("""[...document.styleSheets].some(sheet => { try {
+            return [...sheet.cssRules].some(r => r.conditionText === '(display-mode: standalone)' &&
+                r.cssText.includes('.app-back')); } catch (e) { return false; } })"""))
+        standalone = '#roof .app-back { display: flex !important; }'
+        page.add_style_tag(content=standalone)
+        self.assertTrue(page.locator('#app-back').is_visible())
+        with page.expect_navigation():
+            page.click('#app-back')
+        self.assertEqual(page.url, self.url('/'))
+        self.assertEqual(page.locator('#app-back').count(), 0)
+        # Opened straight on a page (a notification, a link), Back goes home.
+        fresh = page.context.new_page()
+        fresh.goto(self.url('/tags/'))
+        fresh.add_style_tag(content=standalone)
+        with fresh.expect_navigation():
+            fresh.click('#app-back')
+        self.assertEqual(fresh.url, self.url('/'))
+        self.check_page(page)
+
     def test_question_page_content(self):
         page = self.open()
         self.visit(page, self.question.get_absolute_url())

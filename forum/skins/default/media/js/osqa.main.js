@@ -529,6 +529,22 @@ $(function() {
         }
     });
 
+    // Share a question (post controls): the device's share sheet where there
+    // is one, otherwise the link is copied.
+    $(document).on('click', 'a.post-share', function(evt) {
+        var url = new URL(this.getAttribute('href'), location.href).href;
+        var title = $('h1').first().text().trim() || document.title;
+        if (navigator.share) {
+            evt.preventDefault();
+            navigator.share({title: title, url: url}).catch(function () { /* cancelled */ });
+        } else if (navigator.clipboard && window.isSecureContext) {
+            evt.preventDefault();
+            navigator.clipboard.writeText(url).then(function () {
+                show_message(evt, messages.link_copied);
+            });
+        }
+    });
+
     // Canned comments (node/comment_skeleton.html) go in at the caret.
     $(document).on('click', 'a.canned-comment', function(evt) {
         evt.preventDefault();

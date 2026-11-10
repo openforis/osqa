@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OSQA (Open Foris edition)\n"
 "Report-Msgid-Bugs-To: https://github.com/openforis/osqa/issues\n"
-"POT-Creation-Date: 2026-11-09 19:29-0500\n"
+"POT-Creation-Date: 2026-11-09 19:43-0500\n"
 "PO-Revision-Date: 2026-10-14 12:00+0000\n"
 "Last-Translator: Open Foris <https://github.com/openforis/osqa>\n"
 "Language-Team: French <https://github.com/openforis/osqa>\n"
@@ -3971,6 +3971,9 @@ msgstr "Téléversement"
 msgid "The image could not be uploaded."
 msgstr "L'image n'a pas pu être téléversée."
 
+msgid "Link copied"
+msgstr "Lien copié"
+
 msgid "Skip to content"
 msgstr "Aller au contenu"
 
@@ -4212,6 +4215,9 @@ msgstr "Principal"
 
 msgid "Questions"
 msgstr "Questions"
+
+msgid "Answer"
+msgstr "Répondre"
 
 msgid "Ask"
 msgstr "Demander"
@@ -4487,6 +4493,9 @@ msgstr "Contenu sous licence"
 
 msgid "This Q&amp;A software is free and open source (GPL). Any organisation can run it for its own community: get the code and instructions at <a href=\"https://github.com/openforis/osqa\">github.com/openforis/osqa</a>."
 msgstr "Ce logiciel de Q&amp;R (questions-réponses) est libre et open source (GPL). Toute organisation peut l'utiliser pour sa propre communauté : obtenez le code et les instructions sur <a href=\"https://github.com/openforis/osqa\">github.com/openforis/osqa</a>."
+
+msgid "Back"
+msgstr "Retour"
 
 msgid "back to home page"
 msgstr "retour à la page d'accueil"
@@ -8383,6 +8392,12 @@ msgstr "La lire"
 
 msgid "The new posts are shown."
 msgstr "Les nouveaux messages sont affichés."
+
+msgid "share"
+msgstr "partager"
+
+msgid "Share this question"
+msgstr "Partager cette question"
 
 msgid "permanent link"
 msgstr "lien permanent"

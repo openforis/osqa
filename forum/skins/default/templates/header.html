@@ -2,7 +2,10 @@
 {% load extra_tags ui_registry i18n extra_filters %}
 
 	<div id="roof">
-	  
+	  {% url "index" as index_url %}{% if request.path != index_url %}
+		{# Only in the installed app (display-mode: standalone), which has no browser Back button (osqa.appbar.js). #}
+		<button type="button" id="app-back" class="app-back plain-button" aria-label="{% trans "Back" %}" title="{% trans "Back" %}" data-home="{{ index_url }}"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+	  {% endif %}
 		<div id="logo">
 			<a href="{% url "index" %}">
 				<img src="{% with logo=settings.APP_LOGO|stringformat:"s" %}{% if "://" in logo %}{{ logo }}{% else %}{% url "index" %}{% if logo|slice:":1" == "/" %}{{ logo|slice:"1:" }}{% else %}{{ logo }}{% endif %}{% endif %}{% endwith %}" {% logo_size %} title="{% trans "back to home page" %}" alt="{{settings.APP_TITLE}} logo"/>

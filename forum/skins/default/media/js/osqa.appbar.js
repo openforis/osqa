@@ -1,9 +1,39 @@
-/* The phone's bottom tab bar (display/app_bar.html): "More" opens the menu
+/* The phone's bottom tab bar (display/app_bar.html) and the installed app's
+   Back button (header.html). "More" opens the menu
    sheet as a modal dialog (the browser moves the focus in, closes it with
    Escape and gives the focus back to the button); a tap on the backdrop or
    the close button closes it too, and so does dragging it down by its head. */
 (function () {
     'use strict';
+    // Answer (question pages): to the answer form, with the cursor in it.
+    var answer = document.getElementById('app-bar-answer');
+    if (answer) {
+        answer.addEventListener('click', function (evt) {
+            var form = document.getElementById('fmanswer');
+            var field = form && form.querySelector('textarea');
+            if (!field) {
+                return;
+            }
+            evt.preventDefault();
+            form.scrollIntoView({block: 'start'});
+            field.focus({preventScroll: true});
+        });
+    }
+
+    // Back (header, installed app only): the previous page, or the home
+    // page when the app was opened on this one (a notification, a link).
+    var back = document.getElementById('app-back');
+    if (back) {
+        back.addEventListener('click', function () {
+            var fromHere = document.referrer && document.referrer.indexOf(location.origin + '/') === 0;
+            if (fromHere && history.length > 1) {
+                history.back();
+            } else {
+                location.href = back.getAttribute('data-home');
+            }
+        });
+    }
+
     var button = document.getElementById('app-more');
     var sheet = document.getElementById('app-more-sheet');
     if (!button || !sheet || typeof sheet.showModal !== 'function') {

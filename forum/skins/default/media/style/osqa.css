@@ -3239,6 +3239,38 @@ div.comment-tools a:hover {
 
 /* ---- Phones: app layout -------------------------------------------- */
 
+/* Back in the header (header.html, osqa.appbar.js): only in the installed
+   app, which has no browser Back button. */
+.app-back {
+    display: none;
+}
+
+@media (display-mode: standalone) {
+    #roof .app-back, #roof .app-back:hover {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: none;
+        width: 40px;
+        height: 40px;
+        margin: 0 -4px 0 -8px;
+        padding: 0;
+        border: 0;
+        border-radius: 999px;
+        background: none;
+        color: var(--text);
+    }
+
+    #roof .app-back:active {
+        background: var(--hover-overlay);
+    }
+
+    #roof .app-back:focus-visible {
+        outline: 2px solid var(--brand);
+        outline-offset: 0;
+    }
+}
+
 /* On phones the site works like an app: a tab bar at the bottom
    (display/app_bar.html, osqa.appbar.js) replaces the header's tabs and
    "ask a question" button, the header is the logo and the account icons
