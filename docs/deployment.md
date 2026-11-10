@@ -107,10 +107,11 @@ Every path is absolute: `useradd --create-home` makes `/srv/osqa` readable by
 
 A virtualenv made with `uv venv` (for example for a newer Python) has no
 `pip`. Install the requirements, here and when updating, with `uv` (installed
-for the `osqa` user):
+for the `osqa` user; `--directory` because `uv` looks for its configuration in
+the current directory, which `osqa` can't read when it is your home):
 
 ```bash
-sudo -u osqa /srv/osqa/.local/bin/uv pip install --python /srv/osqa/venv/bin/python -r /srv/osqa/app/requirements.txt
+sudo -u osqa /srv/osqa/.local/bin/uv --directory /srv/osqa/app pip install --python /srv/osqa/venv/bin/python -r /srv/osqa/app/requirements.txt
 ```
 
 ### 3. gunicorn as a service
