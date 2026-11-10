@@ -52,6 +52,9 @@ class AnonymousUser(DjangoAnonymousUser):
     def can_delete_comment(self, comment):
         return False
 
+    def can_undelete_post(self, post):
+        return False
+
     def can_convert_to_comment(self, answer):
         return False
 
@@ -422,6 +425,14 @@ class User(BaseModel, DjangoUser):
 
         return (self == post.author and (post.__class__.__name__ == "Answer" or
         not post.answers.exclude(author__id=self.id).count()))
+
+    @true_if_is_super_or_staff
+    def can_undelete_post(self, post):
+        """Only who deleted it brings it back (moderators always): an author
+        can't undo the deletion of their post by a moderator or by the flags."""
+        deleted = post.nstate.deleted
+        return bool(deleted) and deleted.user_id == self.id and deleted.extra != "BYFLAGGED" and \
+            self.can_delete_post(post)
 
     @true_if_is_super_or_staff
     def can_upload_files(self):

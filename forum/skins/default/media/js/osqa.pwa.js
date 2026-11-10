@@ -34,9 +34,10 @@
         forgetPushIfUserChanged();
     }
 
-    // Browser push (osqa.push.js) was turned on by PUSH_USER_KEY's member: if
-    // someone else signs in on this browser, it stops, so they don't get the
-    // other member's notifications (signing out stops it too, in sw.js).
+    // Browser push (osqa.push.js) was turned on by PUSH_USER_KEY's member: when
+    // they sign out, or someone else signs in on this browser, it stops, so a
+    // shared device doesn't keep showing their notifications (sw.js stops it
+    // on the sign-out request too).
     function forgetPushIfUserChanged() {
         var owner = null;
         try {
@@ -44,7 +45,7 @@
         } catch (e) {
             return;
         }
-        if (!owner || !user || owner === user || !('serviceWorker' in navigator)) return;
+        if (!owner || owner === user || !('serviceWorker' in navigator)) return;
         try {
             window.localStorage.removeItem(PUSH_USER_KEY);
         } catch (e) { /* ignore */ }

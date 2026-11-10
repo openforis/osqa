@@ -263,6 +263,7 @@ class E2ETestCase(LiveServerTestCase):
             session['_auth_user_id'] = str(user.pk)
             session['_auth_user_backend'] = 'django.contrib.auth.backends.ModelBackend'
             session['_auth_user_hash'] = user.get_session_auth_hash()
+            session['osqa_epoch'] = int(user.session_epoch or 0)  # as accounts.signed_in() does
             if recent:
                 session['osqa_auth_time'] = datetime.datetime.now().isoformat()
             session.create()

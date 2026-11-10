@@ -306,6 +306,13 @@ def answer(request, id):
     question = get_object_or_404(Question, id=id)
     if not review.can_view(question, request.user):
         raise Http404
+    if question.nis.deleted and not request.user.can_view_deleted_post(question):
+        raise Http404
+
+    if request.POST and (question.nis.closed or question.nis.deleted):
+        # The page shows no answer form then; a hand-made request is refused too (as by the API).
+        messages.error(request, _("This question is closed: it takes no new answers."))
+        return HttpResponseRedirect(question.get_absolute_url())
 
     if request.POST:
         form = AnswerForm(request.POST, request.user)

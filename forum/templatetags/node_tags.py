@@ -190,8 +190,9 @@ def post_controls(post, user):
 
         if user.can_delete_post(post):
             if post.nis.deleted:
-                controls.append(post_control(_('undelete'), reverse('delete_post', kwargs={'id': post.id}),
-                        command=True, confirm=True))
+                if user.can_undelete_post(post):
+                    controls.append(post_control(_('undelete'), reverse('delete_post', kwargs={'id': post.id}),
+                            command=True, confirm=True))
             else:
                 controls.append(post_control(_('delete'), reverse('delete_post', kwargs={'id': post.id}),
                         command=True, confirm=True))

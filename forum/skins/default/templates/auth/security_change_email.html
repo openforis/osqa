@@ -6,7 +6,7 @@
 
     exclude_finetune = True
 {% enddeclare %}
-{% comment %}A security notice after a change to how the member signs in (forum/utils/accounts.py security_notice; change: passkey_added, two_factor_on, two_factor_off, recovery_codes, api_token). Always sent.{% endcomment %}
+{% comment %}A security notice after a change to how the member signs in (forum/utils/accounts.py security_notice; change: passkey_added, two_factor_on, two_factor_off, recovery_codes, api_token, sign_in_added). Always sent.{% endcomment %}
 {% email %}
     {% subject %}{% blocktrans %}{{ prefix }} Security change on your {{ app_name }} account{% endblocktrans %}{% endsubject %}
     {% preheader %}{% trans "If you didn't do this, secure your account now." %}{% endpreheader %}
@@ -15,7 +15,7 @@
         {% blocktrans asvar footer_reason %}You receive this security notice because the sign-in settings of your account at {{ app_name }} were changed. These notices are always sent.{% endblocktrans %}
         {% fullurl "user_security" id=recipient.id as security_url %}
         {% fullurl "auth_request_tempsignin" as reset_url %}
-        <p class="em-text" style="{{ p_style }}">{% if change == "passkey_added" %}{% blocktrans %}A passkey named “{{ name }}” was added to your account.{% endblocktrans %}{% elif change == "two_factor_on" %}{% trans "Two-step verification was turned on for your account." %}{% elif change == "two_factor_off" %}{% if by_admin %}{% trans "An administrator turned off two-step verification for your account." %}{% else %}{% trans "Two-step verification was turned off for your account." %}{% endif %}{% elif change == "recovery_codes" %}{% trans "New recovery codes were made for your account; the old ones no longer work." %}{% else %}{% blocktrans %}An API token named “{{ name }}” was created for your account.{% endblocktrans %}{% endif %}</p>
+        <p class="em-text" style="{{ p_style }}">{% if change == "passkey_added" %}{% blocktrans %}A passkey named “{{ name }}” was added to your account.{% endblocktrans %}{% elif change == "two_factor_on" %}{% trans "Two-step verification was turned on for your account." %}{% elif change == "two_factor_off" %}{% if by_admin %}{% trans "An administrator turned off two-step verification for your account." %}{% else %}{% trans "Two-step verification was turned off for your account." %}{% endif %}{% elif change == "recovery_codes" %}{% trans "New recovery codes were made for your account; the old ones no longer work." %}{% elif change == "sign_in_added" %}{% blocktrans %}Signing in with {{ name }} was added to your account.{% endblocktrans %}{% else %}{% blocktrans %}An API token named “{{ name }}” was created for your account.{% endblocktrans %}{% endif %}</p>
         <p class="em-text" style="{{ p_style }}">{% blocktrans with when=when|date:"DATETIME_FORMAT" %}When: {{ when }}{% endblocktrans %}<br>{% blocktrans %}Browser: {{ browser }}{% endblocktrans %}<br>{% blocktrans %}IP address: {{ ip }}{% endblocktrans %}</p>
         <p class="em-text" style="{{ p_style }}">{% blocktrans %}If this wasn't you, check your <a href="{{ security_url }}" style="{{ a_style }}">security page</a> and <a href="{{ reset_url }}" style="{{ a_style }}">reset your password</a> now.{% endblocktrans %}</p>
         {% trans "Open your security page" as cta %}{% include "notifications/_button.html" with url=security_url label=cta %}
@@ -24,7 +24,7 @@
 
 {% textcontent notifications/base_text.html %}
 {% blocktrans asvar footer_reason %}You receive this security notice because the sign-in settings of your account at {{ app_name }} were changed. These notices are always sent.{% endblocktrans %}
-{% if change == "passkey_added" %}{% blocktrans %}A passkey named “{{ name }}” was added to your account.{% endblocktrans %}{% elif change == "two_factor_on" %}{% trans "Two-step verification was turned on for your account." %}{% elif change == "two_factor_off" %}{% if by_admin %}{% trans "An administrator turned off two-step verification for your account." %}{% else %}{% trans "Two-step verification was turned off for your account." %}{% endif %}{% elif change == "recovery_codes" %}{% trans "New recovery codes were made for your account; the old ones no longer work." %}{% else %}{% blocktrans %}An API token named “{{ name }}” was created for your account.{% endblocktrans %}{% endif %}
+{% if change == "passkey_added" %}{% blocktrans %}A passkey named “{{ name }}” was added to your account.{% endblocktrans %}{% elif change == "two_factor_on" %}{% trans "Two-step verification was turned on for your account." %}{% elif change == "two_factor_off" %}{% if by_admin %}{% trans "An administrator turned off two-step verification for your account." %}{% else %}{% trans "Two-step verification was turned off for your account." %}{% endif %}{% elif change == "recovery_codes" %}{% trans "New recovery codes were made for your account; the old ones no longer work." %}{% elif change == "sign_in_added" %}{% blocktrans %}Signing in with {{ name }} was added to your account.{% endblocktrans %}{% else %}{% blocktrans %}An API token named “{{ name }}” was created for your account.{% endblocktrans %}{% endif %}
 
 {% blocktrans with when=when|date:"DATETIME_FORMAT" %}When: {{ when }}{% endblocktrans %}
 {% blocktrans %}Browser: {{ browser }}{% endblocktrans %}

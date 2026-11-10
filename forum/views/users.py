@@ -556,7 +556,9 @@ def user_votes(request, user, **kwargs):
 
 @user_view('users/questions.html', 'favorites', _lazy('favorites'), _lazy('questions that user selected as his/her favorite'))
 def user_favorites(request, user, **kwargs):
-    favorites = FavoriteAction.objects.filter(canceled=False, user=user)
+    # Not the deleted questions, nor those held for review from the viewer.
+    favorites = review.visible_to(FavoriteAction.objects.filter(canceled=False, user=user).exclude(
+        node__state_string__contains=review.DELETED_MARK), request.user, prefix='node__')
 
     return {"favorites" : favorites, "view_user" : user}
 
@@ -580,6 +582,9 @@ def _user_subscriptions(request, user, **kwargs):
         else:
             show_auto = False
             subscriptions = QuestionSubscription.objects.filter(user=user, auto_subscription=False).order_by('-last_view')
+        # Not the deleted questions, nor those held for review from the viewer.
+        subscriptions = review.visible_to(subscriptions.exclude(question__state_string__contains=review.DELETED_MARK),
+                                          request.user, prefix='question__')
 
         return pagination.paginated(request, ('subscriptions', SubscriptionListPaginatorContext()), {
             'subscriptions':subscriptions,
