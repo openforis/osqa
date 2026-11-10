@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OSQA (Open Foris edition)\n"
 "Report-Msgid-Bugs-To: https://github.com/openforis/osqa/issues\n"
-"POT-Creation-Date: 2026-11-09 18:10-0500\n"
+"POT-Creation-Date: 2026-11-09 19:20-0500\n"
 "PO-Revision-Date: 2026-10-14 12:00+0000\n"
 "Last-Translator: Open Foris <https://github.com/openforis/osqa>\n"
 "Language-Team: Spanish <https://github.com/openforis/osqa>\n"
@@ -4239,6 +4239,13 @@ msgstr "Usuarios"
 msgid "More"
 msgstr "Más"
 
+#, python-format
+msgid "Notifications: %(counter)s unread"
+msgid_plural "Notifications: %(counter)s unread"
+msgstr[0] "Notificaciones: %(counter)s sin leer"
+msgstr[1] "Notificaciones: %(counter)s sin leer"
+msgstr[2] "Notificaciones: %(counter)s sin leer"
+
 msgid "Menu"
 msgstr "Menú"
 
@@ -4253,6 +4260,9 @@ msgstr "Su perfil"
 
 msgid "Notifications"
 msgstr "Notificaciones"
+
+msgid "unread"
+msgstr "sin leer"
 
 msgid "About"
 msgstr "Acerca de"
@@ -4524,13 +4534,6 @@ msgstr "formular una pregunta"
 #, python-format
 msgid "Notifications: %%(count)s unread"
 msgstr "Notificaciones: %%(count)s sin leer"
-
-#, python-format
-msgid "Notifications: %(counter)s unread"
-msgid_plural "Notifications: %(counter)s unread"
-msgstr[0] "Notificaciones: %(counter)s sin leer"
-msgstr[1] "Notificaciones: %(counter)s sin leer"
-msgstr[2] "Notificaciones: %(counter)s sin leer"
 
 msgid "Mark all as read"
 msgstr "Marcar todo como leído"

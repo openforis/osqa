@@ -1,5 +1,7 @@
 import json
 
+from django.db import connection
+from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
 
 from forum.models import Answer, Comment, Notification, Question, User
@@ -89,6 +91,14 @@ class BellAndListTest(NotificationFixture):
         self.assertContains(page, 'id="notification-bell"')
         self.assertContains(page, 'aria-label="Notifications: 2 unread"')
         self.assertContains(page, '<span class="notification-count">2</span>', html=False)
+        # The phone's tab bar shows it on More and in its sheet, from the same query.
+        self.assertContains(page, '<span data-unread-number>2</span>', count=2)
+        self.assertContains(page, '<span class="visually-hidden" data-unread-label>, Notifications: 2 unread</span>')
+        with CaptureQueriesContext(connection) as queries:
+            self.client.get('/')
+        counts = [q['sql'] for q in queries.captured_queries
+                  if 'forum_notification' in q['sql'] and 'COUNT(' in q['sql'].upper()]
+        self.assertEqual(len(counts), 1, counts)
         self.assertEqual(json.loads(self.client.get(reverse('notifications_count')).content), {'unread': 2})
 
         page = self.client.get(reverse('notifications'))
@@ -103,7 +113,10 @@ class BellAndListTest(NotificationFixture):
 
         self.client.post(reverse('notifications_read'))
         self.assertEqual(json.loads(self.client.get(reverse('notifications_count')).content), {'unread': 0})
-        self.assertContains(self.client.get('/'), '<span class="notification-count" hidden>0</span>', html=False)
+        page = self.client.get('/')
+        self.assertContains(page, '<span class="notification-count" hidden>0</span>', html=False)
+        self.assertContains(page, '<span class="app-unread" data-unread-badge aria-hidden="true" hidden>')
+        self.assertContains(page, '<span class="visually-hidden" data-unread-label></span>')
 
     def test_opening_the_question_marks_its_notifications_read(self):
         self.answer_as(self.bob)

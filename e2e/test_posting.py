@@ -75,6 +75,15 @@ class PostingTest(E2ETestCase):
         # alice sees the bell, reads her notifications and accepts the answer
         self.visit(alice_page, '/')
         self.assertIn('unread', alice_page.get_attribute('#notification-bell', 'aria-label'))
+        # On a phone the tab bar's More shows the count too, and so does its sheet.
+        phone = self.open(self.alice, device='mobile')
+        self.visit(phone, '/')
+        unread = phone.locator('#notification-bell .notification-count').inner_text()
+        self.assertEqual(phone.locator('#app-more .app-unread').inner_text(), unread)
+        self.assertIn('Notifications: %s unread' % unread, phone.locator('#app-more').inner_text())
+        phone.click('#app-more')
+        self.assertIn(unread, phone.locator('#app-more-sheet .app-sheet-count').inner_text())
+        phone.keyboard.press('Escape')
         self.visit(alice_page, '/notifications/')
         texts = alice_page.locator('.inbox-text').all_inner_texts()
         self.assertTrue(any('bob answered' in t for t in texts), texts)

@@ -3373,6 +3373,49 @@ div.comment-tools a:hover {
         transition: background-color .15s;
     }
 
+    .app-bar-icon {
+        position: relative;
+    }
+
+    /* Unread notifications on More and in its sheet (osqa.notifications.js). */
+    .app-unread {
+        position: absolute;
+        top: -3px;
+        left: calc(50% + 6px);
+        min-width: 18px;
+        height: 18px;
+        padding: 0 5px;
+        border: 2px solid var(--surface);
+        border-radius: 9px;
+        background: #c62828;
+        color: #fff;
+        font-size: 10px;
+        font-weight: 700;
+        line-height: 14px;
+        text-align: center;
+        box-sizing: border-box;
+    }
+
+    .app-sheet-count {
+        min-width: 22px;
+        margin-left: auto;
+        padding: 1px 7px;
+        border-radius: 11px;
+        background: #c62828;
+        color: #fff;
+        font-size: 13px;
+        font-weight: 700;
+        text-align: center;
+    }
+
+    .app-sheet-list a:has(.app-sheet-count:not([hidden]))::after {
+        margin-left: 0;
+    }
+
+    .app-unread[hidden], .app-sheet-count[hidden] {
+        display: none;
+    }
+
     .app-bar-label {
         max-width: 100%;
         overflow: hidden;
