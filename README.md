@@ -483,6 +483,12 @@ again. The site must be served over HTTPS.
   asks for permission only when the switch is pressed. Blocked notifications,
   browsers without Web Push, and iPhones/iPads (where it works only once the
   forum is added to the Home Screen and opened from there) get an explanation.
+  Askers are offered it under their new question while it has no answers
+  ("Get a notification when someone answers", with "Not now" for 30 days); it
+  isn't shown where it can't work or is already on.
+- **App icon badge:** the installed app's icon shows the unread count (Badging
+  API, where the system supports it), kept current by the open pages and by
+  each push.
 - **What is pushed:** for each new bell notification, if the member ticked
   that kind: answers to my questions, comments on my posts, mentions and
   accepted answers (on by default); answers to followed questions, badges,
@@ -1042,7 +1048,9 @@ and "ask a question" button, More opens a menu sheet with every section, the
 help pages and the account links (a sheet that closes with Escape, a tap
 outside or a swipe down), and pages run edge to edge. A tap anywhere on a
 question's row opens it, and the bar steps aside while the keyboard is up
-(`display/app_bar.html`, `media/js/osqa.appbar.js`).
+(`display/app_bar.html`, `media/js/osqa.appbar.js`). The header stays at
+the top, slides away while scrolling down and comes back on the way up; in
+the installed app it has a Back button.
 
 Admin > Look and feel changes the common things without writing CSS:
 - **Ready-made styles:** ten complete looks, each shown as a card with a

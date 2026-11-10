@@ -120,6 +120,13 @@ CLICK = '''async (data) => {
     return closed;
 }'''
 
+# Records what the Badging API is given (the app icon's unread count).
+BADGES = """() => {
+    self.__badges = [];
+    self.navigator.setAppBadge = n => { self.__badges.push(n); return Promise.resolve(); };
+    self.navigator.clearAppBadge = () => { self.__badges.push(0); return Promise.resolve(); };
+}"""
+
 CONTROLLED = "() => !!(navigator.serviceWorker && navigator.serviceWorker.controller)"
 
 
@@ -291,10 +298,12 @@ class PushNotificationsTest(E2ETestCase):
         self.assertEqual(payload['body'], self.question.title)
         self.assertEqual(payload['url'], '/notifications/%d/' % notification.id)
 
-        # The service worker shows it.
+        # The service worker shows it, and puts the unread count on the app's icon.
         self.visit(page, '/')
         worker = self.service_worker(page)
+        worker.evaluate(BADGES)
         [shown] = worker.evaluate(PUSH, payload)
+        self.assertEqual(worker.evaluate('self.__badges'), [1])
         self.assertEqual(shown['title'], 'bob answered your question')
         self.assertEqual(shown['body'], self.question.title)
         self.assertEqual(shown['tag'], 'osqa-question-%d' % self.question.id)
@@ -316,6 +325,41 @@ class PushNotificationsTest(E2ETestCase):
         self.assertEqual((shown['title'], shown['data']['url']), ('OSQA', self.url('/notifications/')))
         [shown] = worker.evaluate(PUSH, {'title': 'x', 'url': 'https://evil.example.org/phish'})
         self.assertEqual(shown['data']['url'], self.url('/notifications/'))
+
+    def test_the_asker_is_offered_notifications_for_answers(self):
+        page = self.open_with_push(self.alice, options={'device': 'mobile'})
+        self.visit(page, self.question.get_absolute_url())
+        prompt = page.locator('#push-prompt')
+        self.assertTrue(prompt.is_visible())
+        self.assertIn('Get a notification when someone answers', prompt.inner_text())
+        self.assertEqual(page.evaluate('window.__permissionAsks'), 0)  # only when pressed
+        violations = test_accessibility.AccessibilityTest.axe(self, page)
+        self.assertEqual(violations, [], 'the offer under a new question')
+        prompt.locator('.push-toggle').click()
+        self.wait_checked(page, 'true')
+        self.assertEqual(PushSubscription.objects.get().user_id, self.alice.id)
+        # On for this browser: not offered again.
+        page.reload()
+        self.assertFalse(prompt.is_visible())
+        self.check_page(page)
+
+        # "Not now": gone, for 30 days, and the focus goes to the question.
+        other = self.open_with_push(self.alice, options={'device': 'mobile'})
+        self.visit(other, self.question.get_absolute_url())
+        other.click('#push-prompt [data-push-prompt-later]')
+        self.assertFalse(other.locator('#push-prompt').is_visible())
+        self.assertEqual(other.evaluate('document.activeElement.tagName'), 'H1')
+        other.reload()
+        self.assertFalse(other.locator('#push-prompt').is_visible())
+
+        # Not for others, nor once the question has an answer.
+        bob = self.open_with_push(self.bob)
+        self.visit(bob, self.question.get_absolute_url())
+        self.assertEqual(bob.locator('#push-prompt').count(), 0)
+        self.create_answer(self.bob, self.question)
+        fresh = self.open_with_push(self.alice)
+        self.visit(fresh, self.question.get_absolute_url())
+        self.assertEqual(fresh.locator('#push-prompt').count(), 0)
 
     def test_another_member_signing_in_stops_push_on_this_browser(self):
         page = self.open_with_push(self.alice)

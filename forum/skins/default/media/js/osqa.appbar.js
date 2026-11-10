@@ -1,5 +1,5 @@
-/* The phone's bottom tab bar (display/app_bar.html) and the installed app's
-   Back button (header.html). "More" opens the menu
+/* The phone's bottom tab bar (display/app_bar.html), its header that slides
+   away while scrolling down, and the installed app's Back button (header.html). "More" opens the menu
    sheet as a modal dialog (the browser moves the focus in, closes it with
    Escape and gives the focus back to the button); a tap on the backdrop or
    the close button closes it too, and so does dragging it down by its head. */
@@ -32,6 +32,49 @@
                 location.href = back.getAttribute('data-home');
             }
         });
+    }
+
+    // The phone's header (osqa.css "Phones: app layout"): away while scrolling
+    // down, back on the way up, near the top, or when something in it has
+    // the focus (the search box, a menu).
+    var roof = document.getElementById('roof');
+    var phone = window.matchMedia && window.matchMedia('(max-width: 640px)');
+    if (roof && phone) {
+        var root = document.documentElement;
+        var lastY = window.scrollY, waiting = false;
+        var measure = function () {
+            root.style.setProperty('--roof-height', roof.offsetHeight + 'px');
+        };
+        var place = function () {
+            waiting = false;
+            var y = window.scrollY, moved = y - lastY;
+            var keep = !phone.matches || y < roof.offsetHeight || roof.contains(document.activeElement);
+            if (keep || moved < -4) {
+                root.classList.remove('roof-away');
+            } else if (moved > 4) {
+                root.classList.add('roof-away');
+            }
+            root.classList.toggle('roof-stuck', phone.matches && y > 0);
+            lastY = y;
+        };
+        window.addEventListener('scroll', function () {
+            if (!waiting) {
+                waiting = true;
+                window.requestAnimationFrame(place);
+            }
+        }, {passive: true});
+        // Back at once when the keyboard reaches it, cutting short a slide
+        // under way: the focus must be on screen as it lands (WCAG 2.4.11).
+        roof.addEventListener('focusin', function () {
+            roof.style.transition = 'none';
+            root.classList.remove('roof-away');
+            roof.getBoundingClientRect();
+            roof.style.transition = '';
+        });
+        if (window.ResizeObserver) {
+            new ResizeObserver(measure).observe(roof);
+        }
+        measure();
     }
 
     var button = document.getElementById('app-more');

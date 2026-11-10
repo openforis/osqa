@@ -41,3 +41,16 @@ def push_settings(context, view_user):
     return dict(_switch_context(user),
                 kinds=[(key, label, key in chosen) for key, label, default in push.PUSH_KINDS],
                 next=request.get_full_path() if request is not None else '')
+
+
+@register.inclusion_tag('push/ask_prompt.html', takes_context=True)
+def push_prompt(context, question):
+    """Under the asker's own question while it has no answers: "Get a
+    notification when someone answers", with the switch. A nonce'd script
+    shows it before the first paint unless this browser can't do it, has it
+    on already, or "Not now" was pressed in the last 30 days."""
+    user = context.get('user')
+    if (not push.enabled() or user is None or not user.is_authenticated or question.author_id != user.pk
+            or question.nis.closed or question.answer_count):
+        return {'push_on': False}
+    return dict(_switch_context(user), compact=True, csp_nonce=context.get('csp_nonce'))

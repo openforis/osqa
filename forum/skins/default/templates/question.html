@@ -11,6 +11,7 @@
 {% load seo_tags %}
 {% load assistant_tags %}
 {% load live_tags %}
+{% load push_tags %}
 {% block app_bar %}{% include "display/app_bar.html" with answer_here=question.closed|yesno:",1" %}{% endblock %}
 {% block metadescription %}{{ question.meta_description }}{% endblock %}
 {% block metakeywords %}{{question.tagname_meta_generator}}{% endblock %}
@@ -158,6 +159,7 @@
                     {% comments question request.user %}
                 </div>
             </div>
+            {% push_prompt question %}
             {% if answers %}
                 {% accepted_answer question as accepted %}
                 <div class="tabBar answers-header" id="answers">

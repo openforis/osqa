@@ -77,9 +77,13 @@ class PostingTest(E2ETestCase):
         self.assertIn('unread', alice_page.get_attribute('#notification-bell', 'aria-label'))
         # On a phone the tab bar's More shows the count too, and so does its sheet.
         phone = self.open(self.alice, device='mobile')
+        phone.add_init_script('navigator.setAppBadge = n => { window.__badge = n; return Promise.resolve(); };'
+                              'navigator.clearAppBadge = () => { window.__badge = 0; return Promise.resolve(); };')
         self.visit(phone, '/')
         unread = phone.locator('#notification-bell .notification-count').inner_text()
         self.assertEqual(phone.locator('#app-more .app-unread').inner_text(), unread)
+        # ...and the installed app's icon (Badging API).
+        self.assertEqual(phone.evaluate('window.__badge'), int(unread))
         self.assertIn('Notifications: %s unread' % unread, phone.locator('#app-more').inner_text())
         phone.click('#app-more')
         self.assertIn(unread, phone.locator('#app-more-sheet .app-sheet-count').inner_text())
