@@ -1031,6 +1031,14 @@ The default skin is responsive (phones, tablets, desktops). Its styles live
 in one file, `forum/skins/default/media/style/osqa.css`, drawn with colour
 variables (`--brand`, `--accent`, ... at the start of its section 2).
 
+On phones (640px wide and narrower) the forum works like an app: a tab bar
+at the bottom (Questions, Tags, Ask, Users, More) replaces the header's tabs
+and "ask a question" button, More opens a menu sheet with every section, the
+help pages and the account links (a sheet that closes with Escape, a tap
+outside or a swipe down), and pages run edge to edge. A tap anywhere on a
+question's row opens it, and the bar steps aside while the keyboard is up
+(`display/app_bar.html`, `media/js/osqa.appbar.js`).
+
 Admin > Look and feel changes the common things without writing CSS:
 - **Ready-made styles:** ten complete looks, each shown as a card with a
   small drawing: Classic (the skin as it comes), Open Foris (the palette of

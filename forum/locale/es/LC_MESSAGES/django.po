@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OSQA (Open Foris edition)\n"
 "Report-Msgid-Bugs-To: https://github.com/openforis/osqa/issues\n"
-"POT-Creation-Date: 2026-10-26 04:22-0400\n"
+"POT-Creation-Date: 2026-11-09 18:10-0500\n"
 "PO-Revision-Date: 2026-10-14 12:00+0000\n"
 "Last-Translator: Open Foris <https://github.com/openforis/osqa>\n"
 "Language-Team: Spanish <https://github.com/openforis/osqa>\n"
@@ -4224,6 +4224,45 @@ msgstr "Rechazar"
 msgid "Analytics cookies"
 msgstr "Cookies de análisis"
 
+msgid "Main"
+msgstr "Principal"
+
+msgid "Questions"
+msgstr "Preguntas"
+
+msgid "Ask"
+msgstr "Preguntar"
+
+msgid "Users"
+msgstr "Usuarios"
+
+msgid "More"
+msgstr "Más"
+
+msgid "Menu"
+msgstr "Menú"
+
+msgid "Sections"
+msgstr "Secciones"
+
+msgid "Account and help"
+msgstr "Cuenta y ayuda"
+
+msgid "Your profile"
+msgstr "Su perfil"
+
+msgid "Notifications"
+msgstr "Notificaciones"
+
+msgid "About"
+msgstr "Acerca de"
+
+msgid "FAQ"
+msgstr "Preguntas frecuentes"
+
+msgid "Sign out"
+msgstr "Cerrar sesión"
+
 msgid "Keyboard shortcuts"
 msgstr "Atajos de teclado"
 
@@ -4460,9 +4499,6 @@ msgstr "Este software de preguntas y respuestas (Q&amp;A) es libre y de código 
 msgid "back to home page"
 msgstr "volver a la página de inicio"
 
-msgid "Questions"
-msgstr "Preguntas"
-
 msgid "People"
 msgstr "Personas"
 
@@ -4484,9 +4520,6 @@ msgstr "Sugerencias de búsqueda"
 
 msgid "ask a question"
 msgstr "formular una pregunta"
-
-msgid "Notifications"
-msgstr "Notificaciones"
 
 #, python-format
 msgid "Notifications: %%(count)s unread"
@@ -4564,9 +4597,6 @@ msgstr "Las notificaciones de aquí no dependen de sus correos electrónicos. Pa
 
 msgid "welcome to "
 msgstr "bienvenido a "
-
-msgid "Sign out"
-msgstr "Cerrar sesión"
 
 #, python-format
 msgid "Sign out of %(site)s?"
@@ -8250,9 +8280,6 @@ msgstr "Código de 6 dígitos"
 msgid "Turn on two-step verification"
 msgstr "Activar la verificación en dos pasos"
 
-msgid "Users"
-msgstr "Usuarios"
-
 msgid "Search users"
 msgstr "Buscar usuarios"
 
@@ -8474,12 +8501,6 @@ msgstr "publicado"
 
 msgid "Applies to:"
 msgstr "Se aplica a:"
-
-msgid "FAQ"
-msgstr "Preguntas frecuentes"
-
-msgid "About"
-msgstr "Acerca de"
 
 msgid "an unknown browser"
 msgstr "un navegador desconocido"

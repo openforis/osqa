@@ -89,12 +89,16 @@ TARGETS = '''() => {
         const box = area(el);
         targets.push({el, box, small: box.right - box.left < 23.5 || box.bottom - box.top < 23.5});
     }
+    // The phone's tab bar is fixed: the page scrolls under it, so its buttons
+    // are never next to the page's targets.
+    const bar = document.querySelector('.app-bar');
+    const inBar = el => !!bar && bar.contains(el);
     const centre = b => [(b.left + b.right) / 2, (b.top + b.bottom) / 2];
     const distance = (p, b) => Math.hypot(Math.max(b.left - p[0], 0, p[0] - b.right), Math.max(b.top - p[1], 0, p[1] - b.bottom));
     const problems = [];
     for (const t of targets.filter(t => t.small)) {
         const c = centre(t.box);
-        const near = targets.find(o => o !== t && !o.el.contains(t.el) && !t.el.contains(o.el) &&
+        const near = targets.find(o => o !== t && !o.el.contains(t.el) && !t.el.contains(o.el) && inBar(o.el) === inBar(t.el) &&
             (distance(c, o.box) < 11.99 || (o.small && Math.hypot(c[0] - centre(o.box)[0], c[1] - centre(o.box)[1]) < 23.99)));
         if (near) problems.push(describe(t.el) + ' ' + Math.round(t.box.right - t.box.left) + 'x' +
             Math.round(t.box.bottom - t.box.top) + ', too close to ' + describe(near.el));
@@ -505,10 +509,16 @@ class Wcag22Test(E2ETestCase):
 
             # The keyboard shortcuts list, opened with "?" from a link.
             self.visit(page, '/questions/')
-            page.locator('#nav_questions').focus()
+            start = 'nav_questions' if device == 'desktop' else 'app-bar-questions'
+            page.locator('#' + start).focus()
             self.assert_closes_with_escape(page, lambda page=page: page.keyboard.press('?'),
                                            '() => document.getElementById("shortcuts-dialog").open', 'shortcuts')
-            self.assertEqual(page.evaluate('() => document.activeElement.id'), 'nav_questions')
+            self.assertEqual(page.evaluate('() => document.activeElement.id'), start)
+
+            # The menu sheet of the phone's tab bar.
+            if device == 'mobile':
+                self.assert_closes_with_escape(page, '#app-more', '() => document.getElementById("app-more-sheet").open',
+                                               'menu sheet')
 
             # The theme menu in the header.
             self.assert_closes_with_escape(page, '.theme-menu > summary',

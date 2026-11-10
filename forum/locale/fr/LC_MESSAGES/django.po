@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OSQA (Open Foris edition)\n"
 "Report-Msgid-Bugs-To: https://github.com/openforis/osqa/issues\n"
-"POT-Creation-Date: 2026-10-26 04:22-0400\n"
+"POT-Creation-Date: 2026-11-09 18:10-0500\n"
 "PO-Revision-Date: 2026-10-14 12:00+0000\n"
 "Last-Translator: Open Foris <https://github.com/openforis/osqa>\n"
 "Language-Team: French <https://github.com/openforis/osqa>\n"
@@ -4207,6 +4207,45 @@ msgstr "Refuser"
 msgid "Analytics cookies"
 msgstr "Cookies de mesure d'audience"
 
+msgid "Main"
+msgstr "Principal"
+
+msgid "Questions"
+msgstr "Questions"
+
+msgid "Ask"
+msgstr "Demander"
+
+msgid "Users"
+msgstr "Utilisateurs"
+
+msgid "More"
+msgstr "Plus"
+
+msgid "Menu"
+msgstr "Menu"
+
+msgid "Sections"
+msgstr "Rubriques"
+
+msgid "Account and help"
+msgstr "Compte et aide"
+
+msgid "Your profile"
+msgstr "Votre profil"
+
+msgid "Notifications"
+msgstr "Notifications"
+
+msgid "About"
+msgstr "À propos"
+
+msgid "FAQ"
+msgstr "FAQ"
+
+msgid "Sign out"
+msgstr "Se déconnecter"
+
 msgid "Keyboard shortcuts"
 msgstr "Raccourcis clavier"
 
@@ -4443,9 +4482,6 @@ msgstr "Ce logiciel de Q&amp;R (questions-réponses) est libre et open source (G
 msgid "back to home page"
 msgstr "retour à la page d'accueil"
 
-msgid "Questions"
-msgstr "Questions"
-
 msgid "People"
 msgstr "Personnes"
 
@@ -4467,9 +4503,6 @@ msgstr "Suggestions de recherche"
 
 msgid "ask a question"
 msgstr "poser une question"
-
-msgid "Notifications"
-msgstr "Notifications"
 
 #, python-format
 msgid "Notifications: %%(count)s unread"
@@ -4545,9 +4578,6 @@ msgstr "Les notifications affichées ici ne dépendent pas de vos e-mails. Pour 
 
 msgid "welcome to "
 msgstr "bienvenue sur "
-
-msgid "Sign out"
-msgstr "Se déconnecter"
 
 #, python-format
 msgid "Sign out of %(site)s?"
@@ -8175,9 +8205,6 @@ msgstr "Code à 6 chiffres"
 msgid "Turn on two-step verification"
 msgstr "Activer la validation en deux étapes"
 
-msgid "Users"
-msgstr "Utilisateurs"
-
 msgid "Search users"
 msgstr "Rechercher des utilisateurs"
 
@@ -8392,12 +8419,6 @@ msgstr "publié"
 
 msgid "Applies to:"
 msgstr "S’applique à :"
-
-msgid "FAQ"
-msgstr "FAQ"
-
-msgid "About"
-msgstr "À propos"
 
 msgid "an unknown browser"
 msgstr "un navigateur inconnu"

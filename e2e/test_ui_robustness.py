@@ -158,15 +158,15 @@ class ReflowTest(RobustnessTestCase):
     # (path, user, main action)
     def pages(self):
         return [
-            ('/', None, '#nav_ask'),
+            ('/', None, '.app-bar-ask'),
             (self.question.get_absolute_url(), None, '.answer-card .accepted-badge'),
             (self.question.get_absolute_url(), 'alice', '#fmanswer input.submit'),
             ('/questions/ask/', 'alice', '[name=ask][type=submit]'),
             ('/account/signin/', None, '#blogin'),
             ('/account/local/register/', None, '#bnewaccount'),
-            ('/tags/', None, '#nav_ask'),
-            ('/users/', None, '#nav_ask'),
-            (self.alice.get_profile_url(), None, '#nav_ask'),
+            ('/tags/', None, '.app-bar-ask'),
+            ('/users/', None, '.app-bar-ask'),
+            (self.alice.get_profile_url(), None, '.app-bar-ask'),
             ('/search/?q=export', None, '#keywords'),
         ]
 
@@ -303,9 +303,12 @@ class KeyboardTest(RobustnessTestCase):
         for device in ('desktop', 'mobile'):
             page = self.open(device=device)
             self.visit(page, '/')
-            reached, steps = self.tab_until(page, ['.skip-link', '#keywords', '#nav a:not(#nav_ask)', '#nav_ask'])
+            # On a phone the tab bar replaces the header's tabs; it comes last, after the footer.
+            ask = '#nav_ask' if device == 'desktop' else '.app-bar-ask'
+            tabs = '#nav a:not(#nav_ask)' if device == 'desktop' else '#app-more'
+            reached, steps = self.tab_until(page, ['.skip-link', '#keywords', tabs, ask], limit=200)
             self.assertEqual(reached['.skip-link'], 1, 'Skip to content is not the first focusable element')
-            self.assertLess(reached['#keywords'], reached['#nav_ask'])
+            self.assertLess(reached['#keywords'], reached[ask])
             self.assert_focus_visible(steps, '/ (%s)' % device)
 
         # The skip link is shown when focused and moves focus to the content.

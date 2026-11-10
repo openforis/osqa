@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OSQA (Open Foris edition)\n"
 "Report-Msgid-Bugs-To: https://github.com/openforis/osqa/issues\n"
-"POT-Creation-Date: 2026-10-26 04:22-0400\n"
+"POT-Creation-Date: 2026-11-09 18:10-0500\n"
 "PO-Revision-Date: 2026-10-14 12:00+0000\n"
 "Last-Translator: Open Foris <https://github.com/openforis/osqa>\n"
 "Language-Team: Portuguese <https://github.com/openforis/osqa>\n"
@@ -4207,6 +4207,45 @@ msgstr "Recusar"
 msgid "Analytics cookies"
 msgstr "Cookies de análise"
 
+msgid "Main"
+msgstr "Principal"
+
+msgid "Questions"
+msgstr "Perguntas"
+
+msgid "Ask"
+msgstr "Perguntar"
+
+msgid "Users"
+msgstr "Usuários"
+
+msgid "More"
+msgstr "Mais"
+
+msgid "Menu"
+msgstr "Menu"
+
+msgid "Sections"
+msgstr "Seções"
+
+msgid "Account and help"
+msgstr "Conta e ajuda"
+
+msgid "Your profile"
+msgstr "Seu perfil"
+
+msgid "Notifications"
+msgstr "Notificações"
+
+msgid "About"
+msgstr "Sobre"
+
+msgid "FAQ"
+msgstr "Perguntas frequentes"
+
+msgid "Sign out"
+msgstr "Sair"
+
 msgid "Keyboard shortcuts"
 msgstr "Atalhos de teclado"
 
@@ -4443,9 +4482,6 @@ msgstr "Este software de perguntas &amp; respostas é livre e de código aberto 
 msgid "back to home page"
 msgstr "voltar à página inicial"
 
-msgid "Questions"
-msgstr "Perguntas"
-
 msgid "People"
 msgstr "Pessoas"
 
@@ -4467,9 +4503,6 @@ msgstr "Sugestões de pesquisa"
 
 msgid "ask a question"
 msgstr "fazer uma pergunta"
-
-msgid "Notifications"
-msgstr "Notificações"
 
 #, python-format
 msgid "Notifications: %%(count)s unread"
@@ -4545,9 +4578,6 @@ msgstr "As notificações aqui não dependem dos e-mails. Para escolher quais e-
 
 msgid "welcome to "
 msgstr "boas-vindas a "
-
-msgid "Sign out"
-msgstr "Sair"
 
 #, python-format
 msgid "Sign out of %(site)s?"
@@ -8175,9 +8205,6 @@ msgstr "Código de 6 dígitos"
 msgid "Turn on two-step verification"
 msgstr "Ativar a verificação em duas etapas"
 
-msgid "Users"
-msgstr "Usuários"
-
 msgid "Search users"
 msgstr "Pesquisar usuários"
 
@@ -8392,12 +8419,6 @@ msgstr "publicado"
 
 msgid "Applies to:"
 msgstr "Aplica-se a:"
-
-msgid "FAQ"
-msgstr "Perguntas frequentes"
-
-msgid "About"
-msgstr "Sobre"
 
 msgid "an unknown browser"
 msgstr "um navegador desconhecido"

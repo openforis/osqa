@@ -105,8 +105,8 @@ class ListPagesTest(E2ETestCase):
         counts, title = row.locator('.counts').bounding_box(), row.locator('h2').bounding_box()
         self.assertLess(counts['y'] + counts['height'], title['y'] + 1)
         self.assertLess(counts['height'], 40)
-        self.assertEqual(phone.locator('.list-ask').is_visible(), False)   # the header's button is there
-        self.assertTrue(phone.locator('#nav_ask').is_visible())
+        self.assertEqual(phone.locator('.list-ask').is_visible(), False)   # the tab bar's Ask is there
+        self.assertTrue(phone.locator('.app-bar-ask').is_visible())
 
     def test_sort_tabs_change_order(self):
         page = self.open()
@@ -227,6 +227,7 @@ class ListPagesTest(E2ETestCase):
         # The whole card is the profile link (the profile page itself is tested elsewhere).
         link = cards.first.locator('a.user-card-name')
         self.assertIn('/users/%d/' % self.carol.id, link.get_attribute('href'))
+        cards.first.evaluate('el => el.scrollIntoView({block: "center"})')   # not under the phone's tab bar
         box = cards.first.bounding_box()
         self.assertTrue(page.evaluate('([x, y]) => document.elementFromPoint(x, y).closest("li.user-card") !== null && '
                                       'getComputedStyle(document.querySelector("a.user-card-name"), "::after").position === "absolute"',

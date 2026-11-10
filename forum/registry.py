@@ -34,18 +34,21 @@ class SuggestedEditsLink(ui.Include):
 
 
 ui.register(ui.HEADER_LINKS,
-            ui.Link(_lazy('faq'), ui.Url('faq'), weight=400, name='FAQ'),
-            ui.Link(_lazy('about'), ui.Url('about'), weight=300, name='ABOUT'),
+            # top-link-more: in the More menu of the phone's tab bar (display/app_bar.html) instead.
+            ui.Link(_lazy('faq'), ui.Url('faq'), attrs={'class': 'top-link-more'}, weight=400, name='FAQ'),
+            ui.Link(_lazy('about'), ui.Url('about'), attrs={'class': 'top-link-more'}, weight=300, name='ABOUT'),
 
             ui.Link(
                     visibility=ui.Visibility.ANONYMOUS,
                     text=_lazy('login'),
                     url=lambda u, c: reverse('auth_signin'),
+                    attrs={'class': 'top-link-login'},
                     weight=200, name='LOGIN'),
             ui.Link(
                     visibility=ui.Visibility.AUTHENTICATED,
                     text=_lazy('logout'),
                     url=lambda u, c: reverse('logout'),
+                    attrs={'class': 'top-link-more'},
                     weight=200, name='LOGOUT'),
             ui.Link(
                     visibility=ui.Visibility.AUTHENTICATED,

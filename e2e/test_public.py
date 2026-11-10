@@ -32,29 +32,85 @@ class PublicPagesTest(E2ETestCase):
                 with self.subTest(device=device, path=path):
                     self.visit(page, path)
 
-    def test_phone_header_tabs_and_avatar_fallback(self):
+    def test_phone_tab_bar_and_avatar_fallback(self):
         page = self.open(device='mobile', dark=True)
         page.route('**gravatar.com/**', lambda route: route.fulfill(status=404, body=''))
-        for path in ('/', '/badges/', '/users/'):
+        for path, current in (('/', 'Questions'), ('/tags/', 'Tags'), ('/users/', 'Users'), ('/badges/', None)):
             with self.subTest(path=path):
                 self.visit(page, path)
-                tabs, ask = page.locator('#nav .nav-tabs'), page.locator('#nav_ask')
-                row, button = tabs.bounding_box(), ask.bounding_box()
-                # "ask a question" sits beside the tabs, never over them.
-                self.assertLessEqual(row['x'] + row['width'], button['x'] + 1, (row, button))
-                self.assertLessEqual(button['x'] + button['width'], 390)
-                # The current tab is scrolled into view; every tab can be.
-                current = page.locator('#nav a.on').bounding_box()
-                self.assertGreaterEqual(current['x'], row['x'] - 1)
-                self.assertLessEqual(current['x'] + current['width'], row['x'] + row['width'] + 1)
-                for link in page.locator('#nav .nav-tabs a').all():
-                    link.scroll_into_view_if_needed()
-                    box = link.bounding_box()
-                    self.assertGreaterEqual(box['x'], row['x'] - 1, link.inner_text())
-                    self.assertLessEqual(box['x'] + box['width'], button['x'] + 1, link.inner_text())
-                # A row that scrolls says so with a fade on the hidden side.
-                if tabs.evaluate('el => el.scrollWidth > el.clientWidth + 1'):
-                    self.assertTrue(tabs.evaluate("el => el.matches('.fade-start, .fade-end')"))
+                # On a phone the tab bar at the bottom replaces the header's tabs and Ask button.
+                self.assertFalse(page.locator('#nav').is_visible())
+                bar = page.locator('nav.app-bar')
+                box = bar.bounding_box()
+                self.assertAlmostEqual(box['y'] + box['height'], page.viewport_size['height'], delta=1)
+                self.assertEqual(bar.locator('.app-bar-label').all_inner_texts(),
+                                 ['Questions', 'Tags', 'Ask', 'Users', 'More'])
+                self.assertEqual(bar.locator('[aria-current=page] .app-bar-label').all_inner_texts(),
+                                 [current] if current else [])
+                # The end of the page scrolls up from under the bar.
+                page.evaluate('window.scrollTo(0, document.documentElement.scrollHeight)')
+                end = page.locator('#ground .footer-osqa').bounding_box()
+                self.assertLessEqual(end['y'] + end['height'], box['y'] + 1)
+        # More opens the menu sheet: the focus moves into it, Escape closes it
+        # and gives the focus back; so does a tap on the backdrop.
+        more, sheet = page.locator('#app-more'), page.locator('#app-more-sheet')
+        more.click()
+        self.assertTrue(sheet.is_visible())
+        self.assertEqual(more.get_attribute('aria-expanded'), 'true')
+        self.assertTrue(sheet.evaluate('el => el.contains(document.activeElement)'))
+        self.assertIn('Sign in', sheet.inner_text())
+        page.keyboard.press('Escape')
+        page.wait_for_selector('#app-more[aria-expanded=false]', state='attached')
+        self.assertFalse(sheet.is_visible())
+        self.assertEqual(page.evaluate('document.activeElement.id'), 'app-more')
+        more.click()
+        page.mouse.click(195, 40)
+        self.assertFalse(sheet.is_visible())
+        # Dragged down by its head with a finger, it closes; a short drag doesn't.
+        cdp = page.context.new_cdp_session(page)
+
+        def drag(distance):
+            more.click()
+            page.wait_for_selector('#app-more-sheet[open]')
+            page.wait_for_timeout(400)   # it slides up
+            head = page.locator('.app-sheet-head h2').bounding_box()
+            x, y = head['x'] + head['width'] + 40, head['y'] + head['height'] / 2
+            cdp.send('Input.dispatchTouchEvent', {'type': 'touchStart', 'touchPoints': [{'x': x, 'y': y}]})
+            for step in range(1, 11):
+                cdp.send('Input.dispatchTouchEvent', {'type': 'touchMove',
+                                                      'touchPoints': [{'x': x, 'y': y + distance * step / 10}]})
+                page.wait_for_timeout(30)
+            cdp.send('Input.dispatchTouchEvent', {'type': 'touchEnd', 'touchPoints': []})
+            page.wait_for_timeout(300)
+        drag(20)
+        self.assertTrue(sheet.is_visible())
+        self.assertEqual(sheet.evaluate('el => getComputedStyle(el).transform'), 'none')
+        page.keyboard.press('Escape')
+        drag(400)
+        self.assertFalse(sheet.is_visible())
+        more.click()
+        with page.expect_navigation():
+            sheet.get_by_role('link', name='Unanswered').click()
+        self.assertTrue(page.url.endswith('/questions/unanswered/'), page.url)
+        # A tap anywhere on a question's row opens it; its tags stay links.
+        row = page.locator('.question-row').first
+        with page.expect_navigation():
+            row.locator('.summary').click(force=True)   # Playwright sees the row's link would take it
+        self.assertIn('/questions/%d/' % self.unanswered.id, page.url)
+        self.visit(page, '/questions/')
+        with page.expect_navigation():
+            page.locator('.question-row .tags a').first.click()
+        self.assertIn('/tags/', page.url)
+        # While typing, the bar makes room for the keyboard.
+        page.locator('#keywords').focus()
+        self.assertFalse(page.locator('nav.app-bar').is_visible())
+        page.locator('#keywords').blur()
+        self.assertTrue(page.locator('nav.app-bar').is_visible())
+        # Not on wider screens: the header keeps its tabs there.
+        desktop = self.open()
+        self.visit(desktop, '/')
+        self.assertFalse(desktop.locator('nav.app-bar').is_visible())
+        self.assertTrue(desktop.locator('#nav_ask').is_visible())
         # Avatars that can't be loaded show the initial, not a broken image.
         self.visit(page, self.question.get_absolute_url())
         page.evaluate('window.scrollTo(0, document.body.scrollHeight)')
