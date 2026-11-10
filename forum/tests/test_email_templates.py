@@ -16,7 +16,8 @@ from .base import OSQATestCase
 
 # kind -> (button label, a part of the button's URL)
 CTA = {
-    'new-answer': ('View the answer', '/questions/990010/how-do-i-export-survey-data-to-csv/990011'),
+    # The sample's reader asked the question: they are asked to accept the answer.
+    'new-answer': ('Review and accept the answer', '/questions/990010/how-do-i-export-survey-data-to-csv/990011'),
     'new-comment': ('View the comment', '/questions/990010/how-do-i-export-survey-data-to-csv#990012'),
     'answer-accepted': ('View the answer', '/questions/990010/how-do-i-export-survey-data-to-csv/990011'),
     'mention': ('View the comment', '/questions/990010/how-do-i-export-survey-data-to-csv#990013'),

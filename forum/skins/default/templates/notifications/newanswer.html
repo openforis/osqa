@@ -10,6 +10,9 @@
 {% enddeclare %}
 
 {% email %}
+    {% declare %}
+        can_accept = recipient.can_accept_answer(answer) and not question.accepted_answers.exists() and not settings.DISABLE_ACCEPTING_FEATURE
+    {% enddeclare %}
     {% subject %}{% blocktrans %}{{ prefix }} New answer to: {{ question_title }}{% endblocktrans %}{% endsubject %}
     {% preheader %}{% blocktrans %}{{ answer_author }} answered:{% endblocktrans %} {{ answer.html|email_snippet:120 }}{% endpreheader %}
 
@@ -19,8 +22,14 @@
         {% enddeclare %}
         <p class="em-text" style="{{ p_style }}">{% blocktrans %}{{ answer_author }} answered {{ question_link }}:{% endblocktrans %}</p>
         {% include "notifications/_quote.html" with text=answer.html|email_snippet:400 %}
+        {% if can_accept %}
+        <p class="em-text" style="{{ p_style }}"><strong>{% trans "Did it solve your problem? Then accept it." %}</strong> {% blocktrans %}Press the green Accept button beside the answer: it marks the question as solved, shows others what worked and thanks {{ answer_author }}.{% endblocktrans %}</p>
+        {% trans "Review and accept the answer" as cta %}{% include "notifications/_button.html" with url=answer_url label=cta %}
+        <p class="em-text" style="{{ p_style }}">{% trans "Not solved yet? Add a comment to the answer saying what is missing." %}</p>
+        {% else %}
         {% trans "View the answer" as cta %}{% include "notifications/_button.html" with url=answer_url label=cta %}
         <p class="em-text" style="{{ p_style }}">{% trans "If the answer helps, vote for it so the best answers rise to the top." %}</p>
+        {% endif %}
     {% endhtmlcontent %}
 
 {% textcontent notifications/base_text.html %}
@@ -31,10 +40,16 @@
 
 > {{ answer.html|email_snippet:400 }}
 
-{% trans "View the answer" %}:
+{% if can_accept %}{% trans "Did it solve your problem? Then accept it." %} {% blocktrans %}Press the green Accept button beside the answer: it marks the question as solved, shows others what worked and thanks {{ answer_author }}.{% endblocktrans %}
+
+{% trans "Review and accept the answer" %}:
+{{ answer_url }}
+
+{% trans "Not solved yet? Add a comment to the answer saying what is missing." %}
+{% else %}{% trans "View the answer" %}:
 {{ answer_url }}
 
 {% trans "If the answer helps, vote for it so the best answers rise to the top." %}
-{% endtextcontent %}
+{% endif %}{% endtextcontent %}
 
 {% endemail %}

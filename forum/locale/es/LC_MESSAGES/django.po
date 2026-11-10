@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OSQA (Open Foris edition)\n"
 "Report-Msgid-Bugs-To: https://github.com/openforis/osqa/issues\n"
-"POT-Creation-Date: 2026-11-09 19:20-0500\n"
+"POT-Creation-Date: 2026-11-09 19:29-0500\n"
 "PO-Revision-Date: 2026-10-14 12:00+0000\n"
 "Last-Translator: Open Foris <https://github.com/openforis/osqa>\n"
 "Language-Team: Spanish <https://github.com/openforis/osqa>\n"
@@ -5352,6 +5352,19 @@ msgstr "%(answer_author)s respondió:"
 msgid "%(answer_author)s answered %(question_link)s:"
 msgstr "%(answer_author)s respondió a %(question_link)s:"
 
+msgid "Did it solve your problem? Then accept it."
+msgstr "¿Resolvió su problema? Entonces acéptela."
+
+#, python-format
+msgid "Press the green Accept button beside the answer: it marks the question as solved, shows others what worked and thanks %(answer_author)s."
+msgstr "Pulse el botón verde Aceptar junto a la respuesta: marca la pregunta como resuelta, muestra a los demás lo que funcionó y agradece a %(answer_author)s."
+
+msgid "Review and accept the answer"
+msgstr "Revisar y aceptar la respuesta"
+
+msgid "Not solved yet? Add a comment to the answer saying what is missing."
+msgstr "¿Aún no está resuelto? Añada un comentario a la respuesta diciendo qué falta."
+
 msgid "If the answer helps, vote for it so the best answers rise to the top."
 msgstr "Si la respuesta le ayuda, vótela para que las mejores respuestas suban."
 
@@ -5483,6 +5496,9 @@ msgid_plural "And %(counter)s more."
 msgstr[0] "Y %(counter)s más."
 msgstr[1] "Y %(counter)s más."
 msgstr[2] "Y %(counter)s más."
+
+msgid "If an answer solved your problem, accept it with the green Accept button beside it: that marks your question as solved and thanks the person who helped."
+msgstr "Si una respuesta resolvió su problema, acéptela con el botón verde Aceptar que tiene al lado: así su pregunta queda marcada como resuelta y agradece a la persona que le ayudó."
 
 msgid "See all your notifications"
 msgstr "Ver todas sus notificaciones"
@@ -6725,6 +6741,12 @@ msgstr "Más antiguas"
 
 msgid "most recently updated answers/comments will be shown first"
 msgstr "se mostrarán primero las respuestas o comentarios actualizados más recientemente"
+
+msgid "Did an answer solve your problem?"
+msgstr "¿Alguna respuesta resolvió su problema?"
+
+msgid "Press <strong>Accept</strong> beside it. That marks your question as solved, shows others what worked and thanks the person who helped. You can change your choice later."
+msgstr "Pulse <strong>Aceptar</strong> junto a ella. Así su pregunta queda marcada como resuelta, los demás ven lo que funcionó y agradece a la persona que le ayudó. Puede cambiar su elección más adelante."
 
 msgid "Be the first one to answer this question!"
 msgstr "¡Sea el primero en responder esta pregunta!"

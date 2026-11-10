@@ -120,6 +120,15 @@ class QuestionPageTest(E2ETestCase):
         self.visit(alice_page, self.question.get_absolute_url())
         self.assertEqual(alice_page.locator('.jump-to-accepted').count(), 0)
         self.assertEqual(alice_page.get_by_role('button', name='Accept').count(), 2)
+        # Until one is accepted, the asker is told what Accept does; the note
+        # goes as soon as they accept (others never see it).
+        hint = alice_page.locator('#accept-hint')
+        self.assertTrue(hint.is_visible())
+        self.assertIn('Did an answer solve your problem?', hint.inner_text())
+        self.assertEqual(page.locator('#accept-hint').count(), 0)
+        self.click_command(alice_page, '#accept-answer-%d' % self.accepted.id)
+        self.assertEqual(hint.count(), 0)
+        self.check_page(alice_page)
 
     def test_sort_tabs(self):
         dave = self.create_user('dave', reputation=100)

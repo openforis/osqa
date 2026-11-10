@@ -5322,6 +5322,39 @@ button.version-confirm-button:hover, button.version-undo-button:hover {
     font-weight: 650;
 }
 
+/* "Did an answer solve your problem?": the asker, until one is accepted. */
+.accept-hint {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 12px 0 4px;
+    padding: 12px 16px;
+    border: 1px solid var(--success);
+    border-left-width: 4px;
+    border-radius: var(--radius);
+    background: var(--success-soft);
+    color: var(--text);
+}
+
+.accept-hint-icon {
+    flex: none;
+    margin-top: 2px;
+    color: var(--success);
+}
+
+.accept-hint p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.accept-hint p.accept-hint-title {
+    margin-bottom: 2px;
+    color: var(--success);
+    font-size: 15px;
+    font-weight: 700;
+}
+
 .question-page .jump-to-accepted {
     display: inline-flex;
     align-items: center;
@@ -7129,11 +7162,15 @@ a.post-vote.down.on, a.post-vote.down.on:hover {
     opacity: 1;
 }
 
+/* Green from the start, so the asker sees what to press when an answer
+   solved the problem; filled once pressed. */
 .question-page a.accept-answer:not(.on) {
-    border-color: var(--border-strong);
+    border: 2px solid var(--success);
     background-color: var(--surface);
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233d4752' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M8 12.5l2.7 2.7L16 9.8'/%3E%3C/svg%3E");
-    color: var(--text);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231a7f37' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M8 12.5l2.7 2.7L16 9.8'/%3E%3C/svg%3E");
+    color: var(--success);
+    font-size: 12px;
+    font-weight: 700;
 }
 
 .question-page a.accept-answer:not(.on):hover {
@@ -7909,7 +7946,7 @@ a.badge-awardee img.gravatar {
 }
 
 :root[data-theme="dark"] .question-page a.accept-answer:not(.on) {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c3ccd6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M8 12.5l2.7 2.7L16 9.8'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233fb950' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M8 12.5l2.7 2.7L16 9.8'/%3E%3C/svg%3E");
 }
 
 :root[data-theme="dark"] .question-page a.accept-answer:not(.on):hover {

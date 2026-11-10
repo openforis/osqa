@@ -81,6 +81,53 @@ class CreatingNotificationsTest(NotificationFixture):
         self.assertTrue(all(n.text for n in badges))
 
 
+class AcceptPromptTest(NotificationFixture):
+    """The "new answer" email asks the asker to accept the answer if it
+    solved the problem, until one is accepted; followers are only asked to
+    vote."""
+    PROMPT = 'Did it solve your problem? Then accept it.'
+
+    def emails_to(self, user):
+        return [(html, text) for recipient, subject, html, text, media, headers in self.sent_mail
+                if recipient.id == user.id]
+
+    def test_the_asker_is_asked_to_accept(self):
+        from forum.models import QuestionSubscription
+        QuestionSubscription(user=self.carol, question=self.question).save()
+        del self.sent_mail[:]
+        answer = self.answer_as(self.bob)
+        [(html, text)] = self.emails_to(self.alice)
+        for part in (html, text):
+            self.assertIn(self.PROMPT, part)
+            self.assertIn('Press the green Accept button beside the answer', part)
+            self.assertIn('thanks bob', part)
+            self.assertIn('Review and accept the answer', part)
+            self.assertNotIn('vote for it', part)
+        [(html, text)] = self.emails_to(self.carol)
+        self.assertNotIn(self.PROMPT, html + text)
+        self.assertIn('If the answer helps, vote for it', text)
+
+        # Once an answer is accepted, the next one only asks for a vote.
+        self.login(self.alice)
+        self.assertTrue(self.command('/accept_answer/%d/' % answer.id)['success'])
+        del self.sent_mail[:]
+        self.answer_as(self.carol, 'Another answer that is long enough to post.')
+        [(html, text)] = self.emails_to(self.alice)
+        self.assertNotIn(self.PROMPT, html + text)
+        self.assertIn('If the answer helps, vote for it', text)
+
+    def test_the_question_page_shows_the_asker_how_to_accept(self):
+        answer = self.answer_as(self.bob)
+        url = self.question.get_absolute_url()
+        self.login(self.alice)
+        self.assertContains(self.client.get(url), 'id="accept-hint"')
+        self.login(self.carol)
+        self.assertNotContains(self.client.get(url), 'id="accept-hint"')
+        self.login(self.alice)
+        self.command('/accept_answer/%d/' % answer.id)
+        self.assertNotContains(self.client.get(url), 'id="accept-hint"')
+
+
 class BellAndListTest(NotificationFixture):
     def test_bell_list_and_reading(self):
         self.answer_as(self.bob)

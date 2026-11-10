@@ -29,6 +29,7 @@ and _summary_line.html (what happened, both parts).
             <li class="em-li" style="{{ li_style }}">{% include "notifications/_summary_item.html" %}</li>{% endfor %}
         </ul>
         {% if section.more %}<p class="em-small" style="{{ small_style }}">{% blocktrans count counter=section.more %}And {{ counter }} more.{% plural %}And {{ counter }} more.{% endblocktrans %}</p>{% endif %}
+        {% if section.key == "answer_own" and not settings.DISABLE_ACCEPTING_FEATURE %}<p class="em-text" style="{{ p_style }}">{% trans "If an answer solved your problem, accept it with the green Accept button beside it: that marks your question as solved and thanks the person who helped." %}</p>{% endif %}
         {% endfor %}
         {% trans "See all your notifications" as cta %}{% include "notifications/_button.html" with url=notifications_url label=cta %}
         <p class="em-text" style="{{ p_style }}">{% trans "You get this summary instead of a separate email for each update. Nothing new means no email." %}</p>
@@ -44,6 +45,7 @@ and _summary_line.html (what happened, both parts).
 {{ app_url }}{{ item.url }}
 
 {% endfor %}{% if section.more %}{% blocktrans count counter=section.more %}And {{ counter }} more.{% plural %}And {{ counter }} more.{% endblocktrans %}
+{% endif %}{% if section.key == "answer_own" and not settings.DISABLE_ACCEPTING_FEATURE %}{% trans "If an answer solved your problem, accept it with the green Accept button beside it: that marks your question as solved and thanks the person who helped." %}
 {% endif %}
 {% endfor %}
 {% trans "See all your notifications" %}:
