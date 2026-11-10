@@ -287,7 +287,7 @@ def password_changed(request, user, how):
     'admin'): every other session ends and the member gets an email."""
     from forum.models import ValidationHash
     ValidationHash.objects.filter(user=user, type__in=('pwreset', 'templogin')).delete()
-    throttle.reset('login-user', user.username)
+    throttle.reset('login-user', login_counter(user=user))
     current = getattr(request, 'user', None)
     if how != 'reset' and current is not None and current.pk == user.pk:
         # This session stays signed in (the password hash in it is renewed).
@@ -296,18 +296,45 @@ def password_changed(request, user, how):
         sign_out_everywhere(user, request, keep_current=True)
     else:
         sign_out_everywhere(user)
+    revoked = 0
+    if how in ('reset', 'admin'):
+        # Whoever had the account may have made API tokens with it: a password
+        # reset (or one set by an administrator) revokes them.
+        from forum.models import ApiToken
+        revoked = ApiToken.objects.filter(user=user).delete()[0]
     security_log.event({'changed': 'password_changed', 'reset': 'password_reset', 'set': 'password_set',
-                        'admin': 'password_set_by_admin'}[how], request, account=user)
+                        'admin': 'password_set_by_admin'}[how], request, account=user, tokens_revoked=revoked)
     send([user], 'auth/password_changed_email.html', {
         'how': how, 'when': _now(), 'browser': browser_summary(request), 'ip': throttle.client_ip(request)})
+
+
+# -- sign-in lockout -----------------------------------------------------------------
+
+def _account_pk(username):
+    from forum.models import User
+    return User.objects.filter(username=username).values_list('pk', flat=True).first()
+
+
+def login_counter(username=None, user=None):
+    """What the per-account sign-in lockout (throttle 'login-user') counts
+    against: the account the typed name signs in to, so spellings the
+    database takes for the same name (case and accents on MySQL) share one
+    counter; the name itself when it is nobody's."""
+    pk = user.pk if user is not None else _account_pk(username)
+    return 'user:%d' % pk if pk else 'name:%s' % username
 
 
 # -- sessions ---------------------------------------------------------------------------
 
 def sign_out_everywhere(user, request=None, keep_current=False):
-    """Ends every session of `user` (but the current one with `keep_current`)."""
+    """Ends every session of `user` (but the current one with `keep_current`)
+    and stops browser push on all their devices: a lost phone or a shared
+    computer must not keep showing their notifications. The member turns it
+    on again where they want it."""
+    from forum.models import PushSubscription
     user.session_epoch = (user.session_epoch or 0) + 1
     user.save()
+    PushSubscription.objects.filter(user=user).delete()
     if request is not None and keep_current:
         request.session[EPOCH_SESSION_KEY] = user.session_epoch
 
@@ -357,7 +384,7 @@ def mark_reauthenticated(request, method):
 
 # -- security notices ----------------------------------------------------------------------
 
-SECURITY_CHANGES = ('passkey_added', 'two_factor_on', 'two_factor_off', 'recovery_codes', 'api_token')
+SECURITY_CHANGES = ('passkey_added', 'two_factor_on', 'two_factor_off', 'recovery_codes', 'api_token', 'sign_in_added')
 
 
 def security_notice(request, user, change, name='', by_admin=False):

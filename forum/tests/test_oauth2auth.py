@@ -2,7 +2,10 @@ from unittest import mock
 from urllib.parse import parse_qs, urlparse
 
 import forum.authentication  # noqa: F401 -- scan providers before importing a provider module directly
+from django.urls import reverse
+
 from forum.models import AuthKeyUserAssociation, User
+from forum.utils import accounts
 from forum_modules.oauth2auth import authentication as oauth2
 from forum_modules.oauth2auth import settings as oauth2_settings
 
@@ -157,6 +160,30 @@ class OAuth2LoginTest(OSQATestCase):
         _, query = self.start_login('google')
         self.client.get('/account/google/done/', {'code': 'c', 'state': query['state'][0]})
         self.assertEqual(AuthKeyUserAssociation.objects.get(user=user).key, 'google:1234567890')
+        # The member is told, in case it wasn't them.
+        [(recipient, subject, html, text, media, headers)] = self.sent_mail
+        self.assertEqual(recipient.id, user.id)
+        self.assertIn('Signing in with Google was added to your account.', text)
+
+    def test_linking_a_provider_needs_a_recent_sign_in(self):
+        """A stolen, older session can't add the thief's own Google login."""
+        user = self.create_user('erin')
+        self.login(user, recent=False)
+        response = self.client.get('/account/google/signin/')
+        self.assertTrue(response['Location'].startswith(reverse('auth_confirm_identity')), response['Location'])
+
+        # Nor at the end of a flow started while the sign-in was still recent.
+        self.login(user)
+        self.fake_http({oauth2.GoogleAuthConsumer.token_url: {'access_token': 'token-1'},
+                        oauth2.GoogleAuthConsumer.userinfo_url: GOOGLE_PROFILE})
+        _, query = self.start_login('google')
+        session = self.client.session
+        del session[accounts.AUTH_TIME_SESSION_KEY]
+        session.save()
+        response = self.client.get('/account/google/done/', {'code': 'c', 'state': query['state'][0]})
+        self.assertTrue(response['Location'].startswith(reverse('auth_confirm_identity')), response['Location'])
+        self.assertFalse(AuthKeyUserAssociation.objects.exists())
+        self.assertEqual(self.sent_mail, [])
 
 
 class RegistrationRobotChecksTest(OSQATestCase):

@@ -106,7 +106,7 @@
         {% analytics_consent %}
         <div id="offline-banner" class="offline-banner" role="status" hidden>{% trans "You are offline – showing a saved copy of this page." %}</div>
         {% if settings.USE_CUSTOM_HEADER|or_preview:request %}
-            <div id="custom_header">
+            <div id="custom_header"{% if not settings.CUSTOM_HEADER_ON_PHONES|or_preview:request %} class="custom-header-wide-only"{% endif %}>
                 {{ settings.CUSTOM_HEADER|or_preview:request|static_content:settings.CUSTOM_HEADER_RENDER_MODE|csp_nonce_scripts:csp_nonce }}
             </div>
         {% endif %}

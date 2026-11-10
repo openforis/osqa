@@ -361,6 +361,20 @@ class PushNotificationsTest(E2ETestCase):
         self.visit(fresh, self.question.get_absolute_url())
         self.assertEqual(fresh.locator('#push-prompt').count(), 0)
 
+    def test_signing_out_stops_push_on_this_browser(self):
+        """A shared computer kept showing the member's notifications after they
+        signed out (only another member signing in stopped it)."""
+        page = self.open_with_push(self.alice)
+        self.visit(page, reverse('notifications'))
+        self.switch(page).click()
+        self.wait_checked(page, 'true')
+        self.visit(page, '/logout/')
+        with page.expect_navigation():
+            page.click('#btLogout')
+        page.wait_for_function("() => localStorage.getItem('e2e-fake-push') === null")
+        self.assertIsNone(page.evaluate("localStorage.getItem('osqa-push-user')"))
+        self.check_page(page)
+
     def test_another_member_signing_in_stops_push_on_this_browser(self):
         page = self.open_with_push(self.alice)
         self.visit(page, reverse('notifications'))

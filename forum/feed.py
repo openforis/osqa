@@ -71,8 +71,10 @@ class RssAnswerFeed(BaseNodeFeed):
         self._include_comments = include_comments
 
     def _items(self):
+        from forum.utils import review
         if self._include_comments:
-            qs = self._question.all_children
+            # Not the comments on a deleted or held answer either.
+            qs = self._question.all_children.exclude(review.hidden_q('parent__'))
         else:
             qs = self._question.answers
 

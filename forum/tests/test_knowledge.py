@@ -106,8 +106,27 @@ class KnowledgeIndexTest(AITestCase):
         self.assertEqual(self.sync_forum(), (2, 0, 0))
         self.assertEqual(self.fake.embedded, [])
 
+        # Deleting the question drops its copy at once (forget_knowledge), not at the next build.
         DeleteAction(user=self.alice, node=self.landsat, ip='127.0.0.1').save()
-        self.assertEqual(self.sync_forum(), (1, 0, 1))
+        self.assertFalse(KnowledgeChunk.objects.filter(node=self.landsat).exists())
+        self.assertEqual(self.sync_forum(), (1, 0, 0))
+
+    def test_a_thread_leaves_the_index_when_a_post_in_it_is_removed_or_edited(self):
+        """The assistant answered from copies of threads taken at the last
+        build: a deleted answer stayed quotable until the next one."""
+        self.sync_forum()
+        DeleteAction(user=self.bob, node=self.answer, ip='127.0.0.1').save()
+        self.assertFalse(KnowledgeChunk.objects.filter(node=self.export).exists())
+        self.landsat.body = 'Edited: personal details removed.'
+        self.landsat.save()
+        self.assertFalse(KnowledgeChunk.objects.filter(node=self.landsat).exists())
+
+    def test_search_returns_only_threads_the_site_shows(self):
+        self.sync_forum()
+        from forum_modules.ai import knowledge
+        # A thread hidden without going through Node.save (an old index, a bulk update).
+        Question.objects.filter(id=self.landsat.id).update(state_string='(deleted)')
+        self.assertNotIn(self.landsat.id, [c.node_id for c in knowledge.search('cloud mask NDVI landsat imagery')])
 
     def test_a_new_embedding_model_embeds_everything_again(self):
         from forum_modules.ai import knowledge

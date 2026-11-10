@@ -196,6 +196,18 @@ class PublicPagesTest(E2ETestCase):
         self.assertEqual(desktop.locator('#roof').evaluate('el => getComputedStyle(el).position'), 'static')
         self.check_page(page)
 
+    def test_custom_header_hidden_on_phones_when_asked(self):
+        from forum import settings
+        self.set_setting(settings.USE_CUSTOM_HEADER, True)
+        self.set_setting(settings.CUSTOM_HEADER, '<p><a href="https://www.openforis.org">Back to Open Foris</a></p>')
+        self.set_setting(settings.CUSTOM_HEADER_RENDER_MODE, 'html')
+        self.set_setting(settings.CUSTOM_HEADER_ON_PHONES, False)
+        phone, desktop = self.open(device='mobile'), self.open()
+        self.visit(phone, '/')
+        self.visit(desktop, '/')
+        self.assertFalse(phone.locator('#custom_header').is_visible())
+        self.assertTrue(desktop.get_by_role('link', name='Back to Open Foris').is_visible())
+
     def test_question_page_content(self):
         page = self.open()
         self.visit(page, self.question.get_absolute_url())

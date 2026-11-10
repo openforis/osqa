@@ -34,7 +34,7 @@ from forum.authentication import AUTH_PROVIDERS
 from forum.models import User, AuthKeyUserAssociation, ValidationHash
 from forum.actions import UserJoinsAction, UserLoginAction
 from forum.utils.antispam import signup_limit_reached, count_signup
-from forum.utils import accounts, security_log, throttle, two_factor
+from forum.utils import accounts, security_log, sudo, throttle, two_factor
 from forum import settings
 
 from .vars import ON_SIGNIN_SESSION_ATTR, PENDING_SUBMISSION_SESSION_ATTR
@@ -85,17 +85,23 @@ def signin_page(request):
 
 def login_paused(request, username):
     limit = int(settings.LOGIN_FAILURES_LIMIT)
-    return limit > 0 and (throttle.count('login-user', username) >= limit or
+    return limit > 0 and (throttle.count('login-user', accounts.login_counter(username)) >= limit or
                           throttle.count('login-ip', throttle.client_ip(request)) >= limit * 4)
 
 
 def count_login_failure(request, username):
     seconds = int(settings.LOGIN_LOCKOUT_MINUTES) * 60
-    throttle.hit('login-user', username, seconds)
+    throttle.hit('login-user', accounts.login_counter(username), seconds)
     throttle.hit('login-ip', throttle.client_ip(request), seconds)
 
 
 def prepare_provider_signin(request, provider):
+    # Signed in, this links another way to sign in to the account: only after
+    # "Confirm it's you" (a stolen session must not add the thief's login).
+    if request.user.is_authenticated:
+        refused = sudo.require_recent_auth(request, reverse('user_add_external_provider'))
+        if refused:
+            return refused
     if provider in AUTH_PROVIDERS:
         provider_class = AUTH_PROVIDERS[provider].consumer
 
@@ -140,7 +146,7 @@ def process_provider_signin(request, provider):
         except InvalidAuthentication as e:
             suspended = username and suspended_account(username, request.POST.get('password', ''))
             if suspended:
-                throttle.reset('login-user', username)
+                throttle.reset('login-user', accounts.login_counter(username))
                 return login_and_forward(request, suspended)
             if username:
                 count_login_failure(request, username)
@@ -150,7 +156,7 @@ def process_provider_signin(request, provider):
             return HttpResponseRedirect(reverse('auth_signin'))
 
         if username:
-            throttle.reset('login-user', username)
+            throttle.reset('login-user', accounts.login_counter(username))
 
         if request.user.is_authenticated:
             if isinstance(assoc_key, (type, User)):
@@ -170,9 +176,15 @@ def process_provider_signin(request, provider):
                         request.session['auth_error'] = _(
                                 "Sorry, these login credentials belong to anoother user. Plese terminate your current session and try again."
                                 )
-                except:
+                except AuthKeyUserAssociation.DoesNotExist:
+                    refused = sudo.require_recent_auth(request, reverse('user_add_external_provider'))
+                    if refused:
+                        return refused
                     uassoc = AuthKeyUserAssociation(user=request.user, key=assoc_key, provider=provider)
                     uassoc.save()
+                    accounts.security_notice(request, request.user, 'sign_in_added',
+                                             name=getattr(AUTH_PROVIDERS[provider].context, 'human_name', '') or provider)
+                    security_log.event('sign_in_added', request, account=request.user, provider=provider)
                     messages.info(request, _('The new credentials are now associated with your account'))
                     return HttpResponseRedirect(reverse('user_authsettings', args=[request.user.id]))
 
@@ -459,6 +471,12 @@ def auth_settings(request, id):
         FormClass = ChangePasswordForm
 
     if request.POST:
+        if FormClass is SetPasswordForm:
+            # No old password asked: "Confirm it's you" instead (a stolen session
+            # must not be able to set a password and keep the account).
+            refused = sudo.require_recent_auth(request, reverse('user_authsettings', kwargs={'id': user_.id}))
+            if refused:
+                return refused
         form = FormClass(request.POST, user=user_)
         if 'oldpw' in form.fields and login_paused(request, user_.username):
             form.is_valid()

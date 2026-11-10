@@ -44,6 +44,13 @@ CUSTOM_HEADER_RENDER_MODE = Setting('CUSTOM_HEADER_RENDER_MODE', 'markdown', HEA
         widget=Select(choices=RENDER_CHOICES),
         required=False))
 
+CUSTOM_HEADER_ON_PHONES = Setting('CUSTOM_HEADER_ON_PHONES', True, HEAD_AND_FOOT_SET, dict(
+        label = _("Show the custom header on phones"),
+        help_text = _("Untick to show it only on wider screens: on phones (640 pixels wide and narrower) the site "
+                      "already has its own header and tab bar, and a link back to your main site can go in the "
+                      "footer instead."),
+        required=False))
+
 USE_ANNOUNCEMENT_BAR = Setting('USE_ANNOUNCEMENT_BAR', False, HEAD_AND_FOOT_SET, dict(
         label = _("Show announcement bar"),
         help_text = _("Some piece of content that goes under the search bar and can be used for announcements, etc."),

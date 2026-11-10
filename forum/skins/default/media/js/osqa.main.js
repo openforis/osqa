@@ -82,13 +82,12 @@ var response_commands = {
         var $container = $('#comments-container-' + post_id);
         var skeleton = $('#new-comment-skeleton-' + post_id).html().toString();
 
-        skeleton = skeleton.replace(new RegExp('%ID%', 'g'), comment_id)
-                .replace(new RegExp('%COMMENT%', 'g'), comment)
-                .replace(new RegExp('%USERNAME%', 'g'), username)
-                .replace(new RegExp('%PROFILE_URL%', 'g'), profile_url)
-                .replace(new RegExp('%DELETE_URL%', 'g'), delete_url)
-                .replace(new RegExp('%EDIT_URL%', 'g'), edit_url)
-                .replace(new RegExp('%CONVERT_URL%', 'g'), convert_url);
+        // Replaced with functions: "$'" or "$`" in a comment are text, not
+        // replacement patterns that would copy parts of the skeleton.
+        var fill = {'%ID%': comment_id, '%COMMENT%': comment, '%USERNAME%': username, '%PROFILE_URL%': profile_url,
+                    '%DELETE_URL%': delete_url, '%EDIT_URL%': edit_url, '%CONVERT_URL%': convert_url};
+        skeleton = skeleton.replace(/%(ID|COMMENT|USERNAME|PROFILE_URL|DELETE_URL|EDIT_URL|CONVERT_URL)%/g,
+                                    function (placeholder) { return String(fill[placeholder]); });
         if (show_latest_comments_first) {
             $container.prepend(skeleton);
         } else {

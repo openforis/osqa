@@ -69,6 +69,10 @@ STATIC_URL = '/m/static/'
 # OSQA stores naive local datetimes; Django 5.0 changed the default to True.
 USE_TZ = False
 
+# Django 6.0: urlize links "example.com" as https://, the future default (no
+# deprecation warning); Django 5.2 ignores the setting.
+URLIZE_ASSUME_HTTPS = True
+
 ALLOW_FILE_TYPES = ('.jpg', '.jpeg', '.gif', '.bmp', '.png', '.tiff')
 ALLOW_MAX_FILE_SIZE = 1024 * 1024
 

@@ -285,6 +285,15 @@ class NodeStateQuery:
         return "(%s)" % name in node.state_string
 
 
+def forget_knowledge(node):
+    """Drops the AI assistant's copy of the post's thread (KnowledgeChunk, made
+    by build_knowledge_index from what was public then) when a post in it is
+    deleted, held, edited or moved: the assistant must not quote what the
+    site no longer shows. The next build adds the thread back."""
+    from .knowledge import KnowledgeChunk
+    KnowledgeChunk.objects.filter(node_id=node.abs_parent_id or node.id).delete()
+
+
 class Node(BaseModel, NodeContent, metaclass=NodeMetaClass):
 
     node_type            = models.CharField(max_length=16, default='node')
@@ -554,6 +563,7 @@ class Node(BaseModel, NodeContent, metaclass=NodeMetaClass):
             a.cancel()
 
         node_id, node_type, parent_id = self.id, self.node_type, self.abs_parent_id or self.parent_id
+        forget_knowledge(self)
         super().delete(*args, **kwargs)
         search_index.node_deleted(node_id, node_type, parent_id)
 
@@ -570,6 +580,8 @@ class Node(BaseModel, NodeContent, metaclass=NodeMetaClass):
                 del self._saving
         if outermost:
             search_index.node_saved(self, dirty, created, old_parent_id)
+            if not created and {'state_string', 'body', 'parent'} & set(dirty):
+                forget_knowledge(self)
 
     def _save(self, *args, **kwargs):
         if not self.id:

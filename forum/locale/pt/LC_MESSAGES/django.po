@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OSQA (Open Foris edition)\n"
 "Report-Msgid-Bugs-To: https://github.com/openforis/osqa/issues\n"
-"POT-Creation-Date: 2026-11-09 20:19-0500\n"
+"POT-Creation-Date: 2026-11-10 06:52-0500\n"
 "PO-Revision-Date: 2026-10-14 12:00+0000\n"
 "Last-Translator: Open Foris <https://github.com/openforis/osqa>\n"
 "Language-Team: Portuguese <https://github.com/openforis/osqa>\n"
@@ -2218,6 +2218,12 @@ msgstr "Modo de renderização do cabeçalho personalizado"
 msgid "How to render your custom header code."
 msgstr "Como renderizar o código do cabeçalho personalizado."
 
+msgid "Show the custom header on phones"
+msgstr "Mostrar o cabeçalho personalizado em celulares"
+
+msgid "Untick to show it only on wider screens: on phones (640 pixels wide and narrower) the site already has its own header and tab bar, and a link back to your main site can go in the footer instead."
+msgstr "Desmarque para mostrá-lo apenas em telas mais largas: nos celulares (640 pixels de largura ou menos) o site já tem seu próprio cabeçalho e barra de abas, e um link para o seu site principal pode ir no rodapé."
+
 msgid "Show announcement bar"
 msgstr "Mostrar barra de avisos"
 
@@ -3756,6 +3762,10 @@ msgstr "A verificação em duas etapas foi desativada na sua conta."
 
 msgid "New recovery codes were made for your account; the old ones no longer work."
 msgstr "Novos códigos de recuperação foram criados para sua conta; os antigos não funcionam mais."
+
+#, python-format
+msgid "Signing in with %(name)s was added to your account."
+msgstr "O login com %(name)s foi adicionado à sua conta."
 
 #, python-format
 msgid "An API token named “%(name)s” was created for your account."
@@ -9704,6 +9714,9 @@ msgstr ""
 msgid "delete posts"
 msgstr "excluir publicações"
 
+msgid "Only a moderator can bring this post back."
+msgstr "Somente um moderador pode restaurar esta publicação."
+
 msgid "Enter the number of the original question or a link to it."
 msgstr "Informe o número da pergunta original ou um link para ela."
 
@@ -11535,6 +11548,9 @@ msgstr "Falha no login. Informe um nome de usuário e uma senha válidos (ambos 
 
 msgid "Login failed - LDAP bind error. Please contact your system administrator"
 msgstr "Falha no login - erro de bind LDAP. Entre em contato com o administrador do sistema"
+
+msgid "An account with this username already exists on the forum. Please ask an administrator to link it to your directory account."
+msgstr "Já existe no fórum uma conta com este nome de usuário. Peça a um administrador para vinculá-la à sua conta do diretório."
 
 msgid "LDAP settings"
 msgstr "Configurações LDAP"
