@@ -28,7 +28,6 @@ from forum.forms import PublicRegistrationForm, TemporaryLoginRequestForm, Chang
 from forum.forms.general import DescribedFieldsMixin
 from forum.forms.general import clean_next, username_for_signin
 from forum.http_responses import HttpResponseUnauthorized
-from forum.utils.redact import redact_meta
 from forum.authentication.base import InvalidAuthentication
 from forum.authentication import AUTH_PROVIDERS
 from forum.models import User, AuthKeyUserAssociation, ValidationHash
@@ -232,8 +231,7 @@ def external_register(request):
                 request.session['auth_error'] = _(
                         "Oops, something went wrong in the middle of this process. Please try again. Note that you need to have cookies enabled for the authentication to work."
                         )
-                logging.error("Missing session data when trying to complete user registration: %s" % ", ".join(
-                        ["%s: %s" % (k, v) for k, v in redact_meta(request.META)]))
+                logging.warning("Missing session data when trying to complete user registration")
                 return HttpResponseRedirect(reverse('auth_signin'))
 
             uassoc = AuthKeyUserAssociation(user=user_, key=assoc_key, provider=auth_provider)
@@ -250,8 +248,7 @@ def external_register(request):
         if not auth_provider:
             request.session['auth_error'] = _(
                     "Oops, something went wrong in the middle of this process. Please try again.")
-            logging.error("Missing session data when trying to complete user registration: %s" % ", ".join(
-                    ["%s: %s" % (k, v) for k, v in redact_meta(request.META)]))
+            logging.warning("Missing session data when trying to complete user registration")
             return HttpResponseRedirect(reverse('auth_signin'))
 
         provider_class = AUTH_PROVIDERS[auth_provider].consumer

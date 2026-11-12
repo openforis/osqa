@@ -105,6 +105,17 @@ class ImportedLeftoversTest(OSQATestCase):
         cache.clear()
         self.assertProfilePagesClean(self.alice)
 
+    def test_answer_whose_question_row_is_gone(self):
+        # Sentry OSQA-B: an import kept the parent_id of a question row that no longer exists.
+        answer = Answer(author=self.bob, parent=self.question, body='An answer whose question row is gone')
+        answer.save()
+        self.imported_action(self.bob, 'answer', node=answer)
+        Node.objects.filter(id=answer.id).update(parent_id=999999, abs_parent_id=999999)
+        # Restored before the end-of-test foreign key check.
+        self.addCleanup(Node.objects.filter(id=answer.id).update, parent=self.question, abs_parent=self.question)
+        cache.clear()
+        self.assertProfilePagesClean(self.bob)
+
     def test_other_activity_is_still_listed(self):
         self.imported_action(self.alice, 'ask', node=self.question)
         response = self.client.get(self.alice.get_profile_url() + '/recent/')

@@ -62,6 +62,12 @@ class LocalAuthTest(OSQATestCase):
         self.assertRedirects(response, '/account/signin/', fetch_redirect_response=False)
         self.assertIsNone(self.logged_in_user_id())
 
+    def test_register_without_provider_redirects(self):
+        # Sentry OSQA-T: a direct visit logged every request header as an error.
+        with self.assertNoLogs(level='ERROR'):
+            response = self.client.get('/account/register/')
+        self.assertRedirects(response, '/account/signin/', fetch_redirect_response=False)
+
     def test_sign_in_with_email_address(self):
         user = self.create_user('carol', password='right-pass')
         self.client.post('/account/local/signin/', {'username': 'Carol@Example.com', 'password': 'right-pass'})
