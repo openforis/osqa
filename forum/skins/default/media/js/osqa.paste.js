@@ -8,7 +8,9 @@
  * - rich HTML (web pages, Word, Google Docs) is converted to Markdown by
  *   osqaHtmlToMarkdown (osqa.htmltomd.js); HTML is never inserted as such;
  * - Ctrl+Shift+V (Cmd+Shift+V) pastes the plain text, as does any paste
- *   inside a code block.
+ *   inside a code block;
+ * - on the ask page, what another app shared with the installed app (images,
+ *   title, text, link; ?shared=1, see takeShared) is added the same way.
  */
 (function () {
     var plainUntil = 0;
@@ -210,9 +212,52 @@
         });
     }
 
+    // What another app shared with the installed app (manifest share_target):
+    // the service worker kept it in the 'osqa-shared' cache and opened the ask
+    // page with ?shared=1 (pwa/sw.js). The title goes in an empty title field,
+    // the text and link in the body, and each image is uploaded as if it had
+    // been pasted; then the cache is emptied.
+    var SHARED = 'osqa-shared';
+
+    function takeShared(textarea) {
+        if (!/[?&]shared=1(&|$)/.test(location.search) || !window.caches) return;
+        history.replaceState(null, '', location.pathname);
+        var prefix = window.scriptUrl ? window.scriptUrl.replace(/\/$/, '') : '';
+        caches.open(SHARED).then(function (cache) {
+            return cache.match(prefix + '/share-target/shared.json').then(function (response) {
+                return response ? response.json() : null;
+            }).then(function (shared) {
+                if (!shared) return null;
+                var title = document.getElementById('id_title');
+                var heading = (shared.title || '').trim();
+                if (title && heading && !title.value.trim()) {
+                    title.value = heading;
+                    title.dispatchEvent(new Event('input', {bubbles: true}));
+                }
+                var body = [shared.text, shared.url].map(function (part) { return (part || '').trim(); })
+                    .filter(function (part, i, all) { return part && all.indexOf(part) === i; }).join('\n\n');
+                if (body) {
+                    insertBlock(textarea, body);
+                    refresh(textarea);
+                }
+                return Promise.all((shared.files || []).map(function (item) {
+                    return cache.match(item.key).then(function (response) {
+                        return response ? response.blob() : null;
+                    }).then(function (blob) {
+                        if (blob) return upload(textarea, new File([blob], item.name || 'image', {type: blob.type}));
+                    });
+                }));
+            });
+        }).then(function () {
+            return caches.delete(SHARED);
+        }).catch(function () { /* nothing shared, or no cache storage */ });
+    }
+
     function start() {
         if (!window.messages || !messages.upload_url) return;
         document.querySelectorAll('textarea#editor').forEach(setup);
+        var editor = document.querySelector('textarea#editor');
+        if (editor && document.getElementById('id_title')) takeShared(editor);
     }
 
     if (document.readyState === 'loading') {

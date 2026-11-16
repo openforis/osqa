@@ -54,6 +54,7 @@ core_urls = [
     re_path(r'^manifest\.webmanifest$', app.pwa.manifest, name='manifest'),
     re_path(r'^sw\.js$', app.pwa.service_worker, name='service_worker'),
     re_path(r'^offline/$', app.pwa.offline, name='offline'),
+    re_path(r'^share-target/$', app.pwa.share_target, name='share_target'),
     re_path(r'^push/subscribe/$', app.push.subscribe, name='push_subscribe'),
     re_path(r'^push/unsubscribe/$', app.push.unsubscribe, name='push_unsubscribe'),
     re_path(r'^push/settings/$', app.push.push_settings, name='push_settings'),

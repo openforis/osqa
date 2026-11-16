@@ -40,6 +40,22 @@ class ManifestTest(PWATestCase):
         self.assertEqual(data['theme_color'], '#2c5aa0')
         self.assertEqual(data['background_color'], '#f5f7fa')
 
+    def test_shortcuts_and_share_target(self):
+        data = self.manifest()
+        self.assertEqual([s['url'] for s in data['shortcuts']], ['/questions/ask/', '/search/', '/notifications/'])
+        self.assertEqual([s['name'] for s in data['shortcuts']], ['Ask a question', 'Search', 'Notifications'])
+        share = data['share_target']
+        self.assertEqual((share['action'], share['method'], share['enctype']),
+                         ('/share-target/', 'POST', 'multipart/form-data'))
+        self.assertEqual(share['params']['files'], [{'name': 'images', 'accept': ['image/*']}])
+
+    def test_share_target_without_the_worker_opens_the_ask_page(self):
+        """The service worker takes the shared files; without it, the POST
+        (which has no CSRF token) keeps nothing and opens the ask page."""
+        from django.test import Client
+        response = Client(enforce_csrf_checks=True).post('/share-target/', {'title': 'Shared', 'text': 'Some text'})
+        self.assertRedirects(response, '/questions/ask/', fetch_redirect_response=False)
+
     def test_bundled_icons_by_default(self):
         """The default logo is a wide word mark: the bundled square icons are used."""
         icons = self.manifest()['icons']

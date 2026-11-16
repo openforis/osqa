@@ -1172,6 +1172,13 @@ cached, and saved pages are forgotten on sign-out or when another user signs
 in. Static files are cached under a name that changes with every deploy that
 changes them; HTTPS (or localhost) is required.
 
+Installed, the app offers shortcuts on a long press of its icon (Ask a
+question, Search, Notifications) and appears in the phone's "Share" menu
+(Android): sharing a screenshot, a link or some text with it opens the ask
+page with the images uploaded and the text filled in. The service worker
+keeps what was shared in the browser only until the ask page takes it
+(`/share-target/` itself keeps nothing).
+
 ## Features added in this fork
 
 - Fenced code blocks (```` ```python ````) and syntax highlighting (highlight.js,
