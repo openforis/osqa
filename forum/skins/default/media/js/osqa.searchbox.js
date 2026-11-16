@@ -305,9 +305,14 @@
                 break;
             case 'Escape':
             case 'Esc':
-                event.preventDefault();
-                if (isOpen()) close();
-                else input.blur();
+                if (isOpen()) {
+                    event.preventDefault();
+                    close();
+                } else if (!form.closest('dialog[open]')) {
+                    // In the phone's search sheet Escape closes the sheet instead.
+                    event.preventDefault();
+                    input.blur();
+                }
                 break;
             case 'Tab':
                 close();
@@ -347,6 +352,10 @@
             var target = event.target;
             if (target && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName))) return;
             event.preventDefault();
+            if (!input.getClientRects().length && window.osqaOpenSearch) {
+                window.osqaOpenSearch();  // a phone: the box is in the Search sheet
+                return;
+            }
             input.focus();
             input.select();
         });

@@ -35,7 +35,8 @@ class PublicPagesTest(E2ETestCase):
     def test_phone_tab_bar_and_avatar_fallback(self):
         page = self.open(device='mobile', dark=True)
         page.route('**gravatar.com/**', lambda route: route.fulfill(status=404, body=''))
-        for path, current in (('/', 'Questions'), ('/tags/', 'Tags'), ('/users/', 'Users'), ('/badges/', None)):
+        for path, current in (('/', 'Questions'), ('/tags/', 'Tags'), ('/search/?q=export', 'Search'),
+                              ('/badges/', None)):
             with self.subTest(path=path):
                 self.visit(page, path)
                 # On a phone the tab bar at the bottom replaces the header's tabs and Ask button.
@@ -44,7 +45,7 @@ class PublicPagesTest(E2ETestCase):
                 box = bar.bounding_box()
                 self.assertAlmostEqual(box['y'] + box['height'], page.viewport_size['height'], delta=1)
                 self.assertEqual(bar.locator('.app-bar-label').all_inner_texts(),
-                                 ['Questions', 'Tags', 'Ask', 'Users', 'More'])
+                                 ['Questions', 'Search', 'Ask', 'Tags', 'More'])
                 self.assertEqual(bar.locator('[aria-current=page] .app-bar-label').all_inner_texts(),
                                  [current] if current else [])
                 # The end of the page scrolls up from under the bar.
@@ -102,9 +103,10 @@ class PublicPagesTest(E2ETestCase):
             page.locator('.question-row .tags a').first.click()
         self.assertIn('/tags/', page.url)
         # While typing, the bar makes room for the keyboard.
-        page.locator('#keywords').focus()
+        self.visit(page, '/search/?q=export')
+        page.locator('#search-page-q').focus()
         self.assertFalse(page.locator('nav.app-bar').is_visible())
-        page.locator('#keywords').blur()
+        page.locator('#search-page-q').blur()
         self.assertTrue(page.locator('nav.app-bar').is_visible())
         # Not on wider screens: the header keeps its tabs there.
         desktop = self.open()
@@ -128,7 +130,7 @@ class PublicPagesTest(E2ETestCase):
         url = page.url
         # The middle of the tab bar is Answer: to the answer form, cursor in it.
         self.assertEqual(page.locator('nav.app-bar .app-bar-label').all_inner_texts(),
-                         ['Questions', 'Tags', 'Answer', 'Users', 'More'])
+                         ['Questions', 'Search', 'Answer', 'Tags', 'More'])
         page.click('#app-bar-answer')
         self.assertEqual(page.evaluate('document.activeElement.closest("#fmanswer") !== null'), True)
         self.assertEqual(page.evaluate('document.activeElement.tagName'), 'TEXTAREA')
@@ -161,6 +163,54 @@ class PublicPagesTest(E2ETestCase):
         self.assertEqual(fresh.url, self.url('/'))
         self.check_page(page)
 
+    def test_phone_search_tab(self):
+        """On a phone Search is a tab of the bar: the header's search box, full
+        screen, the keyboard up; Escape closes the suggestions, then the screen."""
+        page = self.open(device='mobile')
+        self.visit(page, '/')
+        self.assertFalse(page.locator('#keywords').is_visible())  # not in the header
+        roof = page.locator('#roof').bounding_box()
+        self.assertLess(roof['height'], 80)  # one line: the logo and the account icons
+        page.click('#app-search')
+        sheet = page.locator('#app-search-sheet')
+        self.assertTrue(sheet.is_visible())
+        self.assertEqual(page.evaluate('document.activeElement.id'), 'keywords')
+        self.assertEqual(page.locator('#app-search').get_attribute('aria-expanded'), 'true')
+        box = sheet.bounding_box()
+        self.assertEqual((box['x'], box['y'], box['width']), (0, 0, 390))
+        page.keyboard.type('export')
+        page.wait_for_selector('#searchbox-listbox [role=option]')
+        panel = page.locator('.searchbox-panel').bounding_box()
+        self.assertEqual((round(panel['x']), round(panel['width'])), (0, 390))
+        page.keyboard.press('Escape')
+        self.assertFalse(page.locator('.searchbox-panel').is_visible())
+        self.assertTrue(sheet.is_visible())
+        page.keyboard.press('Escape')
+        page.wait_for_selector('#app-search[aria-expanded=false]', state='attached')
+        self.assertFalse(sheet.is_visible())
+        self.assertEqual(page.evaluate('document.activeElement.id'), 'app-search')
+        self.assertEqual(page.locator('#roof #searchBar').count(), 1)  # back in the header
+        # The back arrow closes it too, and searching goes to the results.
+        page.click('#app-search')
+        page.click('.app-search-close')
+        self.assertFalse(sheet.is_visible())
+        page.click('#app-search')
+        page.keyboard.type('export')
+        with page.expect_navigation():
+            page.keyboard.press('Enter')
+        self.assertIn('/search/?q=export', page.url)
+        self.assertEqual(page.locator('#app-search').get_attribute('aria-current'), 'page')
+        # "/" opens it too (keyboards on tablets and phones).
+        page.evaluate('document.activeElement.blur()')
+        page.keyboard.press('/')
+        self.assertTrue(sheet.is_visible())
+        self.check_page(page)
+        # Users is in More now.
+        page.keyboard.press('Escape')
+        page.wait_for_selector('#app-search[aria-expanded=false]', state='attached')
+        page.click('#app-more')
+        self.assertTrue(page.locator('#app-more-sheet').get_by_role('link', name='Users').is_visible())
+
     def test_phone_header_slides_away_while_scrolling_down(self):
         for i in range(15):
             self.create_question(self.bob, 'Filler question number %d about exporting' % i)
@@ -181,10 +231,10 @@ class PublicPagesTest(E2ETestCase):
         page.wait_for_timeout(300)
         self.assertTrue(on_screen())
         self.assertEqual(roof.bounding_box()['y'], 0)   # stuck at the top
-        # Back down, then the keyboard reaches the search box: it comes back.
+        # Back down, then the keyboard reaches the logo: it comes back.
         page.mouse.wheel(0, 600)
         page.wait_for_function('() => document.documentElement.classList.contains("roof-away")')
-        page.focus('#keywords')
+        page.focus('#logo a')
         page.wait_for_timeout(300)
         self.assertTrue(on_screen())
         # Its height keeps #anchors and focused things clear of it.

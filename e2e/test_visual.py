@@ -213,7 +213,7 @@ class VisualTest(E2ETestCase):
 
     def test_search_with_suggestions(self):
         def open_suggestions(page):
-            page.locator('#keywords').fill('coll')
+            self.search_field(page).fill('coll')
             page.wait_for_selector('#searchbox-listbox [role=option]')
             self.wait_for_ajax(page)
             page.locator('#keywords').press('ArrowDown')

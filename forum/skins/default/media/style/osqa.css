@@ -3349,8 +3349,10 @@ div.comment-tools a:hover {
         font-weight: 600;
     }
 
+    /* Search is a tab of the bar there: the header keeps the logo and the
+       account icons on one line, and #searchBar moves into the Search sheet. */
     #roof #searchBar {
-        margin: 0;
+        display: none;
     }
 
     #wrapper {
@@ -3496,6 +3498,65 @@ div.comment-tools a:hover {
 
     .app-bar-ask:active .app-bar-icon {
         background: var(--accent-dark);
+    }
+
+    /* Search: the whole screen, the field at the top (osqa.appbar.js). */
+    .app-search-sheet[open] {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        max-width: none;
+        height: 100%;
+        max-height: none;
+        margin: 0;
+        padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) 0 env(safe-area-inset-left, 0px);
+        overflow: auto;
+        overscroll-behavior: contain;
+        border: 0;
+        background: var(--surface);
+        color: var(--text);
+    }
+
+    .app-search-sheet::backdrop {
+        background: var(--surface);
+    }
+
+    .app-search-head {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        height: 64px;
+        padding: 0 12px 0 4px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .app-search-close, .app-search-close:hover {
+        display: flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        border: 0;
+        border-radius: 999px;
+        background: none;
+        color: var(--text);
+    }
+
+    .app-search-close:active {
+        background: var(--hover-overlay);
+    }
+
+    .app-search-slot {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .app-search-hint {
+        margin: 16px;
+        color: var(--muted);
+        font-size: 15px;
     }
 
     /* The More menu: a sheet that slides up from the bottom. */
@@ -13694,6 +13755,30 @@ ul.related-tags li {
         max-height: calc(100dvh - 130px);
         border-width: 1px 0;
         border-radius: 0 0 14px 14px;
+    }
+
+    /* In the Search sheet (osqa.appbar.js): the suggestions fill the screen
+       under its 64px head. */
+    .app-search-slot #searchBar {
+        width: 100%;
+        max-width: none;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        background: none;
+    }
+
+    .app-search-slot #searchBar .searchbox-panel {
+        position: fixed;
+        top: calc(64px + env(safe-area-inset-top, 0px));
+        right: 0;
+        bottom: 0;
+        left: 0;
+        max-height: none;
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
     }
 
     #searchBar .searchbox-option {

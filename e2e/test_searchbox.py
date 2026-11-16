@@ -160,11 +160,12 @@ class SearchBoxTest(E2ETestCase):
         for dark in (True, False):
             page = self.open(device='mobile', dark=dark)
             self.visit(page, '/')
+            # The tab bar's Search opens the box full screen.
+            page.locator('#app-search').tap()
             self.assertFalse(page.locator('.searchbox-kbd').is_visible())
             field = page.locator('.searchbox-field').bounding_box()
-            self.assertGreaterEqual(field['width'], 390 - 2 * 12 - 1)
+            self.assertGreaterEqual(field['width'], 390 - 64 - 1)  # beside the back arrow
             self.assertGreaterEqual(field['height'], 44)
-            page.locator('#keywords').tap()
             self.type_query(page, 'rast')
             panel = page.locator('.searchbox-panel').bounding_box()
             self.assertEqual((round(panel['x']), round(panel['width'])), (0, 390))

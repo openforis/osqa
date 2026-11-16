@@ -167,7 +167,7 @@ class ReflowTest(RobustnessTestCase):
             ('/tags/', None, '.app-bar-ask'),
             ('/users/', None, '.app-bar-ask'),
             (self.alice.get_profile_url(), None, '.app-bar-ask'),
-            ('/search/?q=export', None, '#keywords'),
+            ('/search/?q=export', None, '#search-page-q'),
         ]
 
     def check_reflow(self, device, **options):
@@ -304,11 +304,13 @@ class KeyboardTest(RobustnessTestCase):
             page = self.open(device=device)
             self.visit(page, '/')
             # On a phone the tab bar replaces the header's tabs; it comes last, after the footer.
+            # Search is a tab of the bar there too.
             ask = '#nav_ask' if device == 'desktop' else '.app-bar-ask'
             tabs = '#nav a:not(#nav_ask)' if device == 'desktop' else '#app-more'
-            reached, steps = self.tab_until(page, ['.skip-link', '#keywords', tabs, ask], limit=200)
+            search = '#keywords' if device == 'desktop' else '#app-search'
+            reached, steps = self.tab_until(page, ['.skip-link', search, tabs, ask], limit=200)
             self.assertEqual(reached['.skip-link'], 1, 'Skip to content is not the first focusable element')
-            self.assertLess(reached['#keywords'], reached[ask])
+            self.assertLess(reached[search], reached[ask])
             self.assert_focus_visible(steps, '/ (%s)' % device)
 
         # The skip link is shown when focused and moves focus to the content.
@@ -406,7 +408,7 @@ class ReducedMotionTest(RobustnessTestCase):
         self.assertEqual(page.evaluate(SLOW_MOTION), [])
         page.keyboard.press('Escape')
         page.wait_for_selector('.dialog', state='detached')
-        page.locator('#keywords').fill('coll')
+        self.search_field(page).fill('coll')
         page.wait_for_selector('#searchbox-listbox [role=option]')
         self.assertEqual(page.evaluate(SLOW_MOTION), [])
         self.check_page(page)

@@ -1,5 +1,6 @@
-/* The phone's bottom tab bar (display/app_bar.html), its header that slides
-   away while scrolling down, and the installed app's Back button (header.html). "More" opens the menu
+/* The phone's bottom tab bar (display/app_bar.html) and its full-screen
+   search, the header that slides away while scrolling down, and the
+   installed app's Back button (header.html). "More" opens the menu
    sheet as a modal dialog (the browser moves the focus in, closes it with
    Escape and gives the focus back to the button); a tap on the backdrop or
    the close button closes it too, and so does dragging it down by its head. */
@@ -75,6 +76,49 @@
             new ResizeObserver(measure).observe(roof);
         }
         measure();
+    }
+
+    // Search (the tab bar): the header's search box, full screen. #searchBar
+    // itself moves into the sheet and back, so it keeps its suggestions and
+    // keyboard handling (osqa.searchbox.js) and its styles.
+    var searchButton = document.getElementById('app-search');
+    var searchSheet = document.getElementById('app-search-sheet');
+    var searchBar = document.getElementById('searchBar');
+    if (searchButton && searchSheet && searchBar && typeof searchSheet.showModal === 'function') {
+        var home = searchBar.parentNode, after = searchBar.nextSibling;
+        window.osqaOpenSearch = function () {
+            searchSheet.querySelector('.app-search-slot').appendChild(searchBar);
+            searchSheet.showModal();
+            searchButton.setAttribute('aria-expanded', 'true');
+            var field = searchBar.querySelector('input[type=search]');
+            if (field) {
+                field.focus();  // in the tap itself: phones open the keyboard
+                field.select();
+            }
+        };
+        searchButton.addEventListener('click', window.osqaOpenSearch);
+        searchSheet.addEventListener('close', function () {
+            var focused = document.activeElement;
+            home.insertBefore(searchBar, after);
+            searchButton.setAttribute('aria-expanded', 'false');
+            // The focus was in the box, which just left the sheet: back to the button.
+            if (!focused || focused === document.body || searchBar.contains(focused)) {
+                searchButton.focus();
+            }
+        });
+        searchSheet.addEventListener('click', function (evt) {
+            if (evt.target.closest('[data-search-close]')) {
+                searchSheet.close();
+            }
+        });
+        // Escape closes the suggestions first (osqa.searchbox.js handles it
+        // and prevents the default), then the sheet.
+        searchSheet.addEventListener('keydown', function (evt) {
+            if ((evt.key === 'Escape' || evt.key === 'Esc') && !evt.defaultPrevented) {
+                evt.preventDefault();
+                searchSheet.close();
+            }
+        });
     }
 
     var button = document.getElementById('app-more');
