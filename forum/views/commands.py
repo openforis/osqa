@@ -720,6 +720,8 @@ def related_questions(request):
 def answer_permanent_link(request, id):
     # Getting the current answer object
     answer = get_object_or_404(Answer, id=id)
+    if not Question.objects.filter(id=answer.parent_id).exists():  # its question is gone (imported forum)
+        raise Http404()
 
     # Getting the current object URL -- the Application URL + the object relative URL
     url = '%s%s' % (settings.APP_BASE_URL, answer.get_absolute_url())

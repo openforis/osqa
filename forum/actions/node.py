@@ -67,6 +67,8 @@ class AnswerAction(NodeEditAction):
 
     def describe(self, viewer=None):
         question = self.node.parent
+        if question is None:  # the answer was converted into a question since
+            question = original_question(AnswerToQuestionAction.objects.filter(node=self.node).first() or self)
         return _("%(user)s answered %(asker)s on %(question)s") % {
             'user': self.hyperlink(self.user.get_profile_url(), self.friendly_username(viewer, self.user)),
             'asker': self.hyperlink(question.author.get_profile_url(), self.friendly_username(viewer, question.author)),

@@ -92,6 +92,10 @@ class ImportedLeftoversTest(OSQATestCase):
 
     def test_answer_without_question_and_award_without_badge(self):
         self.assertProfilePagesClean(self.bob)
+        # Sentry OSQA-13: its permanent link page has no question to link to.
+        with self.assertNoLogs(level='ERROR'):
+            answer = Answer.objects.get(author=self.bob)
+            self.assertEqual(self.client.get('/answer_link/%d/' % answer.id).status_code, 404)
         self.login(self.alice)
         with self.assertNoLogs(level='ERROR'):
             self.assertCleanPage(self.client.get(self.alice.get_profile_url() + '/votes/'))
@@ -115,6 +119,8 @@ class ImportedLeftoversTest(OSQATestCase):
         self.addCleanup(Node.objects.filter(id=answer.id).update, parent=self.question, abs_parent=self.question)
         cache.clear()
         self.assertProfilePagesClean(self.bob)
+        with self.assertNoLogs(level='ERROR'):
+            self.assertEqual(self.client.get('/answer_link/%d/' % answer.id).status_code, 404)
 
     def test_other_activity_is_still_listed(self):
         self.imported_action(self.alice, 'ask', node=self.question)

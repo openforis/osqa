@@ -371,6 +371,18 @@ class ConvertToQuestionTest(SettingsMixin, OSQATestCase):
         self.assertEqual(Question.objects.get(id=answer.id).title, 'A separate question about plots')
         self.assertConversionDescribed('answer')
 
+    def test_answerers_profile_after_their_answer_became_a_question(self):
+        # Sentry OSQA-B: the "answered" entry pointed at a post with no question.
+        self.login(self.bob)
+        self.client.post(reverse('answer', args=[self.question.id]), {'text': 'A follow-up question really, long enough.'})
+        answer = Answer.objects.get(author=self.bob)
+        self.login(self.moderator)
+        self.assertEqual(self.convert(answer).status_code, 302)
+        with self.assertNoLogs(level='ERROR'):
+            for tab in ('', '/recent/'):
+                with self.subTest(tab=tab):
+                    self.assertCleanPage(self.client.get(self.bob.get_profile_url() + tab))
+
     def test_others_without_reputation_cannot_convert(self):
         self.set_setting(settings.REP_TO_CONVERT_TO_QUESTION, 2000)
         answer = Answer(author=self.bob, parent=self.question, body='A follow-up question really')
