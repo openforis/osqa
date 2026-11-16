@@ -124,7 +124,7 @@ class AccessibilityTest(E2ETestCase):
         for device, dark in VIEWS:
             page = self.open(device=device, dark=dark)
             self.visit(page, '/')
-            page.locator('#keywords').fill('coll')
+            self.search_field(page).fill('coll')
             page.wait_for_selector('#searchbox-listbox [role=option]')
             page.locator('#keywords').press('ArrowDown')
             self.assertEqual(page.locator('#searchbox-listbox [aria-selected=true]').count(), 1)

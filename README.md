@@ -1060,8 +1060,9 @@ in one file, `forum/skins/default/media/style/osqa.css`, drawn with colour
 variables (`--brand`, `--accent`, ... at the start of its section 2).
 
 On phones (640px wide and narrower) the forum works like an app: a tab bar
-at the bottom (Questions, Tags, Ask, Users, More) replaces the header's tabs
-and "ask a question" button, More opens a menu sheet with every section, the
+at the bottom (Questions, Search, Ask, Tags, More) replaces the header's tabs,
+search box and "ask a question" button (Search opens the search box full
+screen, with its suggestions), More opens a menu sheet with every section, the
 help pages and the account links (a sheet that closes with Escape, a tap
 outside or a swipe down), and pages run edge to edge. A tap anywhere on a
 question's row opens it, and the bar steps aside while the keyboard is up

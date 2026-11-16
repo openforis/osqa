@@ -16,7 +16,7 @@ class SearchTest(E2ETestCase):
         self.create_answer(self.alice, self.title_match, 'Upload the raster as a GeoTIFF asset first.')
 
     def search_from_header(self, page, text):
-        page.fill('#keywords', text)
+        self.search_field(page).fill(text)
         page.locator('#searchBar button[type=submit]').click()
         page.wait_for_load_state()
         self.check_page(page)

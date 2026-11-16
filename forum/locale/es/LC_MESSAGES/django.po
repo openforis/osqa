@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OSQA (Open Foris edition)\n"
 "Report-Msgid-Bugs-To: https://github.com/openforis/osqa/issues\n"
-"POT-Creation-Date: 2026-11-10 06:52-0500\n"
+"POT-Creation-Date: 2026-11-16 05:45-0500\n"
 "PO-Revision-Date: 2026-10-14 12:00+0000\n"
 "Last-Translator: Open Foris <https://github.com/openforis/osqa>\n"
 "Language-Team: Spanish <https://github.com/openforis/osqa>\n"
@@ -4243,14 +4243,14 @@ msgstr "Principal"
 msgid "Questions"
 msgstr "Preguntas"
 
+msgid "Search"
+msgstr "Buscar"
+
 msgid "Answer"
 msgstr "Responder"
 
 msgid "Ask"
 msgstr "Preguntar"
-
-msgid "Users"
-msgstr "Usuarios"
 
 msgid "More"
 msgstr "Más"
@@ -4261,6 +4261,9 @@ msgid_plural "Notifications: %(counter)s unread"
 msgstr[0] "Notificaciones: %(counter)s sin leer"
 msgstr[1] "Notificaciones: %(counter)s sin leer"
 msgstr[2] "Notificaciones: %(counter)s sin leer"
+
+msgid "Tip: type a few words from the error message, or put a tag in [brackets] to look only there."
+msgstr "Consejo: escriba algunas palabras del mensaje de error, o ponga una etiqueta entre [corchetes] para buscar solo en ella."
 
 msgid "Menu"
 msgstr "Menú"
@@ -4297,9 +4300,6 @@ msgstr "En cualquier página"
 
 msgid "Show this list"
 msgstr "Mostrar esta lista"
-
-msgid "Search"
-msgstr "Buscar"
 
 msgid "Go to the home page"
 msgstr "Ir a la página de inicio"
@@ -8332,6 +8332,9 @@ msgstr "Código de 6 dígitos"
 
 msgid "Turn on two-step verification"
 msgstr "Activar la verificación en dos pasos"
+
+msgid "Users"
+msgstr "Usuarios"
 
 msgid "Search users"
 msgstr "Buscar usuarios"

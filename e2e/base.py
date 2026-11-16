@@ -327,6 +327,15 @@ class E2ETestCase(LiveServerTestCase):
         problems, page.problems[:] = list(page.problems), []
         self.assertEqual(problems, [], 'problems on %s' % (where or page.url))
 
+    def search_field(self, page):
+        """The header's search field; on a phone it is in the Search sheet of
+        the tab bar (osqa.appbar.js), which is opened first."""
+        field = page.locator('#keywords')
+        if not field.is_visible() and page.locator('#app-search').is_visible():
+            page.click('#app-search')
+            page.wait_for_selector('#app-search-sheet[open] #keywords')
+        return field
+
     def wait_for_ajax(self, page):
         """Waits until the jQuery requests started by a click are answered."""
         page.wait_for_function("() => (!window.jQuery || jQuery.active === 0) && !document.getElementById('command-loader')")
