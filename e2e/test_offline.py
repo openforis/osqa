@@ -42,6 +42,43 @@ class OfflineReadingTest(E2ETestCase):
         page.context.set_offline(False)
         page.context.set_offline(True)
 
+    def test_sharing_a_screenshot_opens_the_ask_page_with_it(self):
+        """"Share" from another app (manifest share_target): the service worker
+        keeps what was shared and opens the ask page, which uploads the image
+        and fills in the title and text."""
+        import base64
+        import io
+        from PIL import Image
+        png = io.BytesIO()
+        Image.new('RGB', (40, 30), (200, 30, 30)).save(png, 'PNG')
+        page = self.open(self.alice, device='mobile')
+        self.visit(page, '/')
+        page.wait_for_function(CONTROLLED)
+        # What Android's share sheet sends: a multipart POST navigation.
+        with page.expect_navigation():
+            page.evaluate("""([png]) => {
+                const form = document.createElement('form');
+                form.method = 'post'; form.enctype = 'multipart/form-data'; form.action = '/share-target/';
+                const add = (name, value) => { const input = document.createElement('input');
+                    input.type = 'hidden'; input.name = name; input.value = value; form.appendChild(input); };
+                add('title', 'Collect crashes when exporting');
+                add('text', 'Error 42 when exporting the survey');
+                const bytes = Uint8Array.from(atob(png), c => c.charCodeAt(0));
+                const files = new DataTransfer();
+                files.items.add(new File([bytes], 'screenshot.png', {type: 'image/png'}));
+                const input = document.createElement('input');
+                input.type = 'file'; input.name = 'images'; input.files = files.files; form.appendChild(input);
+                document.body.appendChild(form);
+                form.submit();
+            }""", [base64.b64encode(png.getvalue()).decode()])
+        page.wait_for_url('**/questions/ask/')
+        page.wait_for_function("() => /!\\[[^\\]]*\\]\\([^)]*upfiles[^)]*\\)/.test(document.querySelector('#editor').value)")
+        self.assertEqual(page.input_value('#id_title'), 'Collect crashes when exporting')
+        self.assertIn('Error 42 when exporting the survey', page.input_value('#editor'))
+        self.assertNotIn('shared=1', page.url)
+        page.wait_for_function("async () => !(await caches.has('osqa-shared'))")
+        self.check_page(page)
+
     def test_manifest_and_service_worker(self):
         page = self.open()
         self.visit(page, '/')

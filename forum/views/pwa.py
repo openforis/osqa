@@ -12,11 +12,13 @@ import hashlib
 import json
 import os
 
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.template.loader import get_template
-from django.utils.translation import get_language
+from django.urls import reverse
+from django.utils.translation import get_language, gettext as _
 from django.views.decorators.cache import cache_control
+from django.views.decorators.csrf import csrf_exempt
 
 from forum import settings
 from forum.templatetags.extra_tags import media
@@ -107,8 +109,27 @@ def manifest(request):
         'theme_color': appearance.theme_color(),
         'background_color': BACKGROUND_COLOR,
         'icons': icons(),
+        # Long-press on the app's icon.
+        'shortcuts': [{'name': str(name), 'url': reverse(url_name), 'icons': icons()[:1]} for name, url_name in (
+            (_("Ask a question"), 'ask'), (_("Search"), 'search'), (_("Notifications"), 'notifications'))],
+        # "Share" from other apps (a screenshot, a link, some text) opens the ask
+        # page with it: the service worker receives the POST (pwa/sw.js), keeps
+        # the files in the browser and the page uploads them (osqa.paste.js).
+        'share_target': {
+            'action': reverse('share_target'), 'method': 'POST', 'enctype': 'multipart/form-data',
+            'params': {'title': 'title', 'text': 'text', 'url': 'url',
+                       'files': [{'name': 'images', 'accept': ['image/*']}]},
+        },
     }
     return HttpResponse(json.dumps(data, indent=2), content_type='application/manifest+json')
+
+
+@csrf_exempt
+def share_target(request):
+    """Something shared with the installed app when its service worker didn't
+    take it (not installed yet, an old worker): nothing is kept, the ask page
+    opens. Takes no data, so it needs no CSRF token."""
+    return HttpResponseRedirect(reverse('ask'))
 
 
 def version():

@@ -33,6 +33,14 @@
    osqa.pwa.js whenever the signed-in user differs from the one who was
    signed in when the pages were saved (session expired, another account).
 
+   Shared with the app (manifest share_target, forum/views/pwa.py)
+   ----------------------------------------------------------------
+   "Share" from another app POSTs to /share-target/: the worker keeps the
+   images, title, text and link in the osqa-shared cache (never sent anywhere
+   by it) and opens the ask page, which uploads the images with the member's
+   session and CSRF token, fills in the text and empties the cache
+   (osqa.paste.js). Signing out empties it too.
+
    Push notifications (forum/utils/push.py, osqa.push.js)
    ------------------------------------------------------
    `push` shows the message the server sent: {title, body, url, tag, icon}
@@ -55,6 +63,12 @@ const OFFLINE_URL = PREFIX + '/offline/';
 const APP_NAME = {{ app_name|safe }};
 const ICON = {{ icon|safe }};
 const NOTIFICATIONS_URL = PREFIX + '/notifications/';
+const ASK_URL = PREFIX + '/questions/ask/';
+// What another app shared with the installed app, until the ask page takes it.
+const SHARED = 'osqa-shared';
+const SHARE_TARGET = /^\/share-target\/$/;
+const SHARED_FILES = 4;
+const SHARED_FILE_BYTES = 20 * 1024 * 1024;
 
 const NEVER = /^\/(admin|nimda|account|notifications|users|upfiles|mcp|export|pending-data|upload|preview|logout|i18n|csp-report)(\/|$)|^\/(sw\.js|manifest\.webmanifest)$/;
 const SIGN_OUT = /^\/account\/signout\/$/;
@@ -95,7 +109,7 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', event => {
     event.waitUntil((async () => {
         for (const name of await caches.keys()) {
-            if (name.startsWith('osqa-') && name !== STATIC && name !== PAGES) await caches.delete(name);
+            if (name.startsWith('osqa-') && name !== STATIC && name !== PAGES && name !== SHARED) await caches.delete(name);
         }
         await self.clients.claim();
     })());
@@ -108,7 +122,11 @@ self.addEventListener('fetch', event => {
     const path = sitePath(url);
     // Signing out (the form POSTs): no saved pages, no more push on this browser.
     if (request.mode === 'navigate' && SIGN_OUT.test(path) && (request.method === 'GET' || request.method === 'POST')) {
-        event.waitUntil(Promise.all([caches.delete(PAGES), stopPush()]));
+        event.waitUntil(Promise.all([caches.delete(PAGES), caches.delete(SHARED), stopPush()]));
+        return;
+    }
+    if (request.method === 'POST' && SHARE_TARGET.test(path)) {
+        event.respondWith(receiveShare(request));
         return;
     }
     if (request.method !== 'GET') return;
@@ -191,6 +209,37 @@ async function markedCopy(response) {
     const headers = new Headers(response.headers);
     headers.delete('Content-Length');
     return new Response(html, {status: 200, headers: headers});
+}
+
+// -- shared with the app (manifest share_target) -----------------------------
+
+// Keeps the images (at most SHARED_FILES, each up to SHARED_FILE_BYTES) and
+// the title, text and link in the SHARED cache, then opens the ask page, which
+// uploads them the usual way and empties the cache (osqa.paste.js).
+async function receiveShare(request) {
+    let form = null;
+    try {
+        form = await request.formData();
+    } catch (error) {
+        return Response.redirect(ASK_URL, 303);
+    }
+    await caches.delete(SHARED);
+    const cache = await caches.open(SHARED);
+    const text = name => {
+        const value = form.get(name);
+        return typeof value === 'string' ? value.slice(0, 2000) : '';
+    };
+    const shared = {title: text('title'), text: text('text'), url: text('url'), files: []};
+    for (const file of form.getAll('images')) {
+        if (shared.files.length >= SHARED_FILES) break;
+        if (!file || typeof file === 'string' || !/^image\//.test(file.type) || file.size > SHARED_FILE_BYTES) continue;
+        const key = PREFIX + '/share-target/file/' + shared.files.length;
+        await cache.put(key, new Response(file, {headers: {'Content-Type': file.type}}));
+        shared.files.push({key: key, name: String(file.name || 'image').slice(0, 200)});
+    }
+    await cache.put(PREFIX + '/share-target/shared.json', new Response(JSON.stringify(shared),
+                                                                     {headers: {'Content-Type': 'application/json'}}));
+    return Response.redirect(ASK_URL + '?shared=1', 303);
 }
 
 // -- push notifications ----------------------------------------------------
