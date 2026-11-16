@@ -4,6 +4,7 @@
     <nav class="footerLinks">
         {% loadregistry footer_links %}<span class="link-separator"> |</span>{% endloadregistry %}
     </nav>
+    <div class="footer-settings">
     {% get_available_languages as LANGUAGES %}{% if LANGUAGES|length > 1 %}
     <form class="language-switch" action="{% url "set_language" %}" method="post">{% csrf_token %}
         <input type="hidden" name="next" value="{{ request.get_full_path }}" />
@@ -16,6 +17,7 @@
     </form>
     {% endif %}
     {% include "display/theme_switch.html" %}
+    </div>
     {# The separator dot is drawn before each item and clipped at the start of a line, so none dangles when they wrap. #}
     <p class="footer-meta"><span class="footer-meta-items">
         <span class="footer-meta-item" title="OSQA {{ settings.OSQA_VERSION }} ({{ settings.VCS_REVISION }})">{% blocktrans %}Powered by the <a href="https://github.com/openforis/osqa">Open Foris edition of OSQA</a>{% endblocktrans %}</span>

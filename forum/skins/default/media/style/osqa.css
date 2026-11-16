@@ -3015,6 +3015,11 @@ div.comment-tools a:hover {
     font-size: 13px;
 }
 
+/* Language and theme: a card on phones, part of the row on wider screens. */
+.footer-settings {
+    display: contents;
+}
+
 #ground .footer-osqa {
     max-width: 640px;
     margin: 6px auto 0;
@@ -3712,6 +3717,101 @@ div.comment-tools a:hover {
         background: var(--brand-soft);
         color: var(--brand);
         font-weight: 600;
+    }
+
+    /* The footer as the end of an app screen: links as chips, language
+       and theme as rows of one settings card, the small print centred. */
+    #ground {
+        padding: 24px 0;
+    }
+
+    #ground .footer-inner {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+        text-align: center;
+    }
+
+    #ground .footerLinks {
+        gap: 8px;
+    }
+
+    #ground .footerLinks a {
+        display: inline-flex;
+        align-items: center;
+        min-height: 40px;
+        padding: 0 16px;
+        border-radius: 999px;
+        background: var(--background);
+        color: var(--text);
+        font-size: 15px;
+        text-decoration: none;
+    }
+
+    #ground .footerLinks a:active {
+        background: var(--hover-overlay);
+    }
+
+    #ground .footer-settings {
+        display: block;
+        margin: 0;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: var(--background);
+        text-align: left;
+    }
+
+    #ground .footer-settings:not(:has(select)) {
+        display: none;
+    }
+
+    #ground .footer-settings .language-switch {
+        justify-content: space-between;
+        min-height: 52px;
+        margin: 0;
+        padding: 6px 6px 6px 16px;
+        font-size: 15px;
+    }
+
+    #ground .footer-settings .language-switch + .language-switch {
+        border-top: 1px solid var(--border);
+    }
+
+    #ground .footer-settings label {
+        color: var(--text);
+    }
+
+    #ground .footer-settings select {
+        border-color: transparent;
+        background-color: transparent;
+        color: var(--muted);
+        text-align: right;
+    }
+
+    #ground .footer-meta-items {
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        margin-left: 0;
+    }
+
+    #ground .footer-meta-item {
+        margin-left: 0;
+    }
+
+    #ground .footer-meta-item::before {
+        display: none;
+    }
+
+    #ground .footer-osqa {
+        max-width: 34em;
+        margin: 0 auto;
+    }
+
+    #custom_footer {
+        padding: 12px 16px;
+        text-align: center;
     }
 }
 
