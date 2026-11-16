@@ -17,6 +17,11 @@ importData/
 /*.db
 /*.sqlite3
 *.log
+*.log.[0-9]*
+# Uploaded files (the folder's README and default logo are tracked)
+/forum/upfiles/*
+!/forum/upfiles/README
+!/forum/upfiles/logo.png
 __pycache__/
 # Docker Compose configuration (secrets) and backup_site archives
 /.env

@@ -330,9 +330,10 @@ ACTIVITY_EXCLUDED_TYPES = ("voteup", "votedown", "voteupcomment", "flag", "newpa
 
 def orphaned_actions_q(prefix=''):
     """Actions an imported forum left without what they describe: badge awards
-    without their award, actions on answers or comments whose post was removed."""
+    without their award, actions on answers or comments whose post was removed
+    (parent_id NULL, or the id of a row that is gone: the join finds no row)."""
     return (Q(**{prefix + 'action_type': 'award', prefix + 'award': None})
-            | Q(**{prefix + 'node__node_type__in': ('answer', 'comment'), prefix + 'node__parent': None}))
+            | Q(**{prefix + 'node__node_type__in': ('answer', 'comment'), prefix + 'node__parent__node_type': None}))
 
 
 def visible_activity(user, viewer):
@@ -452,7 +453,7 @@ def user_profile(request, user, **kwargs):
     questions = Question.objects.visible_to(request.user).filter(author=user).order_by('-added_at') \
         .prefetch_cached(fks=('last_activity_by',), counts=('answer_count', 'accepted_count'))
     # Answers whose question was removed in an imported forum have no page to link to.
-    answers = Answer.objects.visible_to(request.user).filter(author=user, parent__isnull=False).order_by('-added_at') \
+    answers = Answer.objects.visible_to(request.user).filter(author=user, parent__node_type__isnull=False).order_by('-added_at') \
         .prefetch_cached(fks=('parent',))
 
     # Check whether the passed slug matches the one for the user object
@@ -547,7 +548,7 @@ def user_reputation(request, user, **kwargs):
 def user_votes(request, user, **kwargs):
     votes = list(user.votes.exclude(node__state_string__contains="(deleted").filter(
             node__node_type__in=("question", "answer")).exclude(
-            node__node_type="answer", node__parent=None).order_by('-voted_at')[:USERS_PAGE_SIZE])
+            node__node_type="answer", node__parent__node_type=None).order_by('-voted_at')[:USERS_PAGE_SIZE])
     # The posts and, for answers, their questions: from the object cache, not one query per row.
     prefetch_cached_fk(votes, 'node')
     prefetch_cached_fk([vote.node for vote in votes if vote._meta.get_field('node').is_cached(vote)], 'parent')

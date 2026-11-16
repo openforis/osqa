@@ -92,14 +92,26 @@ sudo -u osqa git clone https://github.com/openforis/osqa.git /srv/osqa/app
 ### 2. Python environment and settings
 
 ```bash
-cd /srv/osqa/app
 sudo -u osqa python3 -m venv /srv/osqa/venv
-sudo -u osqa /srv/osqa/venv/bin/pip install -r requirements.txt
-sudo -u osqa cp settings_local.py.dist settings_local.py
-sudo -u osqa chmod 600 settings_local.py
-sudo -u osqa editor settings_local.py        # DATABASES, APP_URL, ALLOWED_HOSTS, SECRET_KEY, TRUSTED_PROXY_COUNT = 1, CACHES
-sudo -u osqa mkdir -p log cache tmp forum/upfiles
-sudo -u osqa /srv/osqa/venv/bin/python manage.py migrate
+sudo -u osqa /srv/osqa/venv/bin/pip install -r /srv/osqa/app/requirements.txt
+sudo -u osqa cp /srv/osqa/app/settings_local.py.dist /srv/osqa/app/settings_local.py
+sudo -u osqa chmod 600 /srv/osqa/app/settings_local.py
+sudo -u osqa editor /srv/osqa/app/settings_local.py        # DATABASES, APP_URL, ALLOWED_HOSTS, SECRET_KEY, TRUSTED_PROXY_COUNT = 1, CACHES
+sudo -u osqa mkdir -p /srv/osqa/app/log /srv/osqa/app/cache /srv/osqa/app/tmp /srv/osqa/app/forum/upfiles
+sudo -u osqa /srv/osqa/venv/bin/python /srv/osqa/app/manage.py migrate
+```
+
+Every path is absolute: `useradd --create-home` makes `/srv/osqa` readable by
+`osqa` only (mode 750 on Ubuntu 24.04) and `osqa` has no login shell, so
+`cd /srv/osqa/app` fails from your own account.
+
+A virtualenv made with `uv venv` (for example for a newer Python) has no
+`pip`. Install the requirements, here and when updating, with `uv` (installed
+for the `osqa` user; `--directory` because `uv` looks for its configuration in
+the current directory, which `osqa` can't read when it is your home):
+
+```bash
+sudo -u osqa /srv/osqa/.local/bin/uv --directory /srv/osqa/app pip install --python /srv/osqa/venv/bin/python -r /srv/osqa/app/requirements.txt
 ```
 
 ### 3. gunicorn as a service
@@ -320,12 +332,16 @@ See [After installing](#after-installing) below.
 ### Updating a server installation
 
 ```bash
-cd /srv/osqa/app
-sudo -u osqa git pull
-sudo -u osqa /srv/osqa/venv/bin/pip install -r requirements.txt
-sudo -u osqa /srv/osqa/venv/bin/python manage.py migrate
+sudo -u osqa git -C /srv/osqa/app pull --ff-only
+sudo -u osqa /srv/osqa/venv/bin/pip install -r /srv/osqa/app/requirements.txt   # uv venv: see step 2
+sudo -u osqa /srv/osqa/venv/bin/python /srv/osqa/app/manage.py migrate
 sudo systemctl restart osqa
+curl -s http://127.0.0.1:8000/readyz        # -> ok, a few seconds after the restart
 ```
+
+To go back, check out the previous commit
+(`sudo -u osqa git -C /srv/osqa/app log` shows it) and restart; when the
+update applied migrations, restore the database backup too.
 
 Read the README's "Upgrading an existing installation" notes first. When an
 update adds the search index (migration `0013`), also run
