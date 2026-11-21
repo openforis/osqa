@@ -383,6 +383,18 @@ class ConvertToQuestionTest(SettingsMixin, OSQATestCase):
                 with self.subTest(tab=tab):
                     self.assertCleanPage(self.client.get(self.bob.get_profile_url() + tab))
 
+    def test_commenters_profile_after_their_comment_became_a_question(self):
+        # Sentry OSQA-B: the "commented on" entry pointed at a post with no parent.
+        from forum.actions import CommentAction
+        comment = CommentAction(user=self.bob, ip='127.0.0.1').save(
+            data=dict(text='Another question in a comment, long enough.', parent=self.question)).node
+        self.login(self.moderator)
+        self.assertEqual(self.convert(comment, 'comment').status_code, 302)
+        with self.assertNoLogs(level='ERROR'):
+            response = self.client.get(self.bob.get_profile_url() + '/recent/')
+        self.assertCleanPage(response)
+        self.assertContains(response, self.question.title)
+
     def test_others_without_reputation_cannot_convert(self):
         self.set_setting(settings.REP_TO_CONVERT_TO_QUESTION, 2000)
         answer = Answer(author=self.bob, parent=self.question, body='A follow-up question really')

@@ -88,9 +88,12 @@ class CommentAction(ActionProxy):
         review.queue_post(self, getattr(self, '_review_state', None))
 
     def describe(self, viewer=None):
+        post = self.node.parent
+        if post is None:  # the comment was converted into a question since
+            post = original_question(CommentToQuestionAction.objects.filter(node=self.node).first() or self)
         return _("%(user)s commented on %(post_desc)s") % {
             'user': self.hyperlink(self.node.author.get_profile_url(), self.friendly_username(viewer, self.node.author)),
-            'post_desc': self.describe_node(viewer, self.node.parent)
+            'post_desc': self.describe_node(viewer, post)
         }
 
 class ReviseAction(NodeEditAction):
